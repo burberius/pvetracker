@@ -2,6 +2,8 @@ package net.troja.eve.pve;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.Bean;
+import org.springframework.security.oauth2.client.token.grant.code.AuthorizationCodeResourceDetails;
 
 @SpringBootApplication
 public class PvEApplication {
@@ -9,12 +11,8 @@ public class PvEApplication {
         SpringApplication.run(PvEApplication.class, args);
     }
 
-    // @Bean
-    // public SpringTemplateEngine templateEngine(final ITemplateResolver
-    // templateResolver, final SpringSecurityDialect sec) {
-    // final SpringTemplateEngine templateEngine = new SpringTemplateEngine();
-    // templateEngine.setTemplateResolver(templateResolver);
-    // templateEngine.addDialect(sec);
-    // return templateEngine;
-    // }
+    @Bean
+    public AuthorizationCodeResourceDetails getAuthorizationCodeResourceDetails() {
+        return new AuthorizationCodeResourceDetails();
+    }
 }
