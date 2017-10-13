@@ -1,0 +1,119 @@
+/*
+  Colors:
+  Navy Blue:   #18121e
+  Gunmetal:    #233237
+  Rusty Red:   #984843
+  Warm Yellow: #eac67a
+  Gray:        #171717
+*/
+body {
+	background-color: #18121e;
+	color: #eee;
+	margin: 0px;
+	font-family: 'Dosis', sans-serif;
+}
+
+a:after, a:before {
+	-webkit-transition: all .3s;
+	-moz-transition: all .3s;
+	-ms-transition: all .3s;
+	-o-transition: all .3s;
+	transition: all .3s;
+}
+
+/* visited link */
+a:visited {
+	color: #e5e5e5;
+}
+
+/* mouse over link */
+a:hover {
+	color: #eac67a;
+}
+
+/* selected link */
+a:active {
+	color: #984843;
+}
+
+/*
+ * Topmenu
+ */
+#topmenu {
+	background-color: #eee;
+	color: #18121e;
+	padding: 5px 5px 5px 15px;
+	position: relative;
+}
+
+#topmenu a {
+	color: #233237;
+	text-decoration: none;
+	font-size: 24px;
+	transition: all .3s;
+}
+
+#topmenu a:hover {
+	color: #eac67a;
+	text-decoration: none;
+}
+
+#nameTag {
+	position: relative;
+	bottom: 14px;
+	font-size: 18px;
+	right: 10px;
+	color: #984843;
+}
+
+span.menu {
+	position: relative;
+	top: 10px;
+	left: 10px;
+}
+
+.menu-entry:before, .menu-entry:after {
+	position: relative;
+	top: 3px;
+	font-size: 36px;
+	color: transparent;
+}
+
+.menu-entry:hover:before, .menu-entry:hover:after {
+	color: #eac67a;
+}
+
+.menu-entry:before {
+	content: "[";
+	left: -8px;
+}
+
+.menu-entry:hover:before {
+	left: 0px;
+}
+
+.menu-entry:after {
+	content: "]";
+	right: -8px;
+}
+
+.menu-entry:hover:after {
+	right: 0px;
+}
+
+#topmenu .title {
+	font-size: 36px;
+}
+
+#loginout {
+	right: 15px;
+	position: absolute;
+}
+
+/*
+ * Content
+ */
+#content {
+	padding: 10px;
+	position: relative;
+}

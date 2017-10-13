@@ -1,0 +1,32 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+	<title layout:title-pattern="$LAYOUT_TITLE - $CONTENT_TITLE">PvE Tracker</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<link th:href="@{https://fonts.googleapis.com/css?family=Dosis:500}" rel="stylesheet">
+	<link th:href="@{https://fonts.googleapis.com/icon?family=Material+Icons}" rel="stylesheet">
+	<link th:href="@{/css/styles.css}" rel="stylesheet">
+</head>
+<body>
+	<div id="topmenu">
+		<span class="title">PvE today</span>
+		<span class="menu">
+			<a th:href="@{/sites}" class="menu-entry">Sites Overview</a>
+			<a th:href="@{/stats}" class="menu-entry">Statistics</a>
+		</span>
+		<span id="loginout">
+			<a th:href="@{/login}" href="/login" sec:authorize="!isAuthenticated()">
+				<img th:src="@{/images/evessobutton.png}" src="/images/evessobutton.png" />
+			</a>
+			<span id="nameTag" sec:authorize="isAuthenticated()" sec:authentication="principal.characterName">Name</span>
+			<a th:href="@{/logout}" href="/logout" sec:authorize="isAuthenticated()">
+				<i class="material-icons" style="font-size: 42px">exit_to_app</i>
+			</a>
+		</span>
+	</div>
+	<div id="content" layout:fragment="content">
+	</div>
+</body>
+</html>
