@@ -1,5 +1,8 @@
 package net.troja.eve.pve;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /*-
  * ========================================================================
  * Eve Online PvE Tracker
@@ -10,12 +13,12 @@ package net.troja.eve.pve;
  * it under the terms of the GNU General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
@@ -39,6 +42,7 @@ import org.springframework.security.web.authentication.www.BasicAuthenticationFi
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
+import net.troja.eve.esi.auth.SsoScopes;
 import net.troja.eve.pve.account.AccountRepository;
 
 @Configuration
@@ -53,6 +57,16 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Autowired
     private AccountRepository accountRepository;
 
+    private static final List<String> SCOPES = new ArrayList<>();
+
+    public SecurityConfiguration() {
+        SCOPES.add(SsoScopes.ESI_LOCATION_READ_LOCATION_V1);
+        SCOPES.add(SsoScopes.ESI_LOCATION_READ_ONLINE_V1);
+        SCOPES.add(SsoScopes.ESI_LOCATION_READ_SHIP_TYPE_V1);
+        SCOPES.add(SsoScopes.ESI_WALLET_READ_CHARACTER_WALLET_V1);
+        SCOPES.add(SsoScopes.ESI_UI_OPEN_WINDOW_V1);
+    }
+
     @Override
     protected void configure(final HttpSecurity http) throws Exception {
         http.antMatcher("/**").authorizeRequests().antMatchers("/", "/login**", "/webjars/**", "/css/**", "/images/**").permitAll().anyRequest()
@@ -63,11 +77,12 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     private Filter ssoFilter() {
         final OAuth2ClientAuthenticationProcessingFilter filter = new OAuth2ClientAuthenticationProcessingFilter("/login");
+        oauth2Client.setScope(SCOPES);
         final OAuth2RestTemplate restTemplate = new OAuth2RestTemplate(oauth2Client, oauth2ClientContext);
         filter.setRestTemplate(restTemplate);
         final UserInfoTokenServices tokenServices = new UserInfoTokenServices(resourceProperties.getUserInfoUri(), oauth2Client.getClientId());
         tokenServices.setRestTemplate(restTemplate);
-        tokenServices.setPrincipalExtractor(new CharacterInfoExtractor(accountRepository));
+        tokenServices.setPrincipalExtractor(new CharacterInfoExtractor(accountRepository, restTemplate));
         filter.setTokenServices(tokenServices);
         return filter;
     }

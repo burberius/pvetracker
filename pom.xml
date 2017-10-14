@@ -27,7 +27,7 @@
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     <java.version>1.8</java.version>
 
-    <esi.version>1.4.0.1</esi.version>
+    <esi.version>1.4.1</esi.version>
     <mockito.version>1.10.19</mockito.version>
   </properties>
 
