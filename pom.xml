@@ -3,6 +3,12 @@
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
+  <parent>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-parent</artifactId>
+    <version>2.0.0.M4</version>
+  </parent>
+
   <groupId>net.troja.eve</groupId>
   <artifactId>pvetracker</artifactId>
   <version>0.0.1-SNAPSHOT</version>
@@ -11,11 +17,10 @@
   <name>Eve Online PvE Tracker</name>
   <description>EVE Online Tracker for PvE activities - to log all your PvE activities and get an overview about the money you earn per hour, spawn probability of faction rat, every loot value per site...</description>
 
-  <parent>
-    <groupId>org.springframework.boot</groupId>
-    <artifactId>spring-boot-starter-parent</artifactId>
-    <version>2.0.0.M4</version>
-  </parent>
+  <url>https://github.com/burberius/pvetracker</url>
+  <scm>
+    <url>https://github.com/burberius/pvetracker.git</url>
+  </scm>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -122,14 +127,6 @@
     </dependency>
   </dependencies>
 
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-maven-plugin</artifactId>
-      </plugin>
-    </plugins>
-  </build>
 
   <repositories>
     <repository>
@@ -169,9 +166,42 @@
     </pluginRepository>
   </pluginRepositories>
 
-
-  <url>https://github.com/burberius/pvetracker</url>
-  <scm>
-    <url>https://github.com/burberius/pvetracker.git</url>
-  </scm>
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-maven-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jar-plugin</artifactId>
+        <configuration>
+          <archive>
+            <manifest>
+              <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+              <addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
+            </manifest>
+          </archive>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>license-maven-plugin</artifactId>
+        <version>1.14</version>
+        <configuration>
+          <projectName>Eve Online PvE Tracker</projectName>
+          <organizationName>Jens Oberender &lt;j.obi@troja.net&gt;</organizationName>
+          <inceptionYear>2017</inceptionYear>
+          <licenseName>gpl_v3</licenseName>
+          <processStartTag>========================================================================</processStartTag>
+          <sectionDelimiter>------------------------------------------------------------------------</sectionDelimiter>
+          <processEndTag>========================================================================</processEndTag>
+          <includes>
+            <include>**/*.java</include>
+            <include>**/*.sql</include>
+          </includes>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
 </project>
