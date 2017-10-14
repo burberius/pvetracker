@@ -28,7 +28,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.security.oauth2.client.token.grant.code.AuthorizationCodeResourceDetails;
 
 @SpringBootApplication
-public final class PvEApplication {
+public class PvEApplication {
     public PvEApplication() {
         super();
     }
