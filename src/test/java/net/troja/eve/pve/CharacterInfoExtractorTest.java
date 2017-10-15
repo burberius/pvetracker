@@ -45,8 +45,8 @@ import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import net.troja.eve.pve.account.Account;
-import net.troja.eve.pve.account.AccountRepository;
+import net.troja.eve.pve.db.account.Account;
+import net.troja.eve.pve.db.account.AccountRepository;
 
 public class CharacterInfoExtractorTest {
     private static final int CHARACTER_ID = 12345;

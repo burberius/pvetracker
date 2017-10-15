@@ -43,7 +43,7 @@ import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 import net.troja.eve.esi.auth.SsoScopes;
-import net.troja.eve.pve.account.AccountRepository;
+import net.troja.eve.pve.db.account.AccountRepository;
 
 @Configuration
 @EnableOAuth2Client

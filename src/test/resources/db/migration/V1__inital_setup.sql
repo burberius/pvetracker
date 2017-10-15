@@ -52,8 +52,6 @@ CREATE TABLE `outcome` (
   `account_id` int(11) NOT NULL,
   `site_id` int(11) NOT NULL,
   PRIMARY KEY (`id`),
-  KEY `fk_outcome_site_idx` (`site_id`),
-  KEY `fk_outcome_account_idx` (`account_id`),
   CONSTRAINT `fk_outcome_account` FOREIGN KEY (`account_id`) REFERENCES `account` (`character_id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `fk_outcome_site` FOREIGN KEY (`site_id`) REFERENCES `site` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -66,6 +64,5 @@ CREATE TABLE `loot` (
   `value` double NOT NULL,
   `outcome_id` bigint(20),
   PRIMARY KEY (`id`),
-  KEY `fk_loot_outcome_idx` (`outcome_id`),
   CONSTRAINT `fk_loot_outcome` FOREIGN KEY (`outcome_id`) REFERENCES `outcome` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;

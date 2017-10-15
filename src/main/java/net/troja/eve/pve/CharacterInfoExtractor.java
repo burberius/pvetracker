@@ -32,8 +32,8 @@ import org.springframework.boot.autoconfigure.security.oauth2.resource.Principal
 import org.springframework.security.oauth2.client.OAuth2RestTemplate;
 import org.springframework.security.oauth2.common.OAuth2AccessToken;
 
-import net.troja.eve.pve.account.Account;
-import net.troja.eve.pve.account.AccountRepository;
+import net.troja.eve.pve.db.account.Account;
+import net.troja.eve.pve.db.account.AccountRepository;
 
 public final class CharacterInfoExtractor implements PrincipalExtractor {
     private static final Logger LOGGER = LogManager.getLogger(CharacterInfoExtractor.class);
