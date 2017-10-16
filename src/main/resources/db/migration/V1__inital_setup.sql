@@ -31,7 +31,7 @@ CREATE TABLE `account` (
 
 CREATE TABLE `site` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `name` varchar(45) NOT NULL,
+  `name` varchar(100) NOT NULL,
   `type` varchar(10) NOT NULL,
   `faction` varchar(15) DEFAULT NULL,
   `ded` int(11) DEFAULT NULL,
@@ -50,7 +50,8 @@ CREATE TABLE `outcome` (
   `bounty_value` double DEFAULT '0',
   `loot_value` double DEFAULT '0',
   `account_id` int(11) NOT NULL,
-  `site_id` int(11) NOT NULL,
+  `site_id` int(11),
+  `site_name` varchar(100) NOT NULL,
   PRIMARY KEY (`id`),
   KEY `fk_outcome_site_idx` (`site_id`),
   KEY `fk_outcome_account_idx` (`account_id`),

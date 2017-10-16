@@ -36,6 +36,18 @@ a:active {
 	color: #984843;
 }
 
+.center {
+	text-align: center;
+}
+
+.error {
+	color: #984843
+}
+
+.errorSpacing {
+	margin-top: 2em;
+}
+
 /*
  * Topmenu
  */

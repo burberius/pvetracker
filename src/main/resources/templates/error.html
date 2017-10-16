@@ -8,11 +8,8 @@
 </head>
 <body>
 	<div id="content" layout:fragment="content">
-		<h3 th:if="${startModel.error}" class="error">Looks like you didn't enter a site</h3>
-		<form action="#" th:action="@{/sites}" th:object="${startModel}" method="post">
-			<input type="text" th:field="*{name}" />
-			<input type="submit" value="Start" />
-		</form>
+		<h1 class="center error errorSpacing">Looks like the page you expected cloaked up!</h1>
+		<h2 th:text="${errorMessage}" class="center error errorSpacing">Error Message</h2>
 	</div>
 </body>
 </html>

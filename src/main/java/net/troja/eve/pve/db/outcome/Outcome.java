@@ -36,17 +36,27 @@ public class Outcome {
     @ManyToOne
     @JoinColumn(name = "site_id")
     private Site site;
+    private String siteName;
     @Temporal(TemporalType.TIMESTAMP)
-    private Date start;
+    private Date start = new Date();
     @Temporal(TemporalType.TIMESTAMP)
     private Date end;
     private boolean faction;
     private boolean escalation;
     private double bountyValue;
     private double lootValue;
-    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
     @JoinColumn(name = "outcome_id")
     private List<Loot> loot = new ArrayList<>();
+
+    public Outcome(final Account account, final String system, final String ship, final String siteName, final Site site) {
+        super();
+        this.account = account;
+        this.system = system;
+        this.ship = ship;
+        this.siteName = siteName;
+        this.site = site;
+    }
 
     public void addLoot(final Loot lootEntry) {
         loot.add(lootEntry);
