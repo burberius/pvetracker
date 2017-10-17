@@ -1,11 +1,11 @@
 package net.troja.eve.pve.db.account;
 
-/*-
- * ========================================================================
+/*
+ * ====================================================
  * Eve Online PvE Tracker
- * ------------------------------------------------------------------------
+ * ----------------------------------------------------
  * Copyright (C) 2017 Jens Oberender <j.obi@troja.net>
- * ------------------------------------------------------------------------
+ * ----------------------------------------------------
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as
  * published by the Free Software Foundation, either version 3 of the
@@ -19,7 +19,7 @@ package net.troja.eve.pve.db.account;
  * You should have received a copy of the GNU General Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
- * ========================================================================
+ * ====================================================
  */
 
 import org.springframework.data.repository.CrudRepository;
