@@ -1,7 +1,5 @@
 package net.troja.eve.pve.web;
 
-import java.security.Principal;
-
 /*-
  * ========================================================================
  * Eve Online PvE Tracker
@@ -23,6 +21,8 @@ import java.security.Principal;
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * ========================================================================
  */
+
+import java.security.Principal;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;

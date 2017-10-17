@@ -1,5 +1,3 @@
-package net.troja.eve.pve;
-
 /*-
  * ========================================================================
  * Eve Online PvE Tracker
@@ -21,6 +19,7 @@ package net.troja.eve.pve;
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * ========================================================================
  */
+package net.troja.eve.pve;
 
 import java.util.Date;
 import java.util.Map;

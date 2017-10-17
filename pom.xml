@@ -193,9 +193,6 @@
           <organizationName>Jens Oberender &lt;j.obi@troja.net&gt;</organizationName>
           <inceptionYear>2017</inceptionYear>
           <licenseName>gpl_v3</licenseName>
-          <processStartTag>========================================================================</processStartTag>
-          <sectionDelimiter>------------------------------------------------------------------------</sectionDelimiter>
-          <processEndTag>========================================================================</processEndTag>
           <includes>
             <include>**/*.java</include>
             <include>**/*.sql</include>
