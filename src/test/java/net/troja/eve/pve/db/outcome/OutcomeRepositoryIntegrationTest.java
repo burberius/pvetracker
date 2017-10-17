@@ -39,7 +39,9 @@ public class OutcomeRepositoryIntegrationTest {
 
         final Outcome outcome = new Outcome();
         outcome.setAccount(account.get());
-        outcome.setSite(site.get());
+        final Site siteEntry = site.get();
+        outcome.setSite(siteEntry);
+        outcome.setSiteName(siteEntry.getName());
         outcome.setSystem("Nix");
         outcome.setShip("Gila");
         outcome.setStart(new Date());
