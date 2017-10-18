@@ -1,0 +1,44 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{layout.html}">
+<head>
+<title>Sites overview</title>
+</head>
+<body>
+	<div id="content" layout:fragment="content">
+		<table>
+			<tr>
+				<td colspan="2" class="key">Site:</td>
+				<td colspan="2"><span th:text="${outcome.site} ? ${outcome.site.name} : ${outcome.siteName}">name</span></td>
+			</tr>
+			<tr>
+				<td class="key">Ship:</td>
+				<td th:text="${outcome.ship}">ship</td>
+				<td class="key">System:</td>
+				<td th:text="${outcome.system}">system</td>
+			</tr>
+			<tr>
+				<td class="key">Start:</td>
+				<td th:text="${#dates.format(outcome.start, 'yyyy-MM-dd HH:mm')}">start</td>
+				<td class="key">End:</td>
+				<td th:text="${#dates.format(outcome.end, 'yyyy-MM-dd HH:mm')}">end</td>
+			</tr>
+			<tr>
+				<td class="key">Bounty:</td>
+				<td><span th:text="${outcome.bountyValue}">bounty</span> ISK</td>
+				<td class="key">Loot:</td>
+				<td><span th:text="${outcome.lootValue}">loot</span> ISK</td>
+			</tr>
+			<tr>
+				<td class="key">Faction:</td>
+				<td><i class="material-icons green" th:if="${outcome.faction == true}">check</i><i class="material-icons red" th:if="${outcome.faction != true}">clear</i></td>
+				<td class="key">Escalation:</td>
+				<td><i class="material-icons green" th:if="${outcome.escalation == true}">check</i><i class="material-icons red" th:if="${outcome.escalation != true}">clear</i></td>
+			</tr>
+			
+		</table>
+	</div>
+</body>
+</html>
