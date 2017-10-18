@@ -10,12 +10,12 @@ package net.troja.eve.pve;
  * it under the terms of the GNU General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
@@ -72,7 +72,7 @@ public class CharacterInfoExtractorTest {
 
         final Map<String, Object> map = getCharacterMap();
 
-        when(accountRepository.findById((long) CHARACTER_ID)).thenReturn(Optional.empty());
+        when(accountRepository.findById(CHARACTER_ID)).thenReturn(Optional.empty());
         when(restTemplate.getAccessToken()).thenReturn(getAccessToken());
 
         final Account account = (Account) classToTest.extractPrincipal(map);
@@ -97,7 +97,7 @@ public class CharacterInfoExtractorTest {
         dbAccount.setLastLogin(new Date(12345));
         dbAccount.setCreated(new Date(1234));
         dbAccount.setRefreshToken(HASH);
-        when(accountRepository.findById((long) CHARACTER_ID)).thenReturn(Optional.of(dbAccount));
+        when(accountRepository.findById(CHARACTER_ID)).thenReturn(Optional.of(dbAccount));
         when(restTemplate.getAccessToken()).thenReturn(getAccessToken());
 
         final Account account = (Account) classToTest.extractPrincipal(map);

@@ -40,6 +40,7 @@ import net.troja.eve.pve.db.outcome.Outcome;
 import net.troja.eve.pve.db.outcome.OutcomeRepository;
 import net.troja.eve.pve.db.sites.Site;
 import net.troja.eve.pve.db.sites.SiteRepository;
+import net.troja.eve.pve.esi.LocationService;
 
 @Controller
 @RequestMapping("/sites")
@@ -50,6 +51,8 @@ public class SitesController {
     private SiteRepository siteRepo;
     @Autowired
     private OutcomeRepository outcomeRepo;
+    @Autowired
+    private LocationService locationService;
 
     public SitesController() {
         super();
@@ -76,8 +79,8 @@ public class SitesController {
             } else {
                 siteString = name;
             }
-            final String system = "nix";
-            final String ship = "da";
+            final String system = locationService.getLocation(account);
+            final String ship = locationService.getShip(account);
             final Outcome outcome = new Outcome(account, system, ship, siteString, site.orElse(null));
             final Outcome saved = outcomeRepo.save(outcome);
             LOGGER.info("Got " + saved);

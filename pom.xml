@@ -29,6 +29,7 @@
 
     <esi.version>1.4.1</esi.version>
     <mockito.version>1.10.19</mockito.version>
+    <opencsv.version>4.0</opencsv.version>
   </properties>
 
   <dependencies>
@@ -96,6 +97,16 @@
       <groupId>net.troja.eve</groupId>
       <artifactId>eve-esi</artifactId>
       <version>${esi.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.glassfish.jersey.inject</groupId>
+      <artifactId>jersey-hk2</artifactId>
+      <version>${jersey.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.opencsv</groupId>
+      <artifactId>opencsv</artifactId>
+      <version>${opencsv.version}</version>
     </dependency>
     <dependency>
       <groupId>javax.servlet</groupId>
