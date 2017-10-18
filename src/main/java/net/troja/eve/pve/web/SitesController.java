@@ -23,7 +23,11 @@ package net.troja.eve.pve.web;
  */
 
 import java.security.Principal;
+import java.util.List;
 import java.util.Optional;
+
+import javax.ws.rs.ForbiddenException;
+import javax.ws.rs.NotFoundException;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
@@ -31,7 +35,9 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -59,14 +65,16 @@ public class SitesController {
     }
 
     @GetMapping
-    public String sites(final StartModel model) {
+    public String sites(final StartModel startModel, final Model model, final Principal principal) {
+        final Account account = (Account) ((OAuth2Authentication) principal).getPrincipal();
+        final List<Outcome> outcomes = outcomeRepo.findByAccountOrderByStartDesc(account);
+        model.addAttribute("outcomes", outcomes);
         return "sites";
     }
 
     @PostMapping
     public String start(final StartModel model, final Principal principal) {
         final Account account = (Account) ((OAuth2Authentication) principal).getPrincipal();
-        LOGGER.info(account);
         final String name = model.getName();
         if (StringUtils.isBlank(name)) {
             model.setError(true);
@@ -88,11 +96,30 @@ public class SitesController {
         }
     }
 
+    @GetMapping("/{id}")
+    public String site(final Model model, final Principal principal, @PathVariable final long id) {
+        final Optional<Outcome> outcomeResult = outcomeRepo.findById(id);
+        if (!outcomeResult.isPresent()) {
+            throw new NotFoundException();
+        }
+        final Outcome outcome = outcomeResult.get();
+        final Account account = (Account) ((OAuth2Authentication) principal).getPrincipal();
+        if (outcome.getAccount().getCharacterId() != account.getCharacterId()) {
+            throw new ForbiddenException();
+        }
+        model.addAttribute("outcome", outcome);
+        return "site";
+    }
+
     void setSiteRepo(final SiteRepository siteRepo) {
         this.siteRepo = siteRepo;
     }
 
     void setOutcomeRepo(final OutcomeRepository outcomeRepo) {
         this.outcomeRepo = outcomeRepo;
+    }
+
+    void setLocationService(final LocationService locationService) {
+        this.locationService = locationService;
     }
 }

@@ -1,5 +1,8 @@
 package net.troja.eve.pve.web;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /*
  * ====================================================
  * Eve Online PvE Tracker
@@ -10,12 +13,12 @@ package net.troja.eve.pve.web;
  * it under the terms of the GNU General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
@@ -29,21 +32,27 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
+import org.springframework.ui.Model;
 
 import static org.hamcrest.Matchers.equalTo;
 
 import static org.junit.Assert.assertThat;
 
 import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import net.troja.eve.pve.db.account.Account;
 import net.troja.eve.pve.db.outcome.Outcome;
 import net.troja.eve.pve.db.outcome.OutcomeRepository;
 import net.troja.eve.pve.db.sites.Site;
 import net.troja.eve.pve.db.sites.SiteRepository;
+import net.troja.eve.pve.esi.LocationService;
 
 public class SitesControllerTest {
     private static final String SITE_NAME = "Angel Vigil";
+    private static final String SHIP = "Nix";
+    private static final String SYSTEM = "Reset";
 
     private final SitesController classToTest = new SitesController();
 
@@ -53,17 +62,28 @@ public class SitesControllerTest {
     private OutcomeRepository outcomeRepo;
     @Mock
     private OAuth2Authentication principal;
+    @Mock
+    private Model model;
+    @Mock
+    private LocationService locationService;
 
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
         classToTest.setOutcomeRepo(outcomeRepo);
         classToTest.setSiteRepo(siteRepo);
+        classToTest.setLocationService(locationService);
     }
 
     @Test
     public void sites() {
-        final String result = classToTest.sites(null);
+        final List<Outcome> outcomes = new ArrayList<>();
+
+        when(outcomeRepo.findByAccountOrderByStartDesc(any())).thenReturn(outcomes);
+
+        final String result = classToTest.sites(null, model, principal);
+
+        verify(model).addAttribute("outcomes", outcomes);
 
         assertThat(result, equalTo("sites"));
     }
@@ -89,8 +109,13 @@ public class SitesControllerTest {
         final Outcome outcome = new Outcome();
         outcome.setId(1);
 
+        final Account account = new Account();
+
         when(siteRepo.findByName(SITE_NAME)).thenReturn(Optional.of(site));
         when(outcomeRepo.save(any())).thenReturn(outcome);
+        when(principal.getPrincipal()).thenReturn(account);
+        when(locationService.getLocation(account)).thenReturn(SYSTEM);
+        when(locationService.getShip(account)).thenReturn(SHIP);
 
         final String result = classToTest.start(model, principal);
 

@@ -129,3 +129,23 @@ span.menu {
 	padding: 10px;
 	position: relative;
 }
+
+.key {
+	font-weight: bold;
+	text-align: right;
+	color: #eac67a;
+}
+
+td.head {
+	font-weight: bold;
+	text-align: center;
+	color: #eac67a;	
+}
+
+.green {
+	color: green;
+}
+
+.red {
+	color: red;
+}
