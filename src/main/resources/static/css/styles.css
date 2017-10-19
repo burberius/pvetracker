@@ -139,7 +139,11 @@ span.menu {
 td.head {
 	font-weight: bold;
 	text-align: center;
-	color: #eac67a;	
+	color: #eac67a;
+}
+
+td img {
+	vertical-align: middle;
 }
 
 .green {

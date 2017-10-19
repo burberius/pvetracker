@@ -27,8 +27,8 @@ import java.util.Optional;
 
 import org.springframework.data.repository.CrudRepository;
 
-public interface TypeTranslationRespository extends CrudRepository<TypeTranslation, Integer> {
-    List<TypeTranslation> findByName(String name);
+public interface TypeTranslationRepository extends CrudRepository<TypeTranslationBean, Integer> {
+    List<TypeTranslationBean> findByName(String name);
 
-    Optional<TypeTranslation> findByTypeIdAndLanguage(Integer typeId, String language);
+    Optional<TypeTranslationBean> findByTypeIdAndLanguage(Integer typeId, String language);
 }

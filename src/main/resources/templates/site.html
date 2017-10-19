@@ -15,7 +15,10 @@
 			</tr>
 			<tr>
 				<td class="key">Ship:</td>
-				<td th:text="${outcome.ship}">ship</td>
+				<td>
+					<img th:src="@{https://image.eveonline.com/Type/__${outcome.ship.typeId}___32.png}" src="img" th:alt="${outcome.ship.type}" th:title="${outcome.ship.type}"/>
+					[[${outcome.ship.name}]]
+				</td>
 				<td class="key">System:</td>
 				<td th:text="${outcome.system}">system</td>
 			</tr>

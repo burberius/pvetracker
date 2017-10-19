@@ -41,10 +41,11 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import net.troja.eve.pve.db.account.Account;
-import net.troja.eve.pve.db.outcome.Outcome;
+import net.troja.eve.pve.db.account.AccountBean;
+import net.troja.eve.pve.db.outcome.OutcomeBean;
 import net.troja.eve.pve.db.outcome.OutcomeRepository;
-import net.troja.eve.pve.db.sites.Site;
+import net.troja.eve.pve.db.outcome.ShipBean;
+import net.troja.eve.pve.db.sites.SiteBean;
 import net.troja.eve.pve.db.sites.SiteRepository;
 import net.troja.eve.pve.esi.LocationService;
 
@@ -66,21 +67,21 @@ public class SitesController {
 
     @GetMapping
     public String sites(final StartModel startModel, final Model model, final Principal principal) {
-        final Account account = (Account) ((OAuth2Authentication) principal).getPrincipal();
-        final List<Outcome> outcomes = outcomeRepo.findByAccountOrderByStartDesc(account);
+        final AccountBean account = (AccountBean) ((OAuth2Authentication) principal).getPrincipal();
+        final List<OutcomeBean> outcomes = outcomeRepo.findByAccountOrderByStartDesc(account);
         model.addAttribute("outcomes", outcomes);
         return "sites";
     }
 
     @PostMapping
     public String start(final StartModel model, final Principal principal) {
-        final Account account = (Account) ((OAuth2Authentication) principal).getPrincipal();
+        final AccountBean account = (AccountBean) ((OAuth2Authentication) principal).getPrincipal();
         final String name = model.getName();
         if (StringUtils.isBlank(name)) {
             model.setError(true);
             return "sites";
         } else {
-            final Optional<Site> site = siteRepo.findByName(name);
+            final Optional<SiteBean> site = siteRepo.findByName(name);
             String siteString;
             if (site.isPresent()) {
                 siteString = site.get().toString();
@@ -88,9 +89,9 @@ public class SitesController {
                 siteString = name;
             }
             final String system = locationService.getLocation(account);
-            final String ship = locationService.getShip(account);
-            final Outcome outcome = new Outcome(account, system, ship, siteString, site.orElse(null));
-            final Outcome saved = outcomeRepo.save(outcome);
+            final ShipBean ship = locationService.getShip(account);
+            final OutcomeBean outcome = new OutcomeBean(account, system, ship, siteString, site.orElse(null));
+            final OutcomeBean saved = outcomeRepo.save(outcome);
             LOGGER.info("Got " + saved);
             return "redirect:/sites/" + saved.getId();
         }
@@ -98,12 +99,12 @@ public class SitesController {
 
     @GetMapping("/{id}")
     public String site(final Model model, final Principal principal, @PathVariable final long id) {
-        final Optional<Outcome> outcomeResult = outcomeRepo.findById(id);
+        final Optional<OutcomeBean> outcomeResult = outcomeRepo.findById(id);
         if (!outcomeResult.isPresent()) {
             throw new NotFoundException();
         }
-        final Outcome outcome = outcomeResult.get();
-        final Account account = (Account) ((OAuth2Authentication) principal).getPrincipal();
+        final OutcomeBean outcome = outcomeResult.get();
+        final AccountBean account = (AccountBean) ((OAuth2Authentication) principal).getPrincipal();
         if (outcome.getAccount().getCharacterId() != account.getCharacterId()) {
             throw new ForbiddenException();
         }

@@ -39,10 +39,19 @@ CREATE TABLE `site` (
   UNIQUE KEY `name_UNIQUE` (`name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+CREATE TABLE `ship` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(80) DEFAULT NULL,
+  `type` varchar(80) DEFAULT NULL,
+  `type_id` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `IDX_UNIQ` (`name`,`type_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
 CREATE TABLE `outcome` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `system` varchar(45) NOT NULL,
-  `ship` varchar(45) NOT NULL,
+  `ship_id` int(11) DEFAULT NULL,
   `start` datetime NOT NULL,
   `end` datetime DEFAULT NULL,
   `faction` tinyint(4) NOT NULL,
@@ -56,7 +65,8 @@ CREATE TABLE `outcome` (
   KEY `fk_outcome_site_idx` (`site_id`),
   KEY `fk_outcome_account_idx` (`account_id`),
   CONSTRAINT `fk_outcome_account` FOREIGN KEY (`account_id`) REFERENCES `account` (`character_id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  CONSTRAINT `fk_outcome_site` FOREIGN KEY (`site_id`) REFERENCES `site` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+  CONSTRAINT `fk_outcome_site` FOREIGN KEY (`site_id`) REFERENCES `site` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `fk_outcome_ship` FOREIGN KEY (`ship_id`) REFERENCES `ship` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `loot` (

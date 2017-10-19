@@ -26,6 +26,6 @@ import java.util.Optional;
 
 import org.springframework.data.repository.CrudRepository;
 
-public interface SiteRepository extends CrudRepository<Site, Integer> {
-    Optional<Site> findByName(String name);
+public interface SiteRepository extends CrudRepository<SiteBean, Integer> {
+    Optional<SiteBean> findByName(String name);
 }

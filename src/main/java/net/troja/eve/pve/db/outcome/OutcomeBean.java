@@ -10,12 +10,12 @@ package net.troja.eve.pve.db.outcome;
  * it under the terms of the GNU General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
@@ -35,29 +35,33 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import net.troja.eve.pve.db.account.Account;
-import net.troja.eve.pve.db.sites.Site;
+import net.troja.eve.pve.db.account.AccountBean;
+import net.troja.eve.pve.db.sites.SiteBean;
 
 @Data
 @NoArgsConstructor
 @Entity
-public class Outcome {
+@Table(name = "outcome")
+public class OutcomeBean {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
     @ManyToOne
     @JoinColumn(name = "account_id")
-    private Account account;
+    private AccountBean account;
     private String system;
-    private String ship;
+    @ManyToOne
+    @JoinColumn(name = "ship_id")
+    private ShipBean ship;
     @ManyToOne
     @JoinColumn(name = "site_id")
-    private Site site;
+    private SiteBean site;
     private String siteName;
     @Temporal(TemporalType.TIMESTAMP)
     private Date start = new Date();
@@ -69,9 +73,9 @@ public class Outcome {
     private double lootValue;
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
     @JoinColumn(name = "outcome_id")
-    private List<Loot> loot = new ArrayList<>();
+    private List<LootBean> loot = new ArrayList<>();
 
-    public Outcome(final Account account, final String system, final String ship, final String siteName, final Site site) {
+    public OutcomeBean(final AccountBean account, final String system, final ShipBean ship, final String siteName, final SiteBean site) {
         super();
         this.account = account;
         this.system = system;
@@ -80,7 +84,7 @@ public class Outcome {
         this.site = site;
     }
 
-    public void addLoot(final Loot lootEntry) {
+    public void addLoot(final LootBean lootEntry) {
         loot.add(lootEntry);
     }
 }

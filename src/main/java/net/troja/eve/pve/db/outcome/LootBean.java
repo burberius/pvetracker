@@ -22,12 +22,25 @@ package net.troja.eve.pve.db.outcome;
  * ====================================================
  */
 
-import java.util.List;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
 
-import org.springframework.data.repository.CrudRepository;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-import net.troja.eve.pve.db.account.AccountBean;
-
-public interface OutcomeRepository extends CrudRepository<OutcomeBean, Long> {
-    List<OutcomeBean> findByAccountOrderByStartDesc(AccountBean account);
+@Data
+@NoArgsConstructor
+@Entity
+@Table(name = "loot")
+public class LootBean {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private long id;
+    private int count;
+    private String name;
+    private int typeId;
+    private double value;
 }

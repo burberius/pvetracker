@@ -44,7 +44,7 @@ import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import net.troja.eve.pve.db.account.Account;
+import net.troja.eve.pve.db.account.AccountBean;
 import net.troja.eve.pve.db.account.AccountRepository;
 
 public class CharacterInfoExtractorTest {
@@ -75,7 +75,7 @@ public class CharacterInfoExtractorTest {
         when(accountRepository.findById(CHARACTER_ID)).thenReturn(Optional.empty());
         when(restTemplate.getAccessToken()).thenReturn(getAccessToken());
 
-        final Account account = (Account) classToTest.extractPrincipal(map);
+        final AccountBean account = (AccountBean) classToTest.extractPrincipal(map);
 
         verify(accountRepository).save(account);
 
@@ -93,14 +93,14 @@ public class CharacterInfoExtractorTest {
         final Map<String, Object> map = getCharacterMap();
         final long lastLogin = System.currentTimeMillis();
 
-        final Account dbAccount = getExpectedAccount();
+        final AccountBean dbAccount = getExpectedAccount();
         dbAccount.setLastLogin(new Date(12345));
         dbAccount.setCreated(new Date(1234));
         dbAccount.setRefreshToken(HASH);
         when(accountRepository.findById(CHARACTER_ID)).thenReturn(Optional.of(dbAccount));
         when(restTemplate.getAccessToken()).thenReturn(getAccessToken());
 
-        final Account account = (Account) classToTest.extractPrincipal(map);
+        final AccountBean account = (AccountBean) classToTest.extractPrincipal(map);
 
         verify(accountRepository).save(account);
 
@@ -110,7 +110,7 @@ public class CharacterInfoExtractorTest {
         assertThat(account.getRefreshToken(), equalTo(dbAccount.getRefreshToken()));
     }
 
-    private void assertEqual(final Account actual, final Account expected) {
+    private void assertEqual(final AccountBean actual, final AccountBean expected) {
         assertThat(actual.getCharacterId(), equalTo(expected.getCharacterId()));
         assertThat(actual.getCharacterName(), equalTo(expected.getCharacterName()));
         assertThat(actual.getCharacterOwnerHash(), equalTo(expected.getCharacterOwnerHash()));
@@ -125,8 +125,8 @@ public class CharacterInfoExtractorTest {
         return map;
     }
 
-    private Account getExpectedAccount() {
-        final Account account = new Account();
+    private AccountBean getExpectedAccount() {
+        final AccountBean account = new AccountBean();
         account.setCharacterId(CHARACTER_ID);
         account.setCharacterName(NAME);
         account.setCharacterOwnerHash(HASH);

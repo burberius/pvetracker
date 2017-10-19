@@ -42,16 +42,16 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import net.troja.eve.pve.db.account.Account;
-import net.troja.eve.pve.db.outcome.Outcome;
+import net.troja.eve.pve.db.account.AccountBean;
+import net.troja.eve.pve.db.outcome.OutcomeBean;
 import net.troja.eve.pve.db.outcome.OutcomeRepository;
-import net.troja.eve.pve.db.sites.Site;
+import net.troja.eve.pve.db.outcome.ShipBean;
+import net.troja.eve.pve.db.sites.SiteBean;
 import net.troja.eve.pve.db.sites.SiteRepository;
 import net.troja.eve.pve.esi.LocationService;
 
 public class SitesControllerTest {
     private static final String SITE_NAME = "Angel Vigil";
-    private static final String SHIP = "Nix";
     private static final String SYSTEM = "Reset";
 
     private final SitesController classToTest = new SitesController();
@@ -77,7 +77,7 @@ public class SitesControllerTest {
 
     @Test
     public void sites() {
-        final List<Outcome> outcomes = new ArrayList<>();
+        final List<OutcomeBean> outcomes = new ArrayList<>();
 
         when(outcomeRepo.findByAccountOrderByStartDesc(any())).thenReturn(outcomes);
 
@@ -104,18 +104,19 @@ public class SitesControllerTest {
         final StartModel model = new StartModel();
         model.setName(SITE_NAME);
 
-        final Site site = new Site();
+        final SiteBean site = new SiteBean();
         site.setName(SITE_NAME);
-        final Outcome outcome = new Outcome();
+        final OutcomeBean outcome = new OutcomeBean();
         outcome.setId(1);
 
-        final Account account = new Account();
+        final AccountBean account = new AccountBean();
 
         when(siteRepo.findByName(SITE_NAME)).thenReturn(Optional.of(site));
         when(outcomeRepo.save(any())).thenReturn(outcome);
         when(principal.getPrincipal()).thenReturn(account);
         when(locationService.getLocation(account)).thenReturn(SYSTEM);
-        when(locationService.getShip(account)).thenReturn(SHIP);
+
+        when(locationService.getShip(account)).thenReturn(new ShipBean());
 
         final String result = classToTest.start(model, principal);
 

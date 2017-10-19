@@ -1,4 +1,4 @@
-package net.troja.eve.pve.db.type;
+package net.troja.eve.pve.db.outcome;
 
 /*
  * ====================================================
@@ -22,19 +22,10 @@ package net.troja.eve.pve.db.type;
  * ====================================================
  */
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import java.util.Optional;
 
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import org.springframework.data.repository.CrudRepository;
 
-@Data
-@NoArgsConstructor
-@Entity
-public class TypeTranslation {
-    @Id
-    private int id;
-    private int typeId;
-    private String language;
-    private String name;
+public interface ShipRepository extends CrudRepository<ShipBean, Integer> {
+    Optional<ShipBean> findByNameAndTypeId(String name, int typeId);
 }

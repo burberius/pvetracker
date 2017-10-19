@@ -37,9 +37,9 @@ import static org.hamcrest.Matchers.equalTo;
 
 import static org.junit.Assert.assertThat;
 
-import net.troja.eve.pve.db.account.Account;
+import net.troja.eve.pve.db.account.AccountBean;
 import net.troja.eve.pve.db.account.AccountRepository;
-import net.troja.eve.pve.db.sites.Site;
+import net.troja.eve.pve.db.sites.SiteBean;
 import net.troja.eve.pve.db.sites.SiteRepository;
 
 @RunWith(SpringRunner.class)
@@ -53,22 +53,26 @@ public class OutcomeRepositoryIntegrationTest {
     private AccountRepository accountRepo;
     @Autowired
     private SiteRepository siteRepo;
+    @Autowired
+    private ShipRepository shipRepo;
 
     @Test
     public void saveAndFind() {
-        final Optional<Site> site = siteRepo.findById(1);
-        final Optional<Account> account = accountRepo.findById(1);
+        final Optional<SiteBean> site = siteRepo.findById(1);
+        final Optional<AccountBean> account = accountRepo.findById(1);
 
-        final Outcome outcome = new Outcome();
+        final OutcomeBean outcome = new OutcomeBean();
         outcome.setAccount(account.get());
-        final Site siteEntry = site.get();
+        final SiteBean siteEntry = site.get();
         outcome.setSite(siteEntry);
         outcome.setSiteName(siteEntry.getName());
         outcome.setSystem("Nix");
-        outcome.setShip("Gila");
+        ShipBean ship = new ShipBean("Test", "Gila", 123);
+        ship = shipRepo.save(ship);
+        outcome.setShip(ship);
         outcome.setStart(new Date());
 
-        final Loot loot = new Loot();
+        final LootBean loot = new LootBean();
         loot.setCount(5);
         loot.setName("Loot");
         loot.setValue(4.2123);
@@ -77,11 +81,11 @@ public class OutcomeRepositoryIntegrationTest {
 
         classToTest.save(outcome);
 
-        final Optional<Outcome> result = classToTest.findById(1L);
+        final Optional<OutcomeBean> result = classToTest.findById(1L);
 
         assertThat(result.isPresent(), equalTo(true));
 
-        final Outcome out = result.get();
+        final OutcomeBean out = result.get();
         assertThat(out.getLoot().size(), equalTo(1));
     }
 }

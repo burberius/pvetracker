@@ -10,12 +10,12 @@ package net.troja.eve.pve.esi;
  * it under the terms of the GNU General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
@@ -26,14 +26,17 @@ import java.util.Optional;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.AdditionalAnswers;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.boot.autoconfigure.security.oauth2.resource.ResourceServerProperties;
 
 import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.nullValue;
 
 import static org.junit.Assert.assertThat;
 
+import static org.mockito.Matchers.anyObject;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -42,11 +45,13 @@ import net.troja.eve.esi.api.LocationApi;
 import net.troja.eve.esi.auth.OAuth;
 import net.troja.eve.esi.model.CharacterLocationResponse;
 import net.troja.eve.esi.model.CharacterShipResponse;
-import net.troja.eve.pve.db.account.Account;
-import net.troja.eve.pve.db.solarsystem.SolarSystem;
+import net.troja.eve.pve.db.account.AccountBean;
+import net.troja.eve.pve.db.outcome.ShipBean;
+import net.troja.eve.pve.db.outcome.ShipRepository;
+import net.troja.eve.pve.db.solarsystem.SolarSystemBean;
 import net.troja.eve.pve.db.solarsystem.SolarSystemRepository;
-import net.troja.eve.pve.db.type.TypeTranslation;
-import net.troja.eve.pve.db.type.TypeTranslationRespository;
+import net.troja.eve.pve.db.type.TypeTranslationBean;
+import net.troja.eve.pve.db.type.TypeTranslationRepository;
 
 public class LocationServiceTest {
     private static final int CHARACTER_ID = 12345;
@@ -66,7 +71,9 @@ public class LocationServiceTest {
     @Mock
     private SolarSystemRepository solarSystemRepo;
     @Mock
-    private TypeTranslationRespository typeRepo;
+    private TypeTranslationRepository typeRepo;
+    @Mock
+    private ShipRepository shipRepo;
     @Mock
     private OAuth auth;
 
@@ -78,6 +85,7 @@ public class LocationServiceTest {
         classToTest.setApi(locationApi);
         classToTest.setSolarSystemRepository(solarSystemRepo);
         classToTest.setTypeRepository(typeRepo);
+        classToTest.setShipRepository(shipRepo);
         classToTest.setAuth(auth);
     }
 
@@ -86,7 +94,7 @@ public class LocationServiceTest {
         final CharacterLocationResponse fakeLocation = new CharacterLocationResponse();
         fakeLocation.setSolarSystemId(LOCATION_ID);
         when(locationApi.getCharactersCharacterIdLocation(CHARACTER_ID, AbstractEsiService.DATASOURCE, null, null, null)).thenReturn(fakeLocation);
-        final SolarSystem solarSystem = new SolarSystem();
+        final SolarSystemBean solarSystem = new SolarSystemBean();
         solarSystem.setName(LOCATION);
         when(solarSystemRepo.findById(LOCATION_ID)).thenReturn(Optional.of(solarSystem));
 
@@ -129,13 +137,13 @@ public class LocationServiceTest {
         shipResponse.setShipTypeId(SHIP_TYPE_ID);
 
         when(locationApi.getCharactersCharacterIdShip(CHARACTER_ID, AbstractEsiService.DATASOURCE, null, null, null)).thenReturn(shipResponse);
-        final TypeTranslation typeTranslation = new TypeTranslation();
-        typeTranslation.setName(SHIP_TYPE);
-        when(typeRepo.findByTypeIdAndLanguage(SHIP_TYPE_ID, "en")).thenReturn(Optional.of(typeTranslation));
+        final ShipBean shipBean = new ShipBean(SHIP_NAME, SHIP_TYPE, SHIP_TYPE_ID);
+        when(shipRepo.findByNameAndTypeId(SHIP_NAME, SHIP_TYPE_ID)).thenReturn(Optional.of(shipBean));
 
-        final String ship = classToTest.getShip(getAccount());
+        final ShipBean ship = classToTest.getShip(getAccount());
 
-        assertThat(ship, equalTo(SHIP_NAME + " (" + SHIP_TYPE + ")"));
+        assertThat(ship.getName(), equalTo(SHIP_NAME));
+        assertThat(ship.getType(), equalTo(SHIP_TYPE));
         verify(auth).setRefreshToken(REFRESH_TOKEN);
     }
 
@@ -146,11 +154,34 @@ public class LocationServiceTest {
         shipResponse.setShipTypeId(SHIP_TYPE_ID);
 
         when(locationApi.getCharactersCharacterIdShip(CHARACTER_ID, AbstractEsiService.DATASOURCE, null, null, null)).thenReturn(shipResponse);
+        final TypeTranslationBean typeTranslation = new TypeTranslationBean();
+        typeTranslation.setName(SHIP_TYPE);
+        when(shipRepo.findByNameAndTypeId(SHIP_NAME, SHIP_TYPE_ID)).thenReturn(Optional.empty());
+        when(typeRepo.findByTypeIdAndLanguage(SHIP_TYPE_ID, "en")).thenReturn(Optional.of(typeTranslation));
+        when(shipRepo.save(anyObject())).then(AdditionalAnswers.returnsFirstArg());
+
+        final ShipBean ship = classToTest.getShip(getAccount());
+
+        assertThat(ship.getName(), equalTo(SHIP_NAME));
+        assertThat(ship.getType(), equalTo(SHIP_TYPE));
+        verify(auth).setRefreshToken(REFRESH_TOKEN);
+    }
+
+    @Test
+    public void getShipTypeNotFound() throws ApiException {
+        final CharacterShipResponse shipResponse = new CharacterShipResponse();
+        shipResponse.setShipName(SHIP_NAME);
+        shipResponse.setShipTypeId(SHIP_TYPE_ID);
+
+        when(locationApi.getCharactersCharacterIdShip(CHARACTER_ID, AbstractEsiService.DATASOURCE, null, null, null)).thenReturn(shipResponse);
+        when(shipRepo.findByNameAndTypeId(SHIP_NAME, SHIP_TYPE_ID)).thenReturn(Optional.empty());
         when(typeRepo.findByTypeIdAndLanguage(SHIP_TYPE_ID, "en")).thenReturn(Optional.empty());
+        when(shipRepo.save(anyObject())).then(AdditionalAnswers.returnsFirstArg());
 
-        final String ship = classToTest.getShip(getAccount());
+        final ShipBean ship = classToTest.getShip(getAccount());
 
-        assertThat(ship, equalTo(SHIP_NAME));
+        assertThat(ship.getName(), equalTo(SHIP_NAME));
+        assertThat(ship.getType(), equalTo("unknown"));
         verify(auth).setRefreshToken(REFRESH_TOKEN);
     }
 
@@ -162,14 +193,14 @@ public class LocationServiceTest {
 
         when(locationApi.getCharactersCharacterIdShip(CHARACTER_ID, AbstractEsiService.DATASOURCE, null, null, null)).thenThrow(new ApiException());
 
-        final String ship = classToTest.getShip(getAccount());
+        final ShipBean ship = classToTest.getShip(getAccount());
 
-        assertThat(ship, equalTo("unknown"));
+        assertThat(ship, nullValue());
         verify(auth).setRefreshToken(REFRESH_TOKEN);
     }
 
-    private Account getAccount() {
-        final Account account = new Account();
+    private AccountBean getAccount() {
+        final AccountBean account = new AccountBean();
         account.setCharacterId(CHARACTER_ID);
         account.setRefreshToken(REFRESH_TOKEN);
         return account;

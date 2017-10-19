@@ -32,7 +32,7 @@ import org.springframework.boot.autoconfigure.security.oauth2.resource.Principal
 import org.springframework.security.oauth2.client.OAuth2RestTemplate;
 import org.springframework.security.oauth2.common.OAuth2AccessToken;
 
-import net.troja.eve.pve.db.account.Account;
+import net.troja.eve.pve.db.account.AccountBean;
 import net.troja.eve.pve.db.account.AccountRepository;
 
 public final class CharacterInfoExtractor implements PrincipalExtractor {
@@ -49,15 +49,15 @@ public final class CharacterInfoExtractor implements PrincipalExtractor {
     @Override
     public Object extractPrincipal(final Map<String, Object> map) {
         final Integer characterId = (Integer) map.get("CharacterID");
-        Account account = null;
+        AccountBean account = null;
         final OAuth2AccessToken accessToken = restTemplate.getAccessToken();
-        final Optional<Account> accountSearch = accountRepository.findById(characterId);
+        final Optional<AccountBean> accountSearch = accountRepository.findById(characterId);
         if (accountSearch.isPresent()) {
             account = accountSearch.get();
             account.setLastLogin(new Date());
             LOGGER.info("Updated account " + account);
         } else {
-            account = new Account();
+            account = new AccountBean();
             account.setCharacterId(characterId);
             account.setCharacterName((String) map.get("CharacterName"));
             account.setCharacterOwnerHash((String) map.get("CharacterOwnerHash"));

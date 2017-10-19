@@ -45,7 +45,7 @@ public class SolarSystemRepositoryIntegrationTest {
 
     @Test
     public void findById() {
-        final Optional<SolarSystem> system = classToTest.findById(30000142);
+        final Optional<SolarSystemBean> system = classToTest.findById(30000142);
         assertThat(system.get().getName(), equalTo("Jita"));
     }
 }

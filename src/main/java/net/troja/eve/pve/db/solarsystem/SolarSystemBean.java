@@ -1,4 +1,4 @@
-package net.troja.eve.pve.db.account;
+package net.troja.eve.pve.db.solarsystem;
 
 /*
  * ====================================================
@@ -22,21 +22,19 @@ package net.troja.eve.pve.db.account;
  * ====================================================
  */
 
-import java.util.Date;
-
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.Table;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+@NoArgsConstructor
 @Entity
-public class Account {
+@Table(name = "solar_system")
+public class SolarSystemBean {
     @Id
-    private int characterId;
-    private String characterName;
-    private String characterOwnerHash;
-    private Date created = new Date();
-    private Date lastLogin = new Date();
-    private String refreshToken;
+    private int id;
+    private String name;
 }

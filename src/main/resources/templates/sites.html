@@ -19,11 +19,14 @@
 			<tr>
 				<td class="head">Site</td>
 				<td class="head">Start</td>
+				<td class="head">State</td>
 				<td class="head">View</td>
 			</tr>
 			<tr th:each="outcome : ${outcomes}">
 				<td th:text="${outcome.site} ? ${outcome.site.name} : ${outcome.siteName}">site</td>
 				<td th:text="${#dates.format(outcome.start, 'yyyy-MM-dd HH:mm')}">start</td>
+				<td><i th:if="${outcome.end} == null" class="material-icons">play_circle_filled</i>
+				<i th:if="${outcome.end} != null" class="material-icons">check_circle</i></td>
 				<td><a th:href="@{/sites/__${outcome.id}__}"><i class="material-icons">arrow_forward</i></a></td>
 			</tr>
 		</table>
