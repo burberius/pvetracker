@@ -91,3 +91,10 @@ CREATE TABLE `type_translation` (
   `name` varchar(150) DEFAULT NULL,
   PRIMARY KEY (`id`),
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `price` (
+  `type_id` int(11) NOT NULL,
+  `value` double NOT NULL,
+  `created` datetime NOT NULL,
+  PRIMARY KEY (`type_id`),
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;

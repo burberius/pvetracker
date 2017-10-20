@@ -95,5 +95,13 @@ CREATE TABLE `type_translation` (
   PRIMARY KEY (`id`),
   KEY `idx_name` (`name`),
   KEY `idx_type_lang` (`type_id`,`language`)
-) ENGINE=InnoDB AUTO_INCREMENT=81247 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `price` (
+  `type_id` int(11) NOT NULL,
+  `value` double NOT NULL,
+  `created` datetime NOT NULL,
+  PRIMARY KEY (`type_id`),
+  KEY `IDX_DATE` (`created`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
