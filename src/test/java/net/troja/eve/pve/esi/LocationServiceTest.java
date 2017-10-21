@@ -40,6 +40,7 @@ import static org.mockito.Matchers.anyObject;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import net.troja.eve.esi.ApiClient;
 import net.troja.eve.esi.ApiException;
 import net.troja.eve.esi.api.LocationApi;
 import net.troja.eve.esi.auth.OAuth;
@@ -75,14 +76,18 @@ public class LocationServiceTest {
     @Mock
     private ShipRepository shipRepo;
     @Mock
+    private ApiClient apiClient;
+    @Mock
     private OAuth auth;
 
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
         classToTest.setResourceProperties(resourceProperties);
-        classToTest.init();
         classToTest.setApi(locationApi);
+        when(locationApi.getApiClient()).thenReturn(apiClient);
+        when(apiClient.getAuthentication("evesso")).thenReturn(auth);
+        classToTest.init();
         classToTest.setSolarSystemRepository(solarSystemRepo);
         classToTest.setTypeRepository(typeRepo);
         classToTest.setShipRepository(shipRepo);
