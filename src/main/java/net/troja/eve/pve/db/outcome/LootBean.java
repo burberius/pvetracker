@@ -29,10 +29,8 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 @Data
-@NoArgsConstructor
 @Entity
 @Table(name = "loot")
 public class LootBean {
@@ -43,4 +41,8 @@ public class LootBean {
     private String name;
     private int typeId;
     private double value;
+
+    public LootBean() {
+        super();
+    }
 }

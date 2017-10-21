@@ -27,10 +27,8 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 @Data
-@NoArgsConstructor
 @Entity
 @Table(name = "type_translation")
 public class TypeTranslationBean {
@@ -39,4 +37,8 @@ public class TypeTranslationBean {
     private int typeId;
     private String language;
     private String name;
+
+    public TypeTranslationBean() {
+        super();
+    }
 }

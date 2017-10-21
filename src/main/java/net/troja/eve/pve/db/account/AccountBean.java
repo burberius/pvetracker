@@ -41,4 +41,8 @@ public class AccountBean {
     private Date created = new Date();
     private Date lastLogin = new Date();
     private String refreshToken;
+
+    public AccountBean() {
+        super();
+    }
 }

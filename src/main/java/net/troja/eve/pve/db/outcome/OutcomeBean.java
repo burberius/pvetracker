@@ -40,12 +40,10 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 import lombok.Data;
-import lombok.NoArgsConstructor;
 import net.troja.eve.pve.db.account.AccountBean;
 import net.troja.eve.pve.db.sites.SiteBean;
 
 @Data
-@NoArgsConstructor
 @Entity
 @Table(name = "outcome")
 public class OutcomeBean {
@@ -74,6 +72,10 @@ public class OutcomeBean {
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
     @JoinColumn(name = "outcome_id")
     private List<LootBean> loot = new ArrayList<>();
+
+    public OutcomeBean() {
+        super();
+    }
 
     public OutcomeBean(final AccountBean account, final String system, final ShipBean ship, final String siteName, final SiteBean site) {
         super();

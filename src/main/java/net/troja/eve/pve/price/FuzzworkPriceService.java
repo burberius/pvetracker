@@ -28,16 +28,20 @@ public class FuzzworkPriceService {
     @Autowired
     private RestTemplate restTemplate;
 
+    public FuzzworkPriceService() {
+        super();
+    }
+
     public List<PriceBean> getPrices(final List<Integer> prices) {
         final String values = prices.stream().map((final Integer value) -> value.toString()).collect(Collectors.joining(","));
 
-        final ParameterizedTypeReference<Map<Integer, FuzzworkPrice>> responseType = new ParameterizedTypeReference<Map<Integer, FuzzworkPrice>>() {
+        final ParameterizedTypeReference<Map<Integer, FuzzworkPriceBean>> responseType = new ParameterizedTypeReference<Map<Integer, FuzzworkPriceBean>>() {
         };
         final HttpEntity<String> requestEntity = new HttpEntity<>("");
-        final ResponseEntity<Map<Integer, FuzzworkPrice>> response = restTemplate.exchange(ADDRESS + values, HttpMethod.GET, requestEntity,
+        final ResponseEntity<Map<Integer, FuzzworkPriceBean>> response = restTemplate.exchange(ADDRESS + values, HttpMethod.GET, requestEntity,
                 responseType);
         if (response.getStatusCode() == HttpStatus.OK) {
-            final Map<Integer, FuzzworkPrice> result = response.getBody();
+            final Map<Integer, FuzzworkPriceBean> result = response.getBody();
             return transform(result);
         } else {
             LOGGER.warn("Could not get prices for {}: {}", values, response.getStatusCode());
@@ -45,9 +49,9 @@ public class FuzzworkPriceService {
         }
     }
 
-    private List<PriceBean> transform(final Map<Integer, FuzzworkPrice> prices) {
+    private static List<PriceBean> transform(final Map<Integer, FuzzworkPriceBean> prices) {
         final List<PriceBean> result = new ArrayList<>(prices.size());
-        for (final Entry<Integer, FuzzworkPrice> entry : prices.entrySet()) {
+        for (final Entry<Integer, FuzzworkPriceBean> entry : prices.entrySet()) {
             result.add(new PriceBean(entry.getKey(), entry.getValue().getSell().getPercentile()));
         }
         return result;

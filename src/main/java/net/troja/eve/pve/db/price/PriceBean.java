@@ -9,10 +9,8 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 @Data
-@NoArgsConstructor
 @Entity
 @Table(name = "price")
 public class PriceBean {
@@ -21,6 +19,10 @@ public class PriceBean {
     private double value;
     @Temporal(TemporalType.TIMESTAMP)
     private Date created = new Date();
+
+    public PriceBean() {
+        super();
+    }
 
     public PriceBean(final int typeId, final double value, final Date created) {
         super();
@@ -34,5 +36,4 @@ public class PriceBean {
         this.typeId = typeId;
         this.value = value;
     }
-
 }
