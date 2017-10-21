@@ -1,6 +1,7 @@
 package net.troja.eve.pve;
 
 import java.nio.charset.Charset;
+import java.util.TimeZone;
 
 /*
  * ====================================================
@@ -27,9 +28,11 @@ import java.nio.charset.Charset;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.security.oauth2.client.token.grant.code.AuthorizationCodeResourceDetails;
 
 @SpringBootApplication
+@EnableScheduling
 public class PvEApplication {
     public static final Charset DEFAULT_CHARSET = Charset.forName("UTF-8");
 
@@ -38,6 +41,7 @@ public class PvEApplication {
     }
 
     public static void main(final String[] args) {
+        TimeZone.setDefault(TimeZone.getTimeZone("UTC"));
         SpringApplication.run(PvEApplication.class, args);
     }
 

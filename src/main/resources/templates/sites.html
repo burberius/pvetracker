@@ -8,9 +8,9 @@
 </head>
 <body>
 	<div id="content" layout:fragment="content">
-		<h3 th:if="${startModel.error}" class="error">Looks like you didn't enter a site</h3>
+		<h3 th:if="${startModelBean.error}" class="error">Looks like you didn't enter a site</h3>
 		<h2>Start a new site</h2>
-		<form action="#" th:action="@{/sites}" th:object="${startModel}" method="post">
+		<form action="#" th:action="@{/sites}" th:object="${startModelBean}" method="post">
 			Site name: <input type="text" th:field="*{name}" />
 			<input type="submit" value="Start" />
 		</form>

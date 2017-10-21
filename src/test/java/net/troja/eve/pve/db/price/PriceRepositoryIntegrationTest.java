@@ -1,6 +1,6 @@
 package net.troja.eve.pve.db.price;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -23,12 +23,12 @@ public class PriceRepositoryIntegrationTest {
 
     @Test
     public void deleteOld() {
-        classToTest.save(new PriceBean(34, 123.45, new Date()));
-        classToTest.save(new PriceBean(35, 55.66, new Date(System.currentTimeMillis() - 10000)));
+        classToTest.save(new PriceBean(34, 123.45, LocalDateTime.now()));
+        classToTest.save(new PriceBean(35, 55.66, LocalDateTime.now().minusMinutes(20)));
 
         assertThat(classToTest.count(), equalTo(2L));
 
-        classToTest.deleteByCreatedBefore(new Date(System.currentTimeMillis() - 8000));
+        classToTest.deleteByCreatedBefore(LocalDateTime.now().minusMinutes(15));
 
         assertThat(classToTest.count(), equalTo(1L));
     }

@@ -1,5 +1,7 @@
 package net.troja.eve.pve.db.outcome;
 
+import java.time.LocalDateTime;
+
 /*
  * ====================================================
  * Eve Online PvE Tracker
@@ -23,7 +25,6 @@ package net.troja.eve.pve.db.outcome;
  */
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -36,8 +37,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 
 import lombok.Data;
 import net.troja.eve.pve.db.account.AccountBean;
@@ -61,10 +60,8 @@ public class OutcomeBean {
     @JoinColumn(name = "site_id")
     private SiteBean site;
     private String siteName;
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date start = new Date();
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date end;
+    private LocalDateTime start = LocalDateTime.now();
+    private LocalDateTime end;
     private boolean faction;
     private boolean escalation;
     private double bountyValue;

@@ -1,12 +1,10 @@
 package net.troja.eve.pve.db.price;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 
 import lombok.Data;
 
@@ -17,14 +15,13 @@ public class PriceBean {
     @Id
     private int typeId;
     private double value;
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date created = new Date();
+    private LocalDateTime created = LocalDateTime.now();
 
     public PriceBean() {
         super();
     }
 
-    public PriceBean(final int typeId, final double value, final Date created) {
+    public PriceBean(final int typeId, final double value, final LocalDateTime created) {
         super();
         this.typeId = typeId;
         this.value = value;

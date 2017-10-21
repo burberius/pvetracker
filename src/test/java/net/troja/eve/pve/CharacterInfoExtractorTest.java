@@ -1,28 +1,6 @@
 package net.troja.eve.pve;
 
-/*
- * ====================================================
- * Eve Online PvE Tracker
- * ----------------------------------------------------
- * Copyright (C) 2017 Jens Oberender <j.obi@troja.net>
- * ----------------------------------------------------
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as
- * published by the Free Software Foundation, either version 3 of the
- * License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public
- * License along with this program.  If not, see
- * <http://www.gnu.org/licenses/gpl-3.0.html>.
- * ====================================================
- */
-
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -37,7 +15,6 @@ import org.springframework.security.oauth2.common.DefaultOAuth2RefreshToken;
 import org.springframework.security.oauth2.common.OAuth2AccessToken;
 
 import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.greaterThanOrEqualTo;
 
 import static org.junit.Assert.assertThat;
 
@@ -91,11 +68,11 @@ public class CharacterInfoExtractorTest {
     @Test
     public void extractPrincipalFound() {
         final Map<String, Object> map = getCharacterMap();
-        final long lastLogin = System.currentTimeMillis();
+        final LocalDateTime lastLogin = LocalDateTime.now().minusDays(1);
 
         final AccountBean dbAccount = getExpectedAccount();
-        dbAccount.setLastLogin(new Date(12345));
-        dbAccount.setCreated(new Date(1234));
+        dbAccount.setLastLogin(LocalDateTime.now().minusDays(2));
+        dbAccount.setCreated(LocalDateTime.now().minusDays(5));
         dbAccount.setRefreshToken(HASH);
         when(accountRepository.findById(CHARACTER_ID)).thenReturn(Optional.of(dbAccount));
         when(restTemplate.getAccessToken()).thenReturn(getAccessToken());
@@ -105,7 +82,7 @@ public class CharacterInfoExtractorTest {
         verify(accountRepository).save(account);
 
         assertEqual(account, getExpectedAccount());
-        assertThat(account.getLastLogin().getTime(), greaterThanOrEqualTo(lastLogin));
+        assertThat(account.getLastLogin().isAfter(lastLogin), equalTo(true));
         assertThat(account.getCreated(), equalTo(dbAccount.getCreated()));
         assertThat(account.getRefreshToken(), equalTo(dbAccount.getRefreshToken()));
     }
