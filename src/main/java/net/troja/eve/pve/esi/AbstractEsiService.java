@@ -36,7 +36,7 @@ public class AbstractEsiService {
 
     private OAuth auth;
 
-    private AbstractEsiService() {
+    protected AbstractEsiService() {
         super();
     }
 
