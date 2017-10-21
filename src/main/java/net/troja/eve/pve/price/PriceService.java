@@ -30,7 +30,7 @@ public class PriceService {
 
     public Map<Integer, Double> getPrices(final List<Integer> prices) {
         LOGGER.info("getPrices: {}", prices);
-        final Map<Integer, Double> result = new HashMap<>();
+        final Map<Integer, Double> result = new HashMap<>(prices.size());
         final Iterable<PriceBean> allById = priceRepository.findAllById(prices);
         final Set<Integer> rest = new HashSet<>(prices);
         for (final PriceBean price : allById) {

@@ -29,6 +29,7 @@ import javax.annotation.PostConstruct;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
 
 import net.troja.eve.esi.ApiException;
@@ -53,8 +54,8 @@ public class LocationService extends AbstractEsiService {
     private TypeTranslationRepository typeRepository;
     @Autowired
     private ShipRepository shipRepository;
-
-    private LocationApi api = new LocationApi();
+    @Autowired
+    private LocationApi api;
 
     public LocationService() {
         super();
@@ -109,6 +110,11 @@ public class LocationService extends AbstractEsiService {
             shipTypeName = type.get().getName();
         }
         return new ShipBean(shipName, shipTypeName, shipTypeId);
+    }
+
+    @Bean
+    public LocationApi getLocationApi() {
+        return new LocationApi();
     }
 
     void setApi(final LocationApi api) {

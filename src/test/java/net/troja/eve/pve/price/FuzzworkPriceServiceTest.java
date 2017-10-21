@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.junit.Test;
+import org.springframework.web.client.RestTemplate;
 
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.greaterThan;
@@ -17,6 +18,8 @@ public class FuzzworkPriceServiceTest {
 
     @Test
     public void getPrices() {
+        classToTest.setRestTemplate(new RestTemplate());
+
         final List<PriceBean> prices = classToTest.getPrices(Arrays.asList(34, 35));
 
         assertThat(prices.size(), equalTo(2));

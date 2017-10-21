@@ -8,6 +8,8 @@ import java.util.stream.Collectors;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
@@ -23,7 +25,8 @@ public class FuzzworkPriceService {
     private static final Logger LOGGER = LogManager.getLogger(FuzzworkPriceService.class);
     private static final String ADDRESS = "https://market.fuzzwork.co.uk/aggregates/?region=10000002&types=";
 
-    private final RestTemplate restTemplate = new RestTemplate();
+    @Autowired
+    private RestTemplate restTemplate;
 
     public List<PriceBean> getPrices(final List<Integer> prices) {
         final String values = prices.stream().map((final Integer value) -> value.toString()).collect(Collectors.joining(","));
@@ -43,10 +46,19 @@ public class FuzzworkPriceService {
     }
 
     private List<PriceBean> transform(final Map<Integer, FuzzworkPrice> prices) {
-        final List<PriceBean> result = new ArrayList<>();
+        final List<PriceBean> result = new ArrayList<>(prices.size());
         for (final Entry<Integer, FuzzworkPrice> entry : prices.entrySet()) {
             result.add(new PriceBean(entry.getKey(), entry.getValue().getSell().getPercentile()));
         }
         return result;
+    }
+
+    @Bean
+    public RestTemplate getRestTemplate() {
+        return new RestTemplate();
+    }
+
+    void setRestTemplate(final RestTemplate restTemplate) {
+        this.restTemplate = restTemplate;
     }
 }
