@@ -66,7 +66,7 @@ public class SitesController {
     }
 
     @GetMapping
-    public String sites(final StartModel startModel, final Model model, final Principal principal) {
+    public String sites(final StartModelBean startModel, final Model model, final Principal principal) {
         final AccountBean account = (AccountBean) ((OAuth2Authentication) principal).getPrincipal();
         final List<OutcomeBean> outcomes = outcomeRepo.findByAccountOrderByStartDesc(account);
         model.addAttribute("outcomes", outcomes);
@@ -74,7 +74,7 @@ public class SitesController {
     }
 
     @PostMapping
-    public String start(final StartModel model, final Principal principal) {
+    public String start(final StartModelBean model, final Principal principal) {
         final AccountBean account = (AccountBean) ((OAuth2Authentication) principal).getPrincipal();
         final String name = model.getName();
         if (StringUtils.isBlank(name)) {

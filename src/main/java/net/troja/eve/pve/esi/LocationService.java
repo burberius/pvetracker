@@ -45,7 +45,7 @@ import net.troja.eve.pve.db.type.TypeTranslationBean;
 import net.troja.eve.pve.db.type.TypeTranslationRepository;
 
 @Service
-public class LocationService extends AbstractEsiService {
+public class LocationService extends GeneralEsiService {
     private static final Logger LOGGER = LogManager.getLogger(LocationService.class);
 
     @Autowired

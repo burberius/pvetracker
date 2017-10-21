@@ -1,11 +1,11 @@
 package net.troja.eve.pve.price;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -30,7 +30,7 @@ public class PriceService {
 
     public Map<Integer, Double> getPrices(final List<Integer> prices) {
         LOGGER.info("getPrices: {}", prices);
-        final Map<Integer, Double> result = new HashMap<>(prices.size());
+        final Map<Integer, Double> result = new ConcurrentHashMap<>(prices.size());
         final Iterable<PriceBean> allById = priceRepository.findAllById(prices);
         final Set<Integer> rest = new HashSet<>(prices);
         for (final PriceBean price : allById) {

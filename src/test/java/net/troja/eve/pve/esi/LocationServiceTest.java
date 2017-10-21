@@ -98,7 +98,7 @@ public class LocationServiceTest {
     public void getLocation() throws ApiException {
         final CharacterLocationResponse fakeLocation = new CharacterLocationResponse();
         fakeLocation.setSolarSystemId(LOCATION_ID);
-        when(locationApi.getCharactersCharacterIdLocation(CHARACTER_ID, AbstractEsiService.DATASOURCE, null, null, null)).thenReturn(fakeLocation);
+        when(locationApi.getCharactersCharacterIdLocation(CHARACTER_ID, GeneralEsiService.DATASOURCE, null, null, null)).thenReturn(fakeLocation);
         final SolarSystemBean solarSystem = new SolarSystemBean();
         solarSystem.setName(LOCATION);
         when(solarSystemRepo.findById(LOCATION_ID)).thenReturn(Optional.of(solarSystem));
@@ -113,7 +113,7 @@ public class LocationServiceTest {
     public void getLocationNotFound() throws ApiException {
         final CharacterLocationResponse fakeLocation = new CharacterLocationResponse();
         fakeLocation.setSolarSystemId(LOCATION_ID);
-        when(locationApi.getCharactersCharacterIdLocation(CHARACTER_ID, AbstractEsiService.DATASOURCE, null, null, null)).thenReturn(fakeLocation);
+        when(locationApi.getCharactersCharacterIdLocation(CHARACTER_ID, GeneralEsiService.DATASOURCE, null, null, null)).thenReturn(fakeLocation);
         when(solarSystemRepo.findById(LOCATION_ID)).thenReturn(Optional.empty());
 
         final String location = classToTest.getLocation(getAccount());
@@ -126,7 +126,7 @@ public class LocationServiceTest {
     public void getLocationException() throws ApiException {
         final CharacterLocationResponse fakeLocation = new CharacterLocationResponse();
         fakeLocation.setSolarSystemId(LOCATION_ID);
-        when(locationApi.getCharactersCharacterIdLocation(CHARACTER_ID, AbstractEsiService.DATASOURCE, null, null, null))
+        when(locationApi.getCharactersCharacterIdLocation(CHARACTER_ID, GeneralEsiService.DATASOURCE, null, null, null))
                 .thenThrow(new ApiException());
 
         final String location = classToTest.getLocation(getAccount());
@@ -141,7 +141,7 @@ public class LocationServiceTest {
         shipResponse.setShipName(SHIP_NAME);
         shipResponse.setShipTypeId(SHIP_TYPE_ID);
 
-        when(locationApi.getCharactersCharacterIdShip(CHARACTER_ID, AbstractEsiService.DATASOURCE, null, null, null)).thenReturn(shipResponse);
+        when(locationApi.getCharactersCharacterIdShip(CHARACTER_ID, GeneralEsiService.DATASOURCE, null, null, null)).thenReturn(shipResponse);
         final ShipBean shipBean = new ShipBean(SHIP_NAME, SHIP_TYPE, SHIP_TYPE_ID);
         when(shipRepo.findByNameAndTypeId(SHIP_NAME, SHIP_TYPE_ID)).thenReturn(Optional.of(shipBean));
 
@@ -158,7 +158,7 @@ public class LocationServiceTest {
         shipResponse.setShipName(SHIP_NAME);
         shipResponse.setShipTypeId(SHIP_TYPE_ID);
 
-        when(locationApi.getCharactersCharacterIdShip(CHARACTER_ID, AbstractEsiService.DATASOURCE, null, null, null)).thenReturn(shipResponse);
+        when(locationApi.getCharactersCharacterIdShip(CHARACTER_ID, GeneralEsiService.DATASOURCE, null, null, null)).thenReturn(shipResponse);
         final TypeTranslationBean typeTranslation = new TypeTranslationBean();
         typeTranslation.setName(SHIP_TYPE);
         when(shipRepo.findByNameAndTypeId(SHIP_NAME, SHIP_TYPE_ID)).thenReturn(Optional.empty());
@@ -178,7 +178,7 @@ public class LocationServiceTest {
         shipResponse.setShipName(SHIP_NAME);
         shipResponse.setShipTypeId(SHIP_TYPE_ID);
 
-        when(locationApi.getCharactersCharacterIdShip(CHARACTER_ID, AbstractEsiService.DATASOURCE, null, null, null)).thenReturn(shipResponse);
+        when(locationApi.getCharactersCharacterIdShip(CHARACTER_ID, GeneralEsiService.DATASOURCE, null, null, null)).thenReturn(shipResponse);
         when(shipRepo.findByNameAndTypeId(SHIP_NAME, SHIP_TYPE_ID)).thenReturn(Optional.empty());
         when(typeRepo.findByTypeIdAndLanguage(SHIP_TYPE_ID, "en")).thenReturn(Optional.empty());
         when(shipRepo.save(anyObject())).then(AdditionalAnswers.returnsFirstArg());
@@ -196,7 +196,7 @@ public class LocationServiceTest {
         shipResponse.setShipName(SHIP_NAME);
         shipResponse.setShipTypeId(SHIP_TYPE_ID);
 
-        when(locationApi.getCharactersCharacterIdShip(CHARACTER_ID, AbstractEsiService.DATASOURCE, null, null, null)).thenThrow(new ApiException());
+        when(locationApi.getCharactersCharacterIdShip(CHARACTER_ID, GeneralEsiService.DATASOURCE, null, null, null)).thenThrow(new ApiException());
 
         final ShipBean ship = classToTest.getShip(getAccount());
 

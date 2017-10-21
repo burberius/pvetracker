@@ -90,7 +90,7 @@ public class SitesControllerTest {
 
     @Test
     public void startError() {
-        final StartModel model = new StartModel();
+        final StartModelBean model = new StartModelBean();
         model.setName(" ");
 
         final String result = classToTest.start(model, principal);
@@ -101,7 +101,7 @@ public class SitesControllerTest {
 
     @Test
     public void start() {
-        final StartModel model = new StartModel();
+        final StartModelBean model = new StartModelBean();
         model.setName(SITE_NAME);
 
         final SiteBean site = new SiteBean();

@@ -28,7 +28,7 @@ import org.springframework.boot.autoconfigure.security.oauth2.resource.ResourceS
 import net.troja.eve.esi.ApiClient;
 import net.troja.eve.esi.auth.OAuth;
 
-public class AbstractEsiService {
+public class GeneralEsiService {
     public static final String DATASOURCE = "tranquility";
 
     @Autowired
@@ -36,7 +36,7 @@ public class AbstractEsiService {
 
     private OAuth auth;
 
-    protected AbstractEsiService() {
+    protected GeneralEsiService() {
         super();
     }
 
