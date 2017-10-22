@@ -47,6 +47,7 @@ import net.troja.eve.pve.db.outcome.OutcomeRepository;
 import net.troja.eve.pve.db.outcome.ShipBean;
 import net.troja.eve.pve.db.sites.SiteBean;
 import net.troja.eve.pve.db.sites.SiteRepository;
+import net.troja.eve.pve.db.solarsystem.SolarSystemBean;
 import net.troja.eve.pve.esi.LocationService;
 
 @Controller
@@ -88,7 +89,7 @@ public class SitesController {
             } else {
                 siteString = name;
             }
-            final String system = locationService.getLocation(account);
+            final SolarSystemBean system = locationService.getLocation(account);
             final ShipBean ship = locationService.getShip(account);
             final OutcomeBean outcome = new OutcomeBean(account, system, ship, siteString, site.orElse(null));
             final OutcomeBean saved = outcomeRepo.save(outcome);

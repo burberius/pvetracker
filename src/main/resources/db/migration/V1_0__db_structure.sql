@@ -48,9 +48,16 @@ CREATE TABLE `ship` (
   UNIQUE KEY `IDX_UNIQ` (`name`,`type_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+CREATE TABLE `solar_system` (
+  `id` int(11) NOT NULL,
+  `name` varchar(100) DEFAULT NULL,
+  `security` double DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
 CREATE TABLE `outcome` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `system` varchar(45) NOT NULL,
+  `system_id` int(11) DEFAULT NULL,
   `ship_id` int(11) DEFAULT NULL,
   `start` datetime NOT NULL,
   `end` datetime DEFAULT NULL,
@@ -66,7 +73,8 @@ CREATE TABLE `outcome` (
   KEY `fk_outcome_account_idx` (`account_id`),
   CONSTRAINT `fk_outcome_account` FOREIGN KEY (`account_id`) REFERENCES `account` (`character_id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `fk_outcome_site` FOREIGN KEY (`site_id`) REFERENCES `site` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  CONSTRAINT `fk_outcome_ship` FOREIGN KEY (`ship_id`) REFERENCES `ship` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+  CONSTRAINT `fk_outcome_ship` FOREIGN KEY (`ship_id`) REFERENCES `ship` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `fk_outcome_system` FOREIGN KEY (`system_id`) REFERENCES `solar_system` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `loot` (
@@ -79,12 +87,6 @@ CREATE TABLE `loot` (
   PRIMARY KEY (`id`),
   KEY `fk_loot_outcome_idx` (`outcome_id`),
   CONSTRAINT `fk_loot_outcome` FOREIGN KEY (`outcome_id`) REFERENCES `outcome` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-CREATE TABLE `solar_system` (
-  `id` int(11) NOT NULL,
-  `name` varchar(100) DEFAULT NULL,
-  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `type_translation` (

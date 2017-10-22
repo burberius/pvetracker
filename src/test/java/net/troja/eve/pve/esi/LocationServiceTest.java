@@ -103,9 +103,9 @@ public class LocationServiceTest {
         solarSystem.setName(LOCATION);
         when(solarSystemRepo.findById(LOCATION_ID)).thenReturn(Optional.of(solarSystem));
 
-        final String location = classToTest.getLocation(getAccount());
+        final SolarSystemBean location = classToTest.getLocation(getAccount());
 
-        assertThat(location, equalTo(LOCATION));
+        assertThat(location, equalTo(solarSystem));
         verify(auth).setRefreshToken(REFRESH_TOKEN);
     }
 
@@ -116,9 +116,9 @@ public class LocationServiceTest {
         when(locationApi.getCharactersCharacterIdLocation(CHARACTER_ID, GeneralEsiService.DATASOURCE, null, null, null)).thenReturn(fakeLocation);
         when(solarSystemRepo.findById(LOCATION_ID)).thenReturn(Optional.empty());
 
-        final String location = classToTest.getLocation(getAccount());
+        final SolarSystemBean location = classToTest.getLocation(getAccount());
 
-        assertThat(location, equalTo("unknown"));
+        assertThat(location, nullValue());
         verify(auth).setRefreshToken(REFRESH_TOKEN);
     }
 
@@ -129,9 +129,9 @@ public class LocationServiceTest {
         when(locationApi.getCharactersCharacterIdLocation(CHARACTER_ID, GeneralEsiService.DATASOURCE, null, null, null))
                 .thenThrow(new ApiException());
 
-        final String location = classToTest.getLocation(getAccount());
+        final SolarSystemBean location = classToTest.getLocation(getAccount());
 
-        assertThat(location, equalTo("unknown"));
+        assertThat(location, nullValue());
         verify(auth).setRefreshToken(REFRESH_TOKEN);
     }
 

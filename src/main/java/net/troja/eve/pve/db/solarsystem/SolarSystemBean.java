@@ -35,6 +35,7 @@ public class SolarSystemBean {
     @Id
     private int id;
     private String name;
+    private Double security;
 
     public SolarSystemBean() {
         super();

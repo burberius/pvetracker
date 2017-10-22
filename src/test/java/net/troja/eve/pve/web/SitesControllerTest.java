@@ -48,11 +48,11 @@ import net.troja.eve.pve.db.outcome.OutcomeRepository;
 import net.troja.eve.pve.db.outcome.ShipBean;
 import net.troja.eve.pve.db.sites.SiteBean;
 import net.troja.eve.pve.db.sites.SiteRepository;
+import net.troja.eve.pve.db.solarsystem.SolarSystemBean;
 import net.troja.eve.pve.esi.LocationService;
 
 public class SitesControllerTest {
     private static final String SITE_NAME = "Angel Vigil";
-    private static final String SYSTEM = "Reset";
 
     private final SitesController classToTest = new SitesController();
 
@@ -108,13 +108,15 @@ public class SitesControllerTest {
         site.setName(SITE_NAME);
         final OutcomeBean outcome = new OutcomeBean();
         outcome.setId(1);
+        final SolarSystemBean system = new SolarSystemBean();
+        system.setId(123123);
 
         final AccountBean account = new AccountBean();
 
         when(siteRepo.findByName(SITE_NAME)).thenReturn(Optional.of(site));
         when(outcomeRepo.save(any())).thenReturn(outcome);
         when(principal.getPrincipal()).thenReturn(account);
-        when(locationService.getLocation(account)).thenReturn(SYSTEM);
+        when(locationService.getLocation(account)).thenReturn(system);
 
         when(locationService.getShip(account)).thenReturn(new ShipBean());
 

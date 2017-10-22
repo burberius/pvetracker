@@ -1,5 +1,27 @@
 package net.troja.eve.pve.price;
 
+/*
+ * ====================================================
+ * Eve Online PvE Tracker
+ * ----------------------------------------------------
+ * Copyright (C) 2017 Jens Oberender <j.obi@troja.net>
+ * ----------------------------------------------------
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/gpl-3.0.html>.
+ * ====================================================
+ */
+
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -19,6 +41,7 @@ import net.troja.eve.pve.db.price.PriceRepository;
 
 @Service
 public class PriceService {
+    private static final int PRICE_AGE_HOURS = 2;
     private static final int INITIAL_DELAY_10S = 10_000;
     private static final int DELETE_INTERVAL_1HOUR = 3_600_000;
 
@@ -53,7 +76,7 @@ public class PriceService {
 
     @Scheduled(fixedRate = DELETE_INTERVAL_1HOUR, initialDelay = INITIAL_DELAY_10S)
     public void deleteOld() {
-        priceRepository.deleteByCreatedBefore(LocalDateTime.now().minusHours(2));
+        priceRepository.deleteByCreatedBefore(LocalDateTime.now().minusHours(PRICE_AGE_HOURS));
     }
 
     void setFuzzworkPriceService(final FuzzworkPriceService fuzzworkPriceService) {

@@ -41,6 +41,7 @@ import javax.persistence.Table;
 import lombok.Data;
 import net.troja.eve.pve.db.account.AccountBean;
 import net.troja.eve.pve.db.sites.SiteBean;
+import net.troja.eve.pve.db.solarsystem.SolarSystemBean;
 
 @Data
 @Entity
@@ -52,7 +53,9 @@ public class OutcomeBean {
     @ManyToOne
     @JoinColumn(name = "account_id")
     private AccountBean account;
-    private String system;
+    @ManyToOne
+    @JoinColumn(name = "system_id")
+    private SolarSystemBean system;
     @ManyToOne
     @JoinColumn(name = "ship_id")
     private ShipBean ship;
@@ -74,7 +77,7 @@ public class OutcomeBean {
         super();
     }
 
-    public OutcomeBean(final AccountBean account, final String system, final ShipBean ship, final String siteName, final SiteBean site) {
+    public OutcomeBean(final AccountBean account, final SolarSystemBean system, final ShipBean ship, final String siteName, final SiteBean site) {
         super();
         this.account = account;
         this.system = system;

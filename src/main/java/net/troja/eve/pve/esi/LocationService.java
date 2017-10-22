@@ -66,20 +66,19 @@ public class LocationService extends GeneralEsiService {
         super.init(api.getApiClient());
     }
 
-    public String getLocation(final AccountBean account) {
+    public SolarSystemBean getLocation(final AccountBean account) {
         switchRefreshToken(account.getRefreshToken());
-        String location = "unknown";
         try {
             final CharacterLocationResponse locationResponse = api.getCharactersCharacterIdLocation(account.getCharacterId(), DATASOURCE, null,
                     null, null);
             final Optional<SolarSystemBean> solarSystem = solarSystemRepository.findById(locationResponse.getSolarSystemId());
             if (solarSystem.isPresent()) {
-                location = solarSystem.get().getName();
+                return solarSystem.get();
             }
         } catch (final ApiException e) {
             LOGGER.warn("Could not get location of character {}", account.getCharacterName(), e);
         }
-        return location;
+        return null;
     }
 
     public ShipBean getShip(final AccountBean account) {
