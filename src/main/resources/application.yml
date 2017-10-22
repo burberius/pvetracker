@@ -9,6 +9,6 @@ security:
       userInfoUri: https://login.eveonline.com/oauth/verify
 spring:
   datasource:
-    url: jdbc:mysql://localhost:3306/pve?verifyServerCertificate=false&useSSL=false&requireSSL=false
+    url: jdbc:mysql://localhost:3306/pve?verifyServerCertificate=false&useSSL=false&requireSSL=false&characterEncoding=UTF-8
     username: pve
     password: pve

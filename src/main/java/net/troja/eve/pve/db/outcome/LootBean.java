@@ -45,4 +45,19 @@ public class LootBean {
     public LootBean() {
         super();
     }
+
+    public LootBean(final int typeId, final String name, final int count) {
+        super();
+        this.count = count;
+        this.name = name;
+        this.typeId = typeId;
+    }
+
+    public LootBean(final int typeId, final String name, final int count, final double value) {
+        super();
+        this.count = count;
+        this.name = name;
+        this.typeId = typeId;
+        this.value = value;
+    }
 }
