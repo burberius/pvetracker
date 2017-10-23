@@ -26,13 +26,11 @@ import java.security.Principal;
 import java.util.List;
 import java.util.Optional;
 
-import javax.ws.rs.ForbiddenException;
-import javax.ws.rs.NotFoundException;
-
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -107,7 +105,7 @@ public class SitesController {
         final OutcomeBean outcome = outcomeResult.get();
         final AccountBean account = (AccountBean) ((OAuth2Authentication) principal).getPrincipal();
         if (outcome.getAccount().getCharacterId() != account.getCharacterId()) {
-            throw new ForbiddenException();
+            throw new AccessDeniedException("You are not allowed to view that");
         }
         model.addAttribute("outcome", outcome);
         return "site";

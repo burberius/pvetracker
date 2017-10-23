@@ -20,13 +20,13 @@
 					[[${outcome.ship.name}]]
 				</td>
 				<td class="key">System:</td>
-				<td th:text="${outcome.system}">system</td>
+				<td><span th:text="${outcome.system.name}">system</span> <span th:text="${#numbers.formatDecimal(outcome.system.security, 1, 1)}" th:class="${outcome.system.secClass}">sec</span></td>
 			</tr>
 			<tr>
 				<td class="key">Start:</td>
-				<td th:text="${#dates.format(outcome.start, 'yyyy-MM-dd HH:mm')}">start</td>
+				<td th:text="${#temporals.format(outcome.start, 'yyyy-MM-dd HH:mm')}">start</td>
 				<td class="key">End:</td>
-				<td th:text="${#dates.format(outcome.end, 'yyyy-MM-dd HH:mm')}">end</td>
+				<td th:text="${#temporals.format(outcome.end, 'yyyy-MM-dd HH:mm')}">end</td>
 			</tr>
 			<tr>
 				<td class="key">Bounty:</td>

@@ -30,6 +30,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.security.oauth2.client.token.grant.code.AuthorizationCodeResourceDetails;
+import org.thymeleaf.extras.java8time.dialect.Java8TimeDialect;
 
 @SpringBootApplication
 @EnableScheduling
@@ -48,5 +49,10 @@ public class PvEApplication {
     @Bean
     public AuthorizationCodeResourceDetails getAuthorizationCodeResourceDetails() {
         return new AuthorizationCodeResourceDetails();
+    }
+
+    @Bean
+    public Java8TimeDialect java8TimeDialect() {
+        return new Java8TimeDialect();
     }
 }

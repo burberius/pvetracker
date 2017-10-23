@@ -7,7 +7,7 @@
   Gray:        #171717
 */
 body {
-	background-color: #18121e;
+	background-color: #12191c;
 	color: #eee;
 	margin: 0px;
 	font-family: 'Dosis', sans-serif;
@@ -113,7 +113,7 @@ span.menu {
 	right: 0px;
 }
 
-#topmenu .title {
+#topmenu .title a {
 	font-size: 36px;
 }
 
@@ -128,6 +128,18 @@ span.menu {
 #content {
 	padding: 10px;
 	position: relative;
+	background-color: #233237;
+	border: 1px inset #243723;
+    border-radius: 5px;
+    margin-top: 10px;
+    margin-left: auto;
+    margin-right: auto;
+    width: 800px;
+}
+
+.highlight {
+	font-weight: bold;
+	color: #eac67a;
 }
 
 .key {
@@ -184,4 +196,12 @@ td img {
 
 .sec-1 {
 	color: #27bfbf;
+}
+
+#footer {
+    position: fixed;
+    bottom: 5px;
+    width: 100%;
+    text-align: center;
+    font-size: small;
 }

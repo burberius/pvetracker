@@ -62,10 +62,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     public SecurityConfiguration() {
         super();
         SCOPES.add(SsoScopes.ESI_LOCATION_READ_LOCATION_V1);
-        SCOPES.add(SsoScopes.ESI_LOCATION_READ_ONLINE_V1);
         SCOPES.add(SsoScopes.ESI_LOCATION_READ_SHIP_TYPE_V1);
         SCOPES.add(SsoScopes.ESI_WALLET_READ_CHARACTER_WALLET_V1);
-        SCOPES.add(SsoScopes.ESI_UI_OPEN_WINDOW_V1);
     }
 
     @Override

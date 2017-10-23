@@ -11,7 +11,7 @@
 </head>
 <body>
 	<div id="topmenu">
-		<span class="title">PvE today</span>
+		<span class="title"><a th:href="@{/}">PvE today</a></span>
 		<span class="menu">
 			<a th:href="@{/sites}" class="menu-entry">Sites Overview</a>
 			<a th:href="@{/stats}" class="menu-entry">Statistics</a>
@@ -27,6 +27,9 @@
 		</span>
 	</div>
 	<div id="content" layout:fragment="content">
+	</div>
+	<div id="footer">
+	This application has been created under the EVE Developer License Agreement.
 	</div>
 </body>
 </html>

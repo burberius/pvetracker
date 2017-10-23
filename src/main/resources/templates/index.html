@@ -8,14 +8,14 @@
 </head>
 <body>
 	<div id="content" layout:fragment="content">
-		You have to log in at the top right with your Eve Online account to start working with PvE today!
+		<h2>You have to log in at the top right with your Eve Online account to start working with PvE today!</h2>
 		
-		read_location
-		read_ship_type
-		read_character_wallet
-		
-		read_online
-		open_window
+		The application needs the following rights to work properly:
+		<ul>
+			<li><span class="highlight">read_location</span> to get your current location so you don't have to type it yourself</li>
+			<li><span class="highlight">read_ship_type</span> to get your current ship name and type</li>
+			<li><span class="highlight">read_character_wallet</span> to get your mission reward and pirate bounty</li>
+		</ul>
 	</div>
 </body>
 </html>
