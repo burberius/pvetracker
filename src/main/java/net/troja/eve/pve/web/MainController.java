@@ -39,7 +39,7 @@ public class MainController {
         if (principal == null) {
             return "index";
         } else {
-            return "redirect:/sites";
+            return "redirect:/site";
         }
     }
 }

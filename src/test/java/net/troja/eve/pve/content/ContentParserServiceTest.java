@@ -10,12 +10,12 @@ package net.troja.eve.pve.content;
  * it under the terms of the GNU General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
@@ -117,5 +117,30 @@ public class ContentParserServiceTest {
         final LootBean result = list.get(0);
         assertThat(result.getCount(), equalTo(17400));
         assertThat(result.getValue(), equalTo(1.2d));
+    }
+
+    @Test
+    public void parseWithBlueprint() {
+        final String content = "Cynabal Blueprint\t\tCruiser Blueprint\t\t\t0,01 m3 \n"
+                + "Scourge Fury Heavy Missile\t864\tAdvanced Heavy Missile\t\t\t25,92 m3\t394.251,84 ISK";
+        final List<TypeTranslationBean> transList1 = new ArrayList<>();
+        final TypeTranslationBean trans1 = new TypeTranslationBean();
+        trans1.setTypeId(1);
+        transList1.add(trans1);
+        when(repository.findByName("Cynabal Blueprint")).thenReturn(transList1);
+
+        final List<TypeTranslationBean> transList2 = new ArrayList<>();
+        final TypeTranslationBean trans2 = new TypeTranslationBean();
+        trans2.setTypeId(2);
+        transList2.add(trans2);
+        when(repository.findByName("Scourge Fury Heavy Missile")).thenReturn(transList2);
+        final Map<Integer, Double> prices = new HashMap<>();
+        prices.put(2, 1.2d);
+        when(priceService.getPrices(Arrays.asList(1, 2))).thenReturn(prices);
+
+        final List<LootBean> list = classToTest.parse(content);
+
+        assertThat(list, notNullValue());
+        assertThat(list.size(), equalTo(2));
     }
 }

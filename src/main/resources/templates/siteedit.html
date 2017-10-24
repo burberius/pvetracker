@@ -8,6 +8,7 @@
 </head>
 <body>
 	<div id="content" layout:fragment="content">
+		<form action="#" th:action="@{/site/__${outcome.id}__}" th:object="${outcome}" method="post">
 		<table>
 			<tr>
 				<td colspan="2" class="key">Site:</td>
@@ -30,18 +31,25 @@
 			</tr>
 			<tr>
 				<td class="key">Bounty:</td>
-				<td><span th:text="${#numbers.formatDecimal(outcome.bountyValue, 1, 'POINT', 0, 'COMMA')}">bounty</span> ISK</td>
+				<td><span th:text="${outcome.bountyValue}">bounty</span> ISK</td>
 				<td class="key">Loot:</td>
-				<td><span th:text="${#numbers.formatDecimal(outcome.lootValue, 1, 'POINT', 0, 'COMMA')}">loot</span> ISK</td>
+				<td><span th:text="${outcome.lootValue}">loot</span> ISK</td>
 			</tr>
 			<tr>
 				<td class="key">Faction:</td>
-				<td><i class="material-icons green" th:if="${outcome.faction == true}">check</i><i class="material-icons red" th:if="${outcome.faction != true}">clear</i></td>
+				<td><input type="checkbox" th:field="*{faction}" /></td>
 				<td class="key">Escalation:</td>
-				<td><i class="material-icons green" th:if="${outcome.escalation == true}">check</i><i class="material-icons red" th:if="${outcome.escalation != true}">clear</i></td>
+				<td><input type="checkbox" th:field="*{escalation}" /></td>
 			</tr>
-			
+			<tr>
+				<td class="key">Loot:</td>
+				<td colspan="3"><textarea rows="5" cols="40" th:field="*{lootContent}"></textarea></td>
+			</tr>
+			<tr>
+				<td class="center" colspan="4"><input type="submit" th:value="${outcome.end} ? 'Save' : 'Finish'" value="submit"/></td>
+			</tr>
 		</table>
+		</form>
 	</div>
 </body>
 </html>

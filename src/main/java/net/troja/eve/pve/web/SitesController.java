@@ -23,6 +23,7 @@ package net.troja.eve.pve.web;
  */
 
 import java.security.Principal;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -39,7 +40,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import net.troja.eve.pve.content.ContentParserService;
 import net.troja.eve.pve.db.account.AccountBean;
+import net.troja.eve.pve.db.outcome.LootBean;
 import net.troja.eve.pve.db.outcome.OutcomeBean;
 import net.troja.eve.pve.db.outcome.OutcomeRepository;
 import net.troja.eve.pve.db.outcome.ShipBean;
@@ -49,8 +52,10 @@ import net.troja.eve.pve.db.solarsystem.SolarSystemBean;
 import net.troja.eve.pve.esi.LocationService;
 
 @Controller
-@RequestMapping("/sites")
+@RequestMapping("/site")
 public class SitesController {
+    private static final String MODEL_OUTCOME = "outcome";
+
     private static final Logger LOGGER = LogManager.getLogger(SitesController.class);
 
     @Autowired
@@ -59,6 +64,8 @@ public class SitesController {
     private OutcomeRepository outcomeRepo;
     @Autowired
     private LocationService locationService;
+    @Autowired
+    private ContentParserService contentParserService;
 
     public SitesController() {
         super();
@@ -91,13 +98,49 @@ public class SitesController {
             final ShipBean ship = locationService.getShip(account);
             final OutcomeBean outcome = new OutcomeBean(account, system, ship, siteString, site.orElse(null));
             final OutcomeBean saved = outcomeRepo.save(outcome);
-            LOGGER.info("Got " + saved);
-            return "redirect:/sites/" + saved.getId();
+            return "redirect:/site/" + saved.getId() + "/edit";
         }
     }
 
     @GetMapping("/{id}")
-    public String site(final Model model, final Principal principal, @PathVariable final long id) {
+    public String show(final Model model, final Principal principal, @PathVariable final long id) {
+        model.addAttribute(MODEL_OUTCOME, getOutcome(principal, id));
+        return "site";
+    }
+
+    @GetMapping("/{id}/edit")
+    public String edit(final Model model, final Principal principal, @PathVariable final long id) {
+        model.addAttribute(MODEL_OUTCOME, new OutcomeModelBean(getOutcome(principal, id)));
+        return "siteedit";
+    }
+
+    @PostMapping("/{id}")
+    public String save(final Model model, final OutcomeModelBean outcome, final Principal principal, @PathVariable final long id) {
+        final OutcomeBean outcomeDb = getOutcome(principal, id);
+        if (outcomeDb.getId() != outcome.getId()) {
+            throw new AccessDeniedException("You are not allowed to view that");
+        }
+        if (outcome.getEnd() == null) {
+            outcomeDb.setEnd(LocalDateTime.now());
+        }
+        outcomeDb.setFaction(outcome.isFaction());
+        outcomeDb.setEscalation(outcome.isEscalation());
+        outcomeDb.getLoot().addAll(contentParserService.parse(outcome.getLootContent()));
+        outcomeDb.setLootValue(getLootValue(outcomeDb.getLoot()));
+        outcomeRepo.save(outcomeDb);
+        model.addAttribute(MODEL_OUTCOME, outcomeDb);
+        return "site";
+    }
+
+    private double getLootValue(final List<LootBean> loot) {
+        double isk = 0;
+        for (final LootBean entry : loot) {
+            isk += entry.getValue();
+        }
+        return isk;
+    }
+
+    private OutcomeBean getOutcome(final Principal principal, final long id) {
         final Optional<OutcomeBean> outcomeResult = outcomeRepo.findById(id);
         if (!outcomeResult.isPresent()) {
             throw new NotFoundException();
@@ -107,8 +150,7 @@ public class SitesController {
         if (outcome.getAccount().getCharacterId() != account.getCharacterId()) {
             throw new AccessDeniedException("You are not allowed to view that");
         }
-        model.addAttribute("outcome", outcome);
-        return "site";
+        return outcome;
     }
 
     void setSiteRepo(final SiteRepository siteRepo) {

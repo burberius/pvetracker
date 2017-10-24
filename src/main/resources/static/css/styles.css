@@ -21,6 +21,10 @@ a:after, a:before {
 	transition: all .3s;
 }
 
+a {
+	color: #eee;
+}
+
 /* visited link */
 a:visited {
 	color: #e5e5e5;
@@ -196,6 +200,10 @@ td img {
 
 .sec-1 {
 	color: #27bfbf;
+}
+
+.center {
+	text-align: center;
 }
 
 #footer {

@@ -10,7 +10,7 @@
 	<div id="content" layout:fragment="content">
 		<h3 th:if="${startModelBean.error}" class="error">Looks like you didn't enter a site</h3>
 		<h2>Start a new site</h2>
-		<form action="#" th:action="@{/sites}" th:object="${startModelBean}" method="post">
+		<form action="#" th:action="@{/site}" th:object="${startModelBean}" method="post">
 			Site name: <input type="text" th:field="*{name}" />
 			<input type="submit" value="Start" />
 		</form>
@@ -21,13 +21,15 @@
 				<td class="head">Start</td>
 				<td class="head">State</td>
 				<td class="head">View</td>
+				<td class="head">Edit</td>
 			</tr>
 			<tr th:each="outcome : ${outcomes}">
 				<td th:text="${outcome.site} ? ${outcome.site.name} : ${outcome.siteName}">site</td>
 				<td th:text="${#temporals.format(outcome.start, 'yyyy-MM-dd HH:mm')}">start</td>
 				<td><i th:if="${outcome.end} == null" class="material-icons">play_circle_filled</i>
 				<i th:if="${outcome.end} != null" class="material-icons">check_circle</i></td>
-				<td><a th:href="@{/sites/__${outcome.id}__}"><i class="material-icons">arrow_forward</i></a></td>
+				<td><a th:href="@{/site/__${outcome.id}__}"><i class="material-icons">arrow_forward</i></a></td>
+				<td><a th:href="@{/site/__${outcome.id}__/edit}"><i class="material-icons">mode_edit</i></a></td>
 			</tr>
 		</table>
 	</div>

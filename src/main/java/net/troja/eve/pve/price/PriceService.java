@@ -10,12 +10,12 @@ package net.troja.eve.pve.price;
  * it under the terms of the GNU General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
@@ -66,10 +66,12 @@ public class PriceService {
             rest.remove(price.getTypeId());
         }
         LOGGER.info("retrieve Prices: {}", rest);
-        final List<PriceBean> list = fuzzworkPriceService.getPrices(new ArrayList<>(rest));
-        priceRepository.saveAll(list);
-        for (final PriceBean price : list) {
-            result.put(price.getTypeId(), price.getValue());
+        if (!rest.isEmpty()) {
+            final List<PriceBean> list = fuzzworkPriceService.getPrices(new ArrayList<>(rest));
+            priceRepository.saveAll(list);
+            for (final PriceBean price : list) {
+                result.put(price.getTypeId(), price.getValue());
+            }
         }
         return result;
     }

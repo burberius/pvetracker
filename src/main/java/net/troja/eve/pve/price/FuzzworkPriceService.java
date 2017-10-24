@@ -10,12 +10,12 @@ package net.troja.eve.pve.price;
  * it under the terms of the GNU General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
@@ -39,6 +39,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 import net.troja.eve.pve.db.price.PriceBean;
@@ -56,21 +57,37 @@ public class FuzzworkPriceService {
     }
 
     public List<PriceBean> getPrices(final Collection<Integer> prices) {
+        LOGGER.info(prices);
         final String values = prices.stream().map((final Integer value) -> value.toString()).collect(Collectors.joining(","));
 
-        final ParameterizedTypeReference<Map<Integer, FuzzworkPriceBean>> responseType = 
-                new ParameterizedTypeReference<Map<Integer, FuzzworkPriceBean>>() {
-        };
-        final HttpEntity<String> requestEntity = new HttpEntity<>("");
-        final ResponseEntity<Map<Integer, FuzzworkPriceBean>> response = restTemplate.exchange(ADDRESS + values, HttpMethod.GET, requestEntity,
-                responseType);
-        if (response.getStatusCode() == HttpStatus.OK) {
+        ResponseEntity<Map<Integer, FuzzworkPriceBean>> response = null;
+        int retry = 0;
+        while (response == null && retry < 3) {
+            try {
+                response = queryPrices(values);
+            } catch (final RestClientException e) {
+                LOGGER.warn("Could not get data {}", e.getMessage(), e);
+                retry++;
+                try {
+                    Thread.sleep(100);
+                } catch (final InterruptedException e1) {
+                }
+            }
+        }
+        if (response != null && response.getStatusCode() == HttpStatus.OK) {
             final Map<Integer, FuzzworkPriceBean> result = response.getBody();
             return transform(result);
         } else {
-            LOGGER.warn("Could not get prices for {}: {}", values, response.getStatusCode());
+            LOGGER.warn("Could not get prices for {} - " + values, values);
             return new ArrayList<>();
         }
+    }
+
+    private ResponseEntity<Map<Integer, FuzzworkPriceBean>> queryPrices(final String values) {
+        final ParameterizedTypeReference<Map<Integer, FuzzworkPriceBean>> responseType = new ParameterizedTypeReference<Map<Integer, FuzzworkPriceBean>>() {
+        };
+        final HttpEntity<String> requestEntity = new HttpEntity<>("");
+        return restTemplate.exchange(ADDRESS + values, HttpMethod.GET, requestEntity, responseType);
     }
 
     private static List<PriceBean> transform(final Map<Integer, FuzzworkPriceBean> prices) {

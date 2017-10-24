@@ -1,7 +1,5 @@
 package net.troja.eve.pve.db.outcome;
 
-import java.time.LocalDateTime;
-
 /*
  * ====================================================
  * Eve Online PvE Tracker
@@ -12,18 +10,19 @@ import java.time.LocalDateTime;
  * it under the terms of the GNU General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * ====================================================
  */
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -71,7 +70,7 @@ public class OutcomeBean {
     private double lootValue;
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
     @JoinColumn(name = "outcome_id")
-    private List<LootBean> loot = new ArrayList<>();
+    private List<LootBean> loot;
 
     public OutcomeBean() {
         super();
@@ -87,6 +86,9 @@ public class OutcomeBean {
     }
 
     public void addLoot(final LootBean lootEntry) {
+        if (loot == null) {
+            loot = new ArrayList<>();
+        }
         loot.add(lootEntry);
     }
 }
