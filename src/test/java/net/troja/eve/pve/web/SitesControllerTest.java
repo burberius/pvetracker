@@ -1,6 +1,7 @@
 package net.troja.eve.pve.web;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /*
@@ -43,6 +44,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import net.troja.eve.pve.db.account.AccountBean;
+import net.troja.eve.pve.db.outcome.LootBean;
 import net.troja.eve.pve.db.outcome.OutcomeBean;
 import net.troja.eve.pve.db.outcome.OutcomeRepository;
 import net.troja.eve.pve.db.outcome.ShipBean;
@@ -122,7 +124,22 @@ public class SitesControllerTest {
 
         final String result = classToTest.start(model, principal);
 
-        assertThat(result, equalTo("redirect:/sites/1"));
+        assertThat(result, equalTo("redirect:/site/1/edit"));
         assertThat(model.isError(), equalTo(false));
+    }
+
+    @Test
+    public void getLootComparator() {
+        final List<LootBean> list = new ArrayList<>();
+        list.add(new LootBean(1, null, 1, 3d));
+        list.add(new LootBean(2, null, 1, 0d));
+        list.add(new LootBean(3, null, 1, 1d));
+
+        Collections.sort(list, SitesController.getLootComparator());
+
+        System.out.println(list);
+
+        assertThat(list.get(0).getTypeId(), equalTo(2));
+        assertThat(list.get(1).getTypeId(), equalTo(3));
     }
 }

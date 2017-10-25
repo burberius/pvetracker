@@ -25,8 +25,8 @@
 			<tr>
 				<td class="key">Start:</td>
 				<td th:text="${#temporals.format(outcome.start, 'yyyy-MM-dd HH:mm')}">start</td>
-				<td class="key">End:</td>
-				<td th:text="${#temporals.format(outcome.end, 'yyyy-MM-dd HH:mm')}">end</td>
+				<td class="key">Duration:</td>
+				<td th:text="${outcome.duration}">duration</td>
 			</tr>
 			<tr>
 				<td class="key">Bounty:</td>
@@ -40,7 +40,17 @@
 				<td class="key">Escalation:</td>
 				<td><i class="material-icons green" th:if="${outcome.escalation == true}">check</i><i class="material-icons red" th:if="${outcome.escalation != true}">clear</i></td>
 			</tr>
-			
+			<tr>
+				<td colspan="4">
+					Loot:
+					<ul>
+						<li th:each="loot : ${outcome.loot}">
+							<span th:text="${loot.count}">1</span> x <img th:src="@{https://image.eveonline.com/Type/__${loot.typeId}___32.png}" src="img" th:alt="${loot.name}" th:title="${loot.name}"/>
+							<span th:text="${loot.name}">Name</span> <span th:text="${loot.valueString}" class="money">123</span>
+						</li>
+					</ul>
+				</td>
+			</tr>
 		</table>
 	</div>
 </body>

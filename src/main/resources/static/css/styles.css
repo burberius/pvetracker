@@ -134,11 +134,11 @@ span.menu {
 	position: relative;
 	background-color: #233237;
 	border: 1px inset #243723;
-    border-radius: 5px;
-    margin-top: 10px;
-    margin-left: auto;
-    margin-right: auto;
-    width: 800px;
+	border-radius: 5px;
+	margin-top: 10px;
+	margin-left: auto;
+	margin-right: auto;
+	width: 800px;
 }
 
 .highlight {
@@ -163,7 +163,11 @@ td img {
 }
 
 .green {
-	color: green;
+	color: #105610;
+}
+
+.orange {
+	color: orange;
 }
 
 .red {
@@ -206,10 +210,32 @@ td img {
 	text-align: center;
 }
 
+table#sites {
+	border-collapse: collapse;
+}
+
+#sites th {
+	padding: 5px 16px;
+}
+
+#sites td {
+	padding: 0px 6px;
+	font-size: smaller;
+}
+
+#sites th, #sites td {
+	border-bottom: solid 1px #1a2428;
+	text-align: center;
+}
+
+.money {
+	color: #984843;
+}
+
 #footer {
-    position: fixed;
-    bottom: 5px;
-    width: 100%;
-    text-align: center;
-    font-size: small;
+	position: fixed;
+	bottom: 5px;
+	width: 100%;
+	text-align: center;
+	font-size: small;
 }

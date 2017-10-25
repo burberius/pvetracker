@@ -37,7 +37,7 @@ public class LootBean {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
-    private int count;
+    private int count = 1;
     private String name;
     private int typeId;
     private double value;
@@ -59,5 +59,13 @@ public class LootBean {
         this.name = name;
         this.typeId = typeId;
         this.value = value;
+    }
+
+    public String getValueString() {
+        if (count == 1) {
+            return String.format("%,d", Math.round(value)) + " ISK";
+        } else {
+            return String.format("%,d", Math.round(value * count)) + " ISK (" + String.format("%,d", Math.round(value)) + " ISK per unit)";
+        }
     }
 }

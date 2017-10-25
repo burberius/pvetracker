@@ -24,6 +24,8 @@ package net.troja.eve.pve.web;
 
 import java.security.Principal;
 import java.time.LocalDateTime;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
@@ -125,17 +127,31 @@ public class SitesController {
         }
         outcomeDb.setFaction(outcome.isFaction());
         outcomeDb.setEscalation(outcome.isEscalation());
-        outcomeDb.getLoot().addAll(contentParserService.parse(outcome.getLootContent()));
+        final List<LootBean> loot = contentParserService.parse(outcome.getLootContent());
+        Collections.sort(loot, getLootComparator());
+        outcomeDb.getLoot().addAll(loot);
         outcomeDb.setLootValue(getLootValue(outcomeDb.getLoot()));
         outcomeRepo.save(outcomeDb);
         model.addAttribute(MODEL_OUTCOME, outcomeDb);
         return "site";
     }
 
-    private double getLootValue(final List<LootBean> loot) {
+    public static Comparator<LootBean> getLootComparator() {
+        return (final LootBean o1, final LootBean o2) -> {
+            if (o1.getValue() == 0 && o1.getValue() < o2.getValue()) {
+                return -1;
+            } else if (o2.getValue() == 0 && o2.getValue() < o1.getValue()) {
+                return 1;
+            } else {
+                return Double.compare(o1.getValue(), o2.getValue());
+            }
+        };
+    }
+
+    private static double getLootValue(final List<LootBean> loot) {
         double isk = 0;
         for (final LootBean entry : loot) {
-            isk += entry.getValue();
+            isk += entry.getValue() * entry.getCount();
         }
         return isk;
     }

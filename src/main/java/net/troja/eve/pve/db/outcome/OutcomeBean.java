@@ -1,5 +1,7 @@
 package net.troja.eve.pve.db.outcome;
 
+import java.time.Duration;
+
 /*
  * ====================================================
  * Eve Online PvE Tracker
@@ -10,12 +12,12 @@ package net.troja.eve.pve.db.outcome;
  * it under the terms of the GNU General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
@@ -90,5 +92,25 @@ public class OutcomeBean {
             loot = new ArrayList<>();
         }
         loot.add(lootEntry);
+    }
+
+    public String getDuration() {
+        if (end == null) {
+            return "running";
+        }
+        final Duration duration = Duration.between(start, end);
+        long seconds = duration.getSeconds();
+        final StringBuilder result = new StringBuilder();
+        final int hours = (int) Math.floorDiv(seconds, 3600);
+        if (hours > 0) {
+            result.append(hours).append("h ");
+        }
+        seconds = Math.floorMod(seconds, 3600);
+        final int minutes = (int) Math.floorDiv(seconds, 60);
+        if (minutes > 0) {
+            result.append(minutes).append("m ");
+        }
+        result.append(Math.floorMod(seconds, 60)).append("s");
+        return result.toString();
     }
 }
