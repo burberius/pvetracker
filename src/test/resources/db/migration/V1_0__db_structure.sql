@@ -32,9 +32,8 @@ CREATE TABLE `account` (
 CREATE TABLE `site` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(100) NOT NULL,
-  `type` varchar(10) NOT NULL,
-  `faction` varchar(15) DEFAULT NULL,
-  `ded` int(11) DEFAULT NULL,
+  `faction` varchar(20) DEFAULT NULL,
+  `ded` int(11) DEFAULT '0',
   PRIMARY KEY (`id`),
   UNIQUE KEY `name_UNIQUE` (`name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;

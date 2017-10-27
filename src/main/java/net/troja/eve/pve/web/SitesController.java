@@ -24,10 +24,12 @@ package net.troja.eve.pve.web;
 
 import java.security.Principal;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
@@ -41,6 +43,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import net.troja.eve.pve.content.ContentParserService;
 import net.troja.eve.pve.db.account.AccountBean;
@@ -79,6 +83,16 @@ public class SitesController {
         final List<OutcomeBean> outcomes = outcomeRepo.findByAccountOrderByStartDesc(account);
         model.addAttribute("outcomes", outcomes);
         return "sites";
+    }
+
+    @GetMapping("/search")
+    public @ResponseBody List<String> search(@RequestParam("q") final String query) {
+        List<String> result = new ArrayList<>();
+        final Optional<List<SiteBean>> searchResult = siteRepo.findByNameContaining(query);
+        if (searchResult.isPresent()) {
+            result = searchResult.get().stream().map(SiteBean::getName).collect(Collectors.toList());
+        }
+        return result;
     }
 
     @PostMapping

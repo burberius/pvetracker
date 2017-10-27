@@ -16,3 +16,7 @@ EVE Online Tracker for PvE activities - to log all your PvE activities and get a
   * Spawn probability of faction rat
   * Average loot value (overall, per type)
   * Highes loot value (overall, per type)
+
+## Dependency
+ * [autocomplete.js](https://github.com/autocompletejs/autocomplete.js)
+  

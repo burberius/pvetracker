@@ -11,7 +11,7 @@
 		<h3 th:if="${startModelBean.error}" class="error">Looks like you didn't enter a site</h3>
 		<h2>Start a new site</h2>
 		<form action="#" th:action="@{/site}" th:object="${startModelBean}" method="post">
-			Site name: <input type="text" th:field="*{name}" />
+			Site name: <input data-autocomplete="/site/search" th:field="*{name}" /> 
 			<input type="submit" value="Start" />
 		</form>
 		<h2>Finished sites</h2>
@@ -34,6 +34,9 @@
 				<td><a th:href="@{/site/__${outcome.id}__/edit}"><i class="material-icons">mode_edit</i></a></td>
 			</tr>
 		</table>
+		<script type="text/javascript">
+ 			AutoComplete({EmptyMessage: "No site found", MinChars: 2, });
+		</script>
 	</div>
 </body>
 </html>

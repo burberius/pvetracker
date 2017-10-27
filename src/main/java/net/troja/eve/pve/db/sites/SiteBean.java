@@ -41,8 +41,6 @@ public class SiteBean {
     private int id;
     private String name;
     @Enumerated(EnumType.STRING)
-    private SiteType type;
-    @Enumerated(EnumType.STRING)
     private Faction faction;
     private Integer ded;
 
