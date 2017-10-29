@@ -5,6 +5,9 @@
 <head>
 	<title layout:title-pattern="$LAYOUT_TITLE - $CONTENT_TITLE">PvE Tracker</title>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<link rel="icon" type="image/png" th:href="@{/favicon.png}" sizes="64x64">
+	<link rel="shortcut icon" type="image/x-icon" th:href="@{/favicon.ico}">
+	<link rel="apple-touch-icon" sizes="160x160" th:href="@{/apple-touch-icon.png}">
 	<link th:href="@{https://fonts.googleapis.com/css?family=Dosis:500}" rel="stylesheet">
 	<link th:href="@{https://fonts.googleapis.com/icon?family=Material+Icons}" rel="stylesheet">
 	<link th:href="@{/css/styles.css}" rel="stylesheet">
@@ -31,7 +34,7 @@
 	<div id="content" layout:fragment="content">
 	</div>
 	<div id="footer">
-	PvE today - Built @myversion@<br/>
+	PvE today - Built @my.build.version@<br/>
 	This application has been created under the EVE Developer License Agreement.
 	</div>
 </body>

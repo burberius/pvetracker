@@ -1,4 +1,4 @@
-package net.troja.eve.pve.price;
+package net.troja.eve.pve.price.fuzzwork;
 
 /*
  * ====================================================

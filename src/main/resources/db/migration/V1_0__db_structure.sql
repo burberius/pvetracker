@@ -62,19 +62,23 @@ CREATE TABLE `outcome` (
   `end` datetime DEFAULT NULL,
   `faction` tinyint(4) NOT NULL,
   `escalation` tinyint(4) NOT NULL,
-  `bounty_value` double DEFAULT '0',
-  `loot_value` double DEFAULT '0',
+  `bounty_value` bigint(20) DEFAULT '0',
+  `reward_value` bigint(20) DEFAULT NULL,
+  `loot_value` bigint(20) DEFAULT '0',
   `account_id` int(11) NOT NULL,
-  `site_id` int(11),
+  `site_id` int(11) DEFAULT NULL,
   `site_name` varchar(100) NOT NULL,
   PRIMARY KEY (`id`),
   KEY `fk_outcome_site_idx` (`site_id`),
   KEY `fk_outcome_account_idx` (`account_id`),
+  KEY `fk_outcome_ship` (`ship_id`),
+  KEY `fk_outcome_system` (`system_id`),
   CONSTRAINT `fk_outcome_account` FOREIGN KEY (`account_id`) REFERENCES `account` (`character_id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  CONSTRAINT `fk_outcome_site` FOREIGN KEY (`site_id`) REFERENCES `site` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `fk_outcome_ship` FOREIGN KEY (`ship_id`) REFERENCES `ship` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `fk_outcome_site` FOREIGN KEY (`site_id`) REFERENCES `site` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `fk_outcome_system` FOREIGN KEY (`system_id`) REFERENCES `solar_system` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
 
 CREATE TABLE `loot` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,

@@ -68,8 +68,9 @@ public class OutcomeBean {
     private LocalDateTime end;
     private boolean faction;
     private boolean escalation;
-    private double bountyValue;
-    private double lootValue;
+    private long bountyValue;
+    private long rewardValue;
+    private long lootValue;
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
     @JoinColumn(name = "outcome_id")
     private List<LootBean> loot;

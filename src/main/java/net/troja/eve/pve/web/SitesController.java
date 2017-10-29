@@ -32,8 +32,6 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
@@ -61,8 +59,6 @@ import net.troja.eve.pve.esi.LocationService;
 @RequestMapping("/site")
 public class SitesController {
     private static final String MODEL_OUTCOME = "outcome";
-
-    private static final Logger LOGGER = LogManager.getLogger(SitesController.class);
 
     @Autowired
     private SiteRepository siteRepo;
@@ -141,6 +137,8 @@ public class SitesController {
         }
         outcomeDb.setFaction(outcome.isFaction());
         outcomeDb.setEscalation(outcome.isEscalation());
+        outcomeDb.setBountyValue(outcome.getBountyValue());
+        outcomeDb.setRewardValue(outcome.getRewardValue());
         final List<LootBean> loot = contentParserService.parse(outcome.getLootContent());
         Collections.sort(loot, getLootComparator());
         outcomeDb.getLoot().addAll(loot);
@@ -162,10 +160,10 @@ public class SitesController {
         };
     }
 
-    private static double getLootValue(final List<LootBean> loot) {
-        double isk = 0;
+    private static long getLootValue(final List<LootBean> loot) {
+        long isk = 0;
         for (final LootBean entry : loot) {
-            isk += entry.getValue() * entry.getCount();
+            isk += Math.round(entry.getValue() * entry.getCount());
         }
         return isk;
     }

@@ -31,8 +31,13 @@
 			<tr>
 				<td class="key">Bounty:</td>
 				<td><span th:text="${#numbers.formatDecimal(outcome.bountyValue, 1, 'POINT', 0, 'COMMA')}">bounty</span> ISK</td>
+				<td class="key">Reward:</td>
+				<td><span th:text="${#numbers.formatDecimal(outcome.rewardValue, 1, 'POINT', 0, 'COMMA')}">reward</span> ISK</td>
+			</tr>
+			<tr>
 				<td class="key">Loot:</td>
 				<td><span th:text="${#numbers.formatDecimal(outcome.lootValue, 1, 'POINT', 0, 'COMMA')}">loot</span> ISK</td>
+				<td colspan="2">&nbsp;</td>
 			</tr>
 			<tr>
 				<td class="key">Faction:</td>

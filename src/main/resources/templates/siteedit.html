@@ -31,9 +31,9 @@
 			</tr>
 			<tr>
 				<td class="key">Bounty:</td>
-				<td><span th:text="${outcome.bountyValue}">bounty</span> ISK</td>
-				<td class="key">Loot:</td>
-				<td><span th:text="${outcome.lootValue}">loot</span> ISK</td>
+				<td><input type="number" min="0" th:field="*{bountyValue}" /> ISK</td>
+				<td class="key">Reward:</td>
+				<td><input type="number" min="0" th:field="*{rewardValue}" /> ISK</td>
 			</tr>
 			<tr>
 				<td class="key">Faction:</td>
