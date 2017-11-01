@@ -233,9 +233,10 @@ table#sites {
 }
 
 #footer {
-	position: fixed;
+	position: static;
 	bottom: 5px;
 	width: 100%;
 	text-align: center;
 	font-size: small;
+	margin-top: 10px;
 }
