@@ -102,7 +102,7 @@ public class SitesController {
             final Optional<SiteBean> site = siteRepo.findByName(name);
             String siteString;
             if (site.isPresent()) {
-                siteString = site.get().toString();
+                siteString = site.get().getName();
             } else {
                 siteString = name;
             }
