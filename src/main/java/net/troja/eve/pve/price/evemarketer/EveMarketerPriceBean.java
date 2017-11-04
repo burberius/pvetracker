@@ -6,4 +6,8 @@ import lombok.Data;
 public class EveMarketerPriceBean {
     private EveMarketerPriceValueBean buy;
     private EveMarketerPriceValueBean sell;
+
+    public EveMarketerPriceBean() {
+        super();
+    }
 }

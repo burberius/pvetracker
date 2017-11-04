@@ -48,6 +48,8 @@ import net.troja.eve.pve.db.solarsystem.SolarSystemBean;
 @Entity
 @Table(name = "outcome")
 public class OutcomeBean {
+    private static final int SECONDS2MINUTES = 60;
+    private static final int SECONDS2HOURS = 3600;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
@@ -102,16 +104,16 @@ public class OutcomeBean {
         final Duration duration = Duration.between(start, end);
         long seconds = duration.getSeconds();
         final StringBuilder result = new StringBuilder();
-        final int hours = (int) Math.floorDiv(seconds, 3600);
+        final int hours = (int) Math.floorDiv(seconds, SECONDS2HOURS);
         if (hours > 0) {
             result.append(hours).append("h ");
         }
-        seconds = Math.floorMod(seconds, 3600);
-        final int minutes = (int) Math.floorDiv(seconds, 60);
+        seconds = Math.floorMod(seconds, SECONDS2HOURS);
+        final int minutes = (int) Math.floorDiv(seconds, SECONDS2MINUTES);
         if (minutes > 0) {
             result.append(minutes).append("m ");
         }
-        result.append(Math.floorMod(seconds, 60)).append("s");
+        result.append(Math.floorMod(seconds, SECONDS2MINUTES)).append('s');
         return result.toString();
     }
 }

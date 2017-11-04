@@ -10,4 +10,8 @@ public class EveMarketerPriceForQueryBean {
     private int[] systems;
     private int hours;
     private int minq;
+
+    public EveMarketerPriceForQueryBean() {
+        super();
+    }
 }

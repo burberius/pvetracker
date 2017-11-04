@@ -32,6 +32,7 @@ import lombok.Data;
 @Entity
 @Table(name = "solar_system")
 public class SolarSystemBean {
+    private static final double SEC_LOW = 0.4;
     @Id
     private int id;
     private String name;
@@ -42,22 +43,15 @@ public class SolarSystemBean {
     }
 
     public String getSecClass() {
+        String cssClass;
         final double sec = Math.round(security * 10) / 10D;
         if (sec <= 0) {
-            return "sec-0";
-        } else if (sec <= 0.4) {
-            return "sec-low";
-        } else if (sec <= 0.5) {
-            return "sec-05";
-        } else if (sec <= 0.6) {
-            return "sec-06";
-        } else if (sec <= 0.7) {
-            return "sec-07";
-        } else if (sec <= 0.8) {
-            return "sec-08";
-        } else if (sec <= 0.9) {
-            return "sec-09";
+            cssClass = "sec-0";
+        } else if (sec <= SEC_LOW) {
+            cssClass = "sec-low";
+        } else {
+            cssClass = "sec-" + Double.toString(sec).replaceAll("\\.", "");
         }
-        return "sec-1";
+        return cssClass.replace("10", "1");
     }
 }

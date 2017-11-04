@@ -16,4 +16,8 @@ public class EveMarketerPriceValueBean {
     private double min;
     private boolean highToLow;
     private long generated;
+
+    public EveMarketerPriceValueBean() {
+        super();
+    }
 }

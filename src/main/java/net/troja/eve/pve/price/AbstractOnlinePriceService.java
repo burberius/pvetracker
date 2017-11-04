@@ -48,8 +48,7 @@ public abstract class AbstractOnlinePriceService<T> {
         final HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.add("User-Agent", "PvE today");
-        final HttpEntity<String> requestEntity = new HttpEntity<>("", headers);
-        return requestEntity;
+        return new HttpEntity<>("", headers);
     }
 
     protected abstract ResponseEntity<T> queryPrices(String values);

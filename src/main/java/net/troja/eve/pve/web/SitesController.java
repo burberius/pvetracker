@@ -150,13 +150,7 @@ public class SitesController {
 
     public static Comparator<LootBean> getLootComparator() {
         return (final LootBean o1, final LootBean o2) -> {
-            if (o1.getValue() == 0 && o1.getValue() < o2.getValue()) {
-                return -1;
-            } else if (o2.getValue() == 0 && o2.getValue() < o1.getValue()) {
-                return 1;
-            } else {
-                return Double.compare(o1.getValue(), o2.getValue());
-            }
+            return Double.compare(o1.getValue(), o2.getValue());
         };
     }
 
