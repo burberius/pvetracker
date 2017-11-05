@@ -132,8 +132,10 @@ public class SitesController {
         if (outcomeDb.getId() != outcome.getId()) {
             throw new AccessDeniedException("You are not allowed to view that");
         }
-        if (outcomeDb.getEnd() == null) {
+        if (outcomeDb.getEnd() == null && outcome.getEnd() == null) {
             outcomeDb.setEnd(LocalDateTime.now());
+        } else {
+            outcomeDb.setEnd(outcome.getEnd());
         }
         outcomeDb.setFaction(outcome.isFaction());
         outcomeDb.setEscalation(outcome.isEscalation());
@@ -185,5 +187,9 @@ public class SitesController {
 
     void setLocationService(final LocationService locationService) {
         this.locationService = locationService;
+    }
+
+    void setContentParserService(final ContentParserService contentParserService) {
+        this.contentParserService = contentParserService;
     }
 }
