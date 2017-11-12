@@ -1,6 +1,6 @@
-[![Build Status](http://jenkins.cyno.space/jenkins/buildStatus/icon?job=GitHub pvetracker)](http://jenkins.cyno.space/jenkins/job/GitHub%20pvetracker/)
-[![SonarQube Coverage](https://img.shields.io/sonar/http/sonar.cyno.space/net.troja.eve:pvetracker/coverage.svg)](http://sonar.cyno.space/dashboard?id=net.troja.eve%3Apvetracker)
-[![SonarQube Tech Debt](https://img.shields.io/sonar/http/sonar.cyno.space/net.troja.eve:pvetracker/tech_debt.svg?style=plastic)](http://sonar.cyno.space/dashboard?id=net.troja.eve%3Apvetracker)
+[![Build Status](http://jenkins.cyno.space/jenkins/buildStatus/icon?job=GitHub%20pvetracker)](http://jenkins.cyno.space/jenkins/job/GitHub%20pvetracker/)
+[![Coverage](http://sonar.cyno.space/api/badges/measure?key=net.troja.eve:pvetracker&metric=coverage)](http://sonar.cyno.space/dashboard?id=net.troja.eve%3Apvetracker)
+[![Tech Debt](http://sonar.cyno.space/api/badges/measure?key=net.troja.eve:pvetracker&metric=sqale_debt_ratio)](http://sonar.cyno.space/dashboard?id=net.troja.eve%3Apvetracker)
 
 # PvE Tracker
 EVE Online Tracker for PvE activities - to log all your PvE activities and get an overview about the money you earn per hour, spawn probability of faction rat, every loot value per site...
@@ -32,12 +32,12 @@ will be created automatically.
 Create your own application credentials at https://developers.eveonline.com/applications
 
 Then checkout and build the project with
-´´´Shell
+```shell
 mvn clean package
-´´´
-
-Create a file **application.yml** with the following content:
 ```
+
+Create a file *application.yml* with the following content:
+```yaml
 security:
   oauth2:
     client:
@@ -52,7 +52,7 @@ spring:
 Change the clientId, ClientSecret and database settings accordingly.
 
 Start it with
-```Shell
+```shell
 java -jar target/pvetoday.jar
 ```
 
