@@ -25,9 +25,19 @@
 			</tr>
 			<tr>
 				<td class="key">Start:</td>
-				<td th:text="${#temporals.format(outcome.start, 'yyyy-MM-dd HH:mm')}">start</td>
+				<td>
+					<input type="text" pattern="\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}" th:field="*{start}" />
+					<div class="tooltip"><i class="material-icons">help_outline</i>
+					<span class="tooltiptext">Date format is yyyy-MM-dd HH:mm:ss<br/>For example 2017-12-24 18:00:00</span>
+					</div>
+				</td>
 				<td class="key">End:</td>
-				<td th:text="${#temporals.format(outcome.end, 'yyyy-MM-dd HH:mm')}">end</td>
+				<td>
+					<input type="text" pattern="\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}" th:field="*{end}" />
+					<div class="tooltip"><i class="material-icons">help_outline</i>
+					<span class="tooltiptext">Date format is yyyy-MM-dd HH:mm:ss<br/>For example 2017-12-24 18:00:00</span>
+					</div>
+				</td>
 			</tr>
 			<tr>
 				<td class="key">Bounty:</td>

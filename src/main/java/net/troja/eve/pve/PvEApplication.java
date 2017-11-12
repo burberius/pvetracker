@@ -1,6 +1,10 @@
 package net.troja.eve.pve;
 
 import java.nio.charset.Charset;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeFormatterBuilder;
+import java.util.Locale;
 import java.util.TimeZone;
 
 /*
@@ -28,6 +32,8 @@ import java.util.TimeZone;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+import org.springframework.expression.ParseException;
+import org.springframework.format.Formatter;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.security.oauth2.client.token.grant.code.AuthorizationCodeResourceDetails;
 import org.thymeleaf.extras.java8time.dialect.Java8TimeDialect;
@@ -54,5 +60,23 @@ public class PvEApplication {
     @Bean
     public Java8TimeDialect java8TimeDialect() {
         return new Java8TimeDialect();
+    }
+
+    @Bean
+    public Formatter<LocalDateTime> localDateFormatter() {
+        return new Formatter<LocalDateTime>() {
+            private final DateTimeFormatter formater = new DateTimeFormatterBuilder().parseCaseInsensitive().appendPattern("yyyy-MM-dd HH:mm:ss")
+                    .toFormatter();
+
+            @Override
+            public LocalDateTime parse(final String text, final Locale locale) throws ParseException {
+                return LocalDateTime.parse(text, formater);
+            }
+
+            @Override
+            public String print(final LocalDateTime object, final Locale locale) {
+                return formater.format(object);
+            }
+        };
     }
 }
