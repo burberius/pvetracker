@@ -34,8 +34,18 @@
 				<td><a th:href="@{/site/__${outcome.id}__/edit}"><i class="material-icons">mode_edit</i></a></td>
 			</tr>
 		</table>
+		<div id="stats">
+			Quick select
+			<ul>
+				<li th:each="stat : ${stats}" th:text="${stat.name + ' (' + stat.count + ')'}" th:onClick="${'quick(&quot;' + stat.name + '&quot;);'}">
+			</ul>
+		</div>
 		<script type="text/javascript">
  			AutoComplete({EmptyMessage: "No site found", MinChars: 2, });
+
+			function quick(name) {
+				document.getElementById("name").value = name;
+			}
 		</script>
 	</div>
 </body>

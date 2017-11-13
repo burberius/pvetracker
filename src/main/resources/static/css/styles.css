@@ -233,25 +233,47 @@ table#sites {
 }
 
 .tooltip {
-    position: relative;
-    display: inline-block;
+	position: relative;
+	display: inline-block;
 }
 
 .tooltip .tooltiptext {
-    visibility: hidden;
-    background-color: black;
-    color: #fff;
-    text-align: center;
-    padding: 5px 8px;
-    border-radius: 6px;
-    position: absolute;
-    z-index: 1;
-    font-size: smaller;
-    white-space: nowrap;
+	visibility: hidden;
+	background-color: black;
+	color: #fff;
+	text-align: center;
+	padding: 5px 8px;
+	border-radius: 6px;
+	position: absolute;
+	z-index: 1;
+	font-size: smaller;
+	white-space: nowrap;
 }
 
 .tooltip:hover .tooltiptext {
-    visibility: visible;
+	visibility: visible;
+}
+
+#stats {
+	position: absolute;
+	right: 5px;
+	top: 5px;
+	padding: 3px;
+	border-radius: 5px;
+	border: 1px inset #374936;
+	background-color: #2c3f44;
+}
+
+#stats ul {
+	margin: 2px;
+	padding: 0px;
+	font-size: small;
+}
+
+#stats li {
+	list-style-type: none;
+	padding-left: 5px;
+	cursor: pointer;
 }
 
 #footer {

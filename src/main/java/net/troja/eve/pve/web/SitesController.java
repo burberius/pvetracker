@@ -33,6 +33,7 @@ import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.stereotype.Controller;
@@ -53,6 +54,7 @@ import net.troja.eve.pve.db.outcome.ShipBean;
 import net.troja.eve.pve.db.sites.SiteBean;
 import net.troja.eve.pve.db.sites.SiteRepository;
 import net.troja.eve.pve.db.solarsystem.SolarSystemBean;
+import net.troja.eve.pve.db.stats.SiteCountStat;
 import net.troja.eve.pve.esi.LocationService;
 
 @Controller
@@ -78,6 +80,8 @@ public class SitesController {
         final AccountBean account = (AccountBean) ((OAuth2Authentication) principal).getPrincipal();
         final List<OutcomeBean> outcomes = outcomeRepo.findByAccountOrderByStartDesc(account);
         model.addAttribute("outcomes", outcomes);
+        final List<SiteCountStat> siteCountStats = outcomeRepo.getSiteCountStats(account, PageRequest.of(0, 10));
+        model.addAttribute("stats", siteCountStats);
         return "sites";
     }
 

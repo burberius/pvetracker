@@ -24,10 +24,19 @@ package net.troja.eve.pve.db.outcome;
 
 import java.util.List;
 
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.repository.query.Param;
 
 import net.troja.eve.pve.db.account.AccountBean;
+import net.troja.eve.pve.db.stats.SiteCountStat;
 
 public interface OutcomeRepository extends CrudRepository<OutcomeBean, Long> {
     List<OutcomeBean> findByAccountOrderByStartDesc(AccountBean account);
+
+    @Query(
+        value = "select new net.troja.eve.pve.db.stats.SiteCountStat(o.site.name, count(o)) from OutcomeBean o "
+                + "where site != null and account = :account group by site order by count(id) desc")
+    List<SiteCountStat> getSiteCountStats(@Param(value = "account") AccountBean account, Pageable pageable);
 }
