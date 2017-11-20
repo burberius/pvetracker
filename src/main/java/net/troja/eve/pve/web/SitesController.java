@@ -136,6 +136,7 @@ public class SitesController {
         if (outcomeDb.getId() != outcome.getId()) {
             throw new AccessDeniedException("You are not allowed to view that");
         }
+        outcomeDb.setStart(outcome.getStart());
         if (outcomeDb.getEnd() == null && outcome.getEnd() == null) {
             outcomeDb.setEnd(LocalDateTime.now());
         } else {
