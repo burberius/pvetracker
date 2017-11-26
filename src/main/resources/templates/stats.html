@@ -5,10 +5,67 @@
 	layout:decorate="~{layout.html}">
 <head>
 <title>Statistics</title>
+<script type="text/javascript" th:src="@{https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.1/Chart.bundle.min.js}"></script>
 </head>
 <body>
 	<div id="content" layout:fragment="content">
-		Nothing here yet
+		<canvas id="monthly"></canvas>
+
+		<script type="text/javascript" th:inline="javascript">
+			Chart.defaults.global.title.display = true;
+			Chart.defaults.global.title.fontColor = 'rgb(240,240,240)';
+			Chart.defaults.global.legend.display = false;
+			Chart.scaleService.updateScaleDefaults('linear', {
+				gridLines: {
+					color: 'rgb(120,120,120)'
+				},
+				scaleLabel: {
+					display: true,
+					fontColor: 'rgb(240,240,240)'
+				},
+				ticks: {
+					fontColor: 'rgb(200,200,200)'
+				}
+			});
+
+			var ctx = document.getElementById("monthly");
+
+			var monthlyData = {
+		        labels: /*[[${montly.labels}]]*/,
+		        datasets: [{
+		            label: "Earnings",
+		            backgroundColor: 'rgb(234, 198, 122)',
+		            borderColor: 'rgb(255, 255, 255)',
+		            data: /*[[${montly.data}]]*/,
+		        }]
+		    };
+			var monthlyOptions = {
+				title: {
+					text: "Daily earnings last 30 days"
+				},
+				scales: {
+					yAxes: [{
+						scaleLabel: {
+							labelString: 'Million ISK'
+						}
+					}],
+					xAxes: [{
+						gridLines: {
+							color: 'rgb(120,120,120)'
+						},
+						ticks: {
+							fontColor: 'rgb(200,200,200)'
+						}
+					}]
+				}
+			};
+
+			var monthlyChart = new Chart(ctx, {
+				type: 'bar',
+				data: monthlyData,
+				options: monthlyOptions
+			});
+		</script>
 	</div>
 </body>
 </html>
