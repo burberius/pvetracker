@@ -46,6 +46,7 @@ public interface OutcomeRepository extends CrudRepository<OutcomeBean, Long> {
     @Query(
         value = "select new net.troja.eve.pve.db.stats.MonthOverviewStat(DATE(start),  sum(loot_value + "
                 + "bounty_value + reward_value)) from OutcomeBean o where account = :account and start > :start"
-                + " group by DATE(start) order by DATE(start)")
+                + " group by DATE(start) order by DATE(start)",
+        nativeQuery = true)
     List<MonthOverviewStat> getMonthlyOverviewStats(@Param(value = "account") AccountBean account, @Param(value = "start") LocalDateTime start);
 }
