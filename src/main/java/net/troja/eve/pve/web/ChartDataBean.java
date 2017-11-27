@@ -6,7 +6,7 @@ import java.util.List;
 import lombok.Data;
 
 @Data
-public class ChartData {
+public class ChartDataBean {
     private List<String> labels = new ArrayList<>();
     private List<Object> data = new ArrayList<>();
 

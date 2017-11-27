@@ -32,7 +32,6 @@ import java.util.TimeZone;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
-import org.springframework.expression.ParseException;
 import org.springframework.format.Formatter;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.security.oauth2.client.token.grant.code.AuthorizationCodeResourceDetails;
@@ -69,7 +68,7 @@ public class PvEApplication {
                     .toFormatter();
 
             @Override
-            public LocalDateTime parse(final String text, final Locale locale) throws ParseException {
+            public LocalDateTime parse(final String text, final Locale locale) {
                 return LocalDateTime.parse(text, formater);
             }
 

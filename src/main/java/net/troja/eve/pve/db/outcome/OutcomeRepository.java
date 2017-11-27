@@ -32,16 +32,16 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
 
 import net.troja.eve.pve.db.account.AccountBean;
-import net.troja.eve.pve.db.stats.MonthOverviewStat;
-import net.troja.eve.pve.db.stats.SiteCountStat;
+import net.troja.eve.pve.db.stats.MonthOverviewStatBean;
+import net.troja.eve.pve.db.stats.SiteCountStatBean;
 
 public interface OutcomeRepository extends CrudRepository<OutcomeBean, Long> {
     List<OutcomeBean> findByAccountOrderByStartDesc(AccountBean account);
 
     @Query(
-        value = "select new net.troja.eve.pve.db.stats.SiteCountStat(o.site.name, count(o)) from OutcomeBean o "
+        value = "select new net.troja.eve.pve.db.stats.SiteCountStatBean(o.site.name, count(o)) from OutcomeBean o "
                 + "where site != null and account = :account group by site order by count(id) desc")
-    List<SiteCountStat> getSiteCountStats(@Param(value = "account") AccountBean account, Pageable pageable);
+    List<SiteCountStatBean> getSiteCountStats(@Param(value = "account") AccountBean account, Pageable pageable);
 
-    List<MonthOverviewStat> getMonthlyOverviewStats(@Param(value = "account") AccountBean account, @Param(value = "start") LocalDateTime start);
+    List<MonthOverviewStatBean> getMonthlyOverviewStats(@Param(value = "account") AccountBean account, @Param(value = "start") LocalDateTime start);
 }

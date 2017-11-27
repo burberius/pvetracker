@@ -54,7 +54,7 @@ import net.troja.eve.pve.db.outcome.ShipBean;
 import net.troja.eve.pve.db.sites.SiteBean;
 import net.troja.eve.pve.db.sites.SiteRepository;
 import net.troja.eve.pve.db.solarsystem.SolarSystemBean;
-import net.troja.eve.pve.db.stats.SiteCountStat;
+import net.troja.eve.pve.db.stats.SiteCountStatBean;
 import net.troja.eve.pve.esi.LocationService;
 
 @Controller
@@ -80,7 +80,7 @@ public class SitesController {
         final AccountBean account = (AccountBean) ((OAuth2Authentication) principal).getPrincipal();
         final List<OutcomeBean> outcomes = outcomeRepo.findByAccountOrderByStartDesc(account);
         model.addAttribute("outcomes", outcomes);
-        final List<SiteCountStat> siteCountStats = outcomeRepo.getSiteCountStats(account, PageRequest.of(0, 10));
+        final List<SiteCountStatBean> siteCountStats = outcomeRepo.getSiteCountStats(account, PageRequest.of(0, 10));
         model.addAttribute("stats", siteCountStats);
         return "sites";
     }
@@ -156,9 +156,7 @@ public class SitesController {
     }
 
     public static Comparator<LootBean> getLootComparator() {
-        return (final LootBean o1, final LootBean o2) -> {
-            return Double.compare(o1.getValue(), o2.getValue());
-        };
+        return (final LootBean o1, final LootBean o2) -> Double.compare(o1.getValue(), o2.getValue());
     }
 
     private static long getLootValue(final List<LootBean> loot) {

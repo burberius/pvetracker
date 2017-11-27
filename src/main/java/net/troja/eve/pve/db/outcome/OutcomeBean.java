@@ -48,18 +48,19 @@ import lombok.Data;
 import net.troja.eve.pve.db.account.AccountBean;
 import net.troja.eve.pve.db.sites.SiteBean;
 import net.troja.eve.pve.db.solarsystem.SolarSystemBean;
-import net.troja.eve.pve.db.stats.MonthOverviewStat;
+import net.troja.eve.pve.db.stats.MonthOverviewStatBean;
 
 @SqlResultSetMapping(
     name = "MonthlyOverviewStatsMapping",
     classes = {
         @ConstructorResult(
-            targetClass = MonthOverviewStat.class,
+            targetClass = MonthOverviewStatBean.class,
             columns = { @ColumnResult(name = "start", type = LocalDate.class), @ColumnResult(name = "value", type = Double.class) }) })
 
 @NamedNativeQuery(
     name = "OutcomeBean.getMonthlyOverviewStats",
-    query = "select DATE(start) as start, sum(loot_value + bounty_value + reward_value) as value from outcome o where account_id = :account and start > :start group by DATE(start) order by DATE(start)",
+    query = "select DATE(start) as start, sum(loot_value + bounty_value + reward_value) as value from outcome o where "
+            + "account_id = :account and start > :start group by DATE(start) order by DATE(start)",
     resultSetMapping = "MonthlyOverviewStatsMapping")
 @Data
 @Entity
