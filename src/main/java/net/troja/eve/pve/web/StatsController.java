@@ -1,8 +1,6 @@
 package net.troja.eve.pve.web;
 
 import java.security.Principal;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -38,14 +36,13 @@ public class StatsController {
     }
 
     private static ChartData convertMonthlyData(final List<MonthOverviewStat> data) {
-        final DateFormat formatter = new SimpleDateFormat(DATE_FORMAT);
-        final DateTimeFormatter formatter2 = DateTimeFormatter.ofPattern(DATE_FORMAT);
+        final DateTimeFormatter formatter = DateTimeFormatter.ofPattern(DATE_FORMAT);
         final ChartData result = new ChartData();
         LocalDate start = LocalDate.now().minusDays(30);
         final Iterator<MonthOverviewStat> iterator = data.iterator();
         MonthOverviewStat stat = iterator.next();
         for (int days = 0; days < 30; days++) {
-            final String dateString = formatter2.format(start);
+            final String dateString = formatter.format(start);
             double value = 0D;
             if (stat != null && formatter.format(stat.getDate()).equals(dateString)) {
                 value = Math.round(stat.getValue() / 10_000D) / 100D;

@@ -1,6 +1,7 @@
 package net.troja.eve.pve.db.outcome;
 
 import java.time.Duration;
+import java.time.LocalDate;
 
 /*
  * ====================================================
@@ -29,6 +30,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.CascadeType;
+import javax.persistence.ColumnResult;
+import javax.persistence.ConstructorResult;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -36,14 +39,28 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedNativeQuery;
 import javax.persistence.OneToMany;
+import javax.persistence.SqlResultSetMapping;
 import javax.persistence.Table;
 
 import lombok.Data;
 import net.troja.eve.pve.db.account.AccountBean;
 import net.troja.eve.pve.db.sites.SiteBean;
 import net.troja.eve.pve.db.solarsystem.SolarSystemBean;
+import net.troja.eve.pve.db.stats.MonthOverviewStat;
 
+@SqlResultSetMapping(
+    name = "MonthlyOverviewStatsMapping",
+    classes = {
+        @ConstructorResult(
+            targetClass = MonthOverviewStat.class,
+            columns = { @ColumnResult(name = "start", type = LocalDate.class), @ColumnResult(name = "value", type = Double.class) }) })
+
+@NamedNativeQuery(
+    name = "OutcomeBean.getMonthlyOverviewStats",
+    query = "select DATE(start) as start, sum(loot_value + bounty_value + reward_value) as value from outcome o where account_id = :account and start > :start group by DATE(start) order by DATE(start)",
+    resultSetMapping = "MonthlyOverviewStatsMapping")
 @Data
 @Entity
 @Table(name = "outcome")
