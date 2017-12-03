@@ -96,12 +96,13 @@ public class SitesController {
     }
 
     @PostMapping
-    public String start(final StartModelBean model, final Principal principal) {
+    public String start(final StartModelBean startModel, final Model model, final Principal principal) {
         final AccountBean account = (AccountBean) ((OAuth2Authentication) principal).getPrincipal();
-        final String name = model.getName();
+        final String name = startModel.getName();
         if (StringUtils.isBlank(name)) {
-            model.setError(true);
-            return "sites";
+            startModel.setError(true);
+            startModel.setErrorMessage("Looks like you didn't enter a site");
+            return sites(startModel, model, principal);
         } else {
             final Optional<SiteBean> site = siteRepo.findByName(name);
             String siteString;
@@ -112,6 +113,11 @@ public class SitesController {
             }
             final SolarSystemBean system = locationService.getLocation(account);
             final ShipBean ship = locationService.getShip(account);
+            if (system == null || ship == null) {
+                startModel.setError(true);
+                startModel.setErrorMessage("Location and ship could not be retrieved from the EVE API, please try again in a few seconds.");
+                return sites(startModel, model, principal);
+            }
             final OutcomeBean outcome = new OutcomeBean(account, system, ship, siteString, site.orElse(null));
             final OutcomeBean saved = outcomeRepo.save(outcome);
             return "redirect:/site/" + saved.getId() + "/edit";

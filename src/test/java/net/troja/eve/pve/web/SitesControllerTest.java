@@ -127,19 +127,19 @@ public class SitesControllerTest {
 
     @Test
     public void startError() {
-        final StartModelBean model = new StartModelBean();
-        model.setName(" ");
+        final StartModelBean startModel = new StartModelBean();
+        startModel.setName(" ");
 
-        final String result = classToTest.start(model, principal);
+        final String result = classToTest.start(startModel, model, principal);
 
         assertThat(result, equalTo("sites"));
-        assertThat(model.isError(), equalTo(true));
+        assertThat(startModel.isError(), equalTo(true));
     }
 
     @Test
     public void start() {
-        final StartModelBean model = new StartModelBean();
-        model.setName(SITE_NAME);
+        final StartModelBean startModel = new StartModelBean();
+        startModel.setName(SITE_NAME);
 
         final SiteBean site = new SiteBean();
         site.setName(SITE_NAME);
@@ -157,16 +157,33 @@ public class SitesControllerTest {
 
         when(locationService.getShip(account)).thenReturn(new ShipBean());
 
-        final String result = classToTest.start(model, principal);
+        final String result = classToTest.start(startModel, model, principal);
 
         assertThat(result, equalTo("redirect:/site/1/edit"));
-        assertThat(model.isError(), equalTo(false));
+        assertThat(startModel.isError(), equalTo(false));
+    }
+
+    @Test
+    public void startLocationError() {
+        final StartModelBean startModel = new StartModelBean();
+        startModel.setName(SITE_NAME);
+        final AccountBean account = new AccountBean();
+        final SiteBean site = new SiteBean();
+        site.setName(SITE_NAME);
+
+        when(siteRepo.findByName(SITE_NAME)).thenReturn(Optional.of(site));
+        when(locationService.getLocation(account)).thenReturn(null);
+
+        final String result = classToTest.start(startModel, model, principal);
+
+        assertThat(result, equalTo("sites"));
+        assertThat(startModel.isError(), equalTo(true));
     }
 
     @Test
     public void startSiteNotFound() {
-        final StartModelBean model = new StartModelBean();
-        model.setName(SITE_NAME);
+        final StartModelBean startModel = new StartModelBean();
+        startModel.setName(SITE_NAME);
 
         final SolarSystemBean system = new SolarSystemBean();
         system.setId(123123);
@@ -182,10 +199,10 @@ public class SitesControllerTest {
 
         when(locationService.getShip(account)).thenReturn(new ShipBean());
 
-        final String result = classToTest.start(model, principal);
+        final String result = classToTest.start(startModel, model, principal);
 
         assertThat(result, equalTo("redirect:/site/0/edit"));
-        assertThat(model.isError(), equalTo(false));
+        assertThat(startModel.isError(), equalTo(false));
         assertThat(argument.getValue().getSiteName(), equalTo(SITE_NAME));
     }
 
@@ -327,8 +344,6 @@ public class SitesControllerTest {
         list.add(new LootBean(3, null, 1, 1d));
 
         Collections.sort(list, SitesController.getLootComparator());
-
-        System.out.println(list);
 
         assertThat(list.get(0).getTypeId(), equalTo(2));
         assertThat(list.get(1).getTypeId(), equalTo(3));

@@ -28,6 +28,7 @@ import lombok.Data;
 public class StartModelBean {
     private String name;
     private boolean error;
+    private String errorMessage;
 
     public StartModelBean() {
         super();
