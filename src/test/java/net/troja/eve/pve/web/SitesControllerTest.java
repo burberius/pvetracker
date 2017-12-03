@@ -348,4 +348,19 @@ public class SitesControllerTest {
         assertThat(list.get(0).getTypeId(), equalTo(2));
         assertThat(list.get(1).getTypeId(), equalTo(3));
     }
+
+    public void delete() {
+        final long id = 5;
+        final OutcomeBean outcome = new OutcomeBean();
+        final AccountBean account = new AccountBean();
+        account.setCharacterId(CHARACTER_ID);
+        outcome.setAccount(account);
+        when(outcomeRepo.findById(id)).thenReturn(Optional.of(outcome));
+        when(principal.getPrincipal()).thenReturn(account);
+
+        classToTest.delete(model, principal, id);
+
+        verify(outcomeRepo).delete(outcome);
+    }
+
 }

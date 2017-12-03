@@ -161,6 +161,13 @@ public class SitesController {
         return "site";
     }
 
+    @GetMapping("/{id}/delete")
+    public String delete(final Model model, final Principal principal, @PathVariable final long id) {
+        final OutcomeBean outcomeDb = getOutcome(principal, id);
+        outcomeRepo.delete(outcomeDb);
+        return "redirect:/site";
+    }
+
     public static Comparator<LootBean> getLootComparator() {
         return (final LootBean o1, final LootBean o2) -> Double.compare(o1.getValue(), o2.getValue());
     }

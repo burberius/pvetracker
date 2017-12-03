@@ -52,6 +52,10 @@ a:active {
 	margin-top: 2em;
 }
 
+.material-icons {
+	vertical-align: middle;
+}
+
 /*
  * Topmenu
  */
@@ -226,6 +230,12 @@ table#sites {
 #sites th, #sites td {
 	border-bottom: solid 1px #1a2428;
 	text-align: center;
+}
+
+.delete {
+	position: absolute;
+	right: 5px;
+    top: 5px;
 }
 
 .money {
