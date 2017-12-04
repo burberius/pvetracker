@@ -8,6 +8,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -42,6 +43,7 @@ public class StatsController {
         final LocalDateTime start = LocalDateTime.now().minusDays(NUMBER_OF_DAYS_IN_MONTH);
         final List<MonthOverviewStatBean> monthlyOverviewStats = outcomeRepository.getMonthlyOverviewStats(account, start);
         model.addAttribute("montly", convertMonthlyData(monthlyOverviewStats));
+        model.addAttribute("lastValueSites", outcomeRepository.findLastSiteEarnings(account, PageRequest.of(0, 10)));
         return "stats";
     }
 

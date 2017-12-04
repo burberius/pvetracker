@@ -11,6 +11,22 @@
 	<div id="content" layout:fragment="content">
 		<canvas id="monthly"></canvas>
 
+		<table class="compact">
+			<tr>
+				<th colspan="3" class="center">Last 10 site values</th>
+			</tr>
+			<tr>
+				<th class="head">Site</th>
+				<th class="head">Value</th>
+				<th class="head">Date</th>
+			</tr>
+			<tr th:each="outcome : ${lastValueSites}">
+				<td th:text="${outcome.site} ? ${outcome.site.name} : ${outcome.siteName}">site</td>
+				<td><span th:text="${#numbers.formatDecimal(outcome.bountyValue + outcome.lootValue + outcome.rewardValue, 1, 'POINT', 0, 'COMMA')}">bounty</span> ISK</td>
+				<td th:text="${#temporals.format(outcome.start, 'yyyy-MM-dd HH:mm')}">start</td>
+			</tr>
+		</table>
+
 		<script type="text/javascript" th:inline="javascript">
 			Chart.defaults.global.title.display = true;
 			Chart.defaults.global.title.fontColor = 'rgb(240,240,240)';

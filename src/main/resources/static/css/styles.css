@@ -214,20 +214,20 @@ td img {
 	text-align: center;
 }
 
-table#sites {
+table.compact {
 	border-collapse: collapse;
 }
 
-#sites th {
+.compact th {
 	padding: 5px 16px;
 }
 
-#sites td {
+.compact td {
 	padding: 0px 6px;
 	font-size: smaller;
 }
 
-#sites th, #sites td {
+.compact th, .compact td {
 	border-bottom: solid 1px #1a2428;
 	text-align: center;
 }

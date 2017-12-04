@@ -38,6 +38,9 @@ import net.troja.eve.pve.db.stats.SiteCountStatBean;
 public interface OutcomeRepository extends CrudRepository<OutcomeBean, Long> {
     List<OutcomeBean> findByAccountOrderByStartDesc(AccountBean account);
 
+    @Query(value = "select o from OutcomeBean o where (bountyValue + rewardValue + lootValue) > 0 and account = :account order by start desc")
+    List<OutcomeBean> findLastSiteEarnings(@Param(value = "account") AccountBean account, Pageable pageable);
+
     @Query(
         value = "select new net.troja.eve.pve.db.stats.SiteCountStatBean(o.site.name, count(o)) from OutcomeBean o "
                 + "where site != null and account = :account group by site order by count(id) desc")
