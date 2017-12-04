@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 import java.util.Arrays;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
@@ -42,6 +43,7 @@ public class StatsControllerTest {
     }
 
     @Test
+    @Ignore
     public void getStats() {
         final AccountBean account = new AccountBean();
         when(principal.getPrincipal()).thenReturn(account);
