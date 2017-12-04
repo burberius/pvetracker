@@ -4,8 +4,10 @@ import java.security.Principal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -18,10 +20,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import net.troja.eve.pve.db.account.AccountBean;
 import net.troja.eve.pve.db.outcome.OutcomeRepository;
 import net.troja.eve.pve.db.stats.MonthOverviewStatBean;
+import net.troja.eve.pve.price.PriceService;
 
 @Controller
 @RequestMapping("/stats")
 public class StatsController {
+    private static final int TYPE_ID_PLEX = 44992;
+
     private static final int NUMBER_OF_DAYS_IN_MONTH = 30;
 
     private static final double VALUE_100 = 100D;
@@ -32,6 +37,8 @@ public class StatsController {
 
     @Autowired
     private OutcomeRepository outcomeRepository;
+    @Autowired
+    private PriceService priceService;
 
     public StatsController() {
         super();
@@ -44,6 +51,9 @@ public class StatsController {
         final List<MonthOverviewStatBean> monthlyOverviewStats = outcomeRepository.getMonthlyOverviewStats(account, start);
         model.addAttribute("montly", convertMonthlyData(monthlyOverviewStats));
         model.addAttribute("lastValueSites", outcomeRepository.findLastSiteEarnings(account, PageRequest.of(0, 10)));
+        model.addAttribute("values", outcomeRepository.getValueStats(account, start));
+        final Map<Integer, Double> prices = priceService.getPrices(Arrays.asList(TYPE_ID_PLEX));
+        model.addAttribute("plex", prices.get(TYPE_ID_PLEX));
         return "stats";
     }
 

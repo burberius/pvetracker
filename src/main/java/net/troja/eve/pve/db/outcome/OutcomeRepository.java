@@ -34,6 +34,7 @@ import org.springframework.data.repository.query.Param;
 import net.troja.eve.pve.db.account.AccountBean;
 import net.troja.eve.pve.db.stats.MonthOverviewStatBean;
 import net.troja.eve.pve.db.stats.SiteCountStatBean;
+import net.troja.eve.pve.db.stats.ValuesStatBean;
 
 public interface OutcomeRepository extends CrudRepository<OutcomeBean, Long> {
     List<OutcomeBean> findByAccountOrderByStartDesc(AccountBean account);
@@ -47,4 +48,9 @@ public interface OutcomeRepository extends CrudRepository<OutcomeBean, Long> {
     List<SiteCountStatBean> getSiteCountStats(@Param(value = "account") AccountBean account, Pageable pageable);
 
     List<MonthOverviewStatBean> getMonthlyOverviewStats(@Param(value = "account") AccountBean account, @Param(value = "start") LocalDateTime start);
+
+    @Query(
+        value = "select new net.troja.eve.pve.db.stats.ValuesStatBean(sum(rewardValue), sum(bountyValue), "
+                + "sum(lootValue)) from OutcomeBean where account = :account and start > :start")
+    ValuesStatBean getValueStats(@Param(value = "account") AccountBean account, @Param(value = "start") LocalDateTime start);
 }

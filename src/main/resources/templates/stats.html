@@ -9,9 +9,33 @@
 </head>
 <body>
 	<div id="content" layout:fragment="content">
-		<canvas id="monthly"></canvas>
+		<table class="compact" style="float: left; left: 100px; position: absolute;">
+			<tr>
+				<th colspan="3" class="center">Overall earnings last 30 days</th>
+			</tr>
+			<tr>
+				<th class="head">Bounty</th>
+				<td><span th:text="${#numbers.formatDecimal(values.bounty, 1, 'POINT', 0, 'COMMA')}">bounty</span> ISK</td>
+			</tr>
+			<tr>
+				<th class="head">Reward</th>
+				<td><span th:text="${#numbers.formatDecimal(values.reward, 1, 'POINT', 0, 'COMMA')}">reward</span> ISK</td>
+			</tr>
+			<tr>
+				<th class="head">Loot</th>
+				<td><span th:text="${#numbers.formatDecimal(values.loot, 1, 'POINT', 0, 'COMMA')}">loot</span> ISK</td>
+			</tr>
+			<tr>
+				<th class="head">Sum</th>
+				<td class="yellow"><span th:text="${#numbers.formatDecimal(values.bounty + values.reward + values.loot, 1, 'POINT', 0, 'COMMA')}">sum</span> ISK</td>
+			</tr>
+			<tr>
+				<th class="head">PLEX</th>
+				<td><span th:text="${#numbers.formatDecimal((values.bounty + values.reward + values.loot) / plex, 1, 'POINT', 0, 'COMMA')}">plex</span></td>
+			</tr>
+		</table>
 
-		<table class="compact">
+		<table class="compact" style="left: 380px; position: relative;">
 			<tr>
 				<th colspan="3" class="center">Last 10 site values</th>
 			</tr>
@@ -26,6 +50,8 @@
 				<td th:text="${#temporals.format(outcome.start, 'yyyy-MM-dd HH:mm')}">start</td>
 			</tr>
 		</table>
+
+		<canvas id="monthly"></canvas>
 
 		<script type="text/javascript" th:inline="javascript">
 			Chart.defaults.global.title.display = true;
