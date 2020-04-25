@@ -14,7 +14,7 @@ mysql $MP < trnTranslations.sql
 
 echo "TRUNCATE TABLE type_translation;" | mysql $MP
 
-echo "INSERT INTO type_translation (type_id, language_id, text) SELECT i.typeID, t.languageID, t.text FROM invTypes i JOIN trnTranslations t ON i.typeID = t.keyID WHERE i.published = 1 AND t.languageID IN ('de' , 'en', 'fr', 'ja', 'ru') AND t.tcID = 8;" | mysql $MP
+echo "INSERT INTO type_translation (type_id, language, name) SELECT i.typeID, t.languageID, t.text FROM invTypes i JOIN trnTranslations t ON i.typeID = t.keyID WHERE i.published = 1 AND t.languageID IN ('de' , 'en', 'fr', 'ja', 'ru') AND t.tcID = 8;" | mysql $MP
 
 echo "DROP TABLE invTypes; DROP TABLE trnTranslations;" | mysql $MP
 
