@@ -5,6 +5,7 @@ security:
       clientSecret: overwrite-me
       accessTokenUri: https://login.eveonline.com/oauth/token
       userAuthorizationUri: https://login.eveonline.com/oauth/authorize
+      scope: esi-location.read_location.v1,esi-location.read_ship_type.v1,esi-wallet.read_character_wallet.v1
     resource:
       userInfoUri: https://login.eveonline.com/oauth/verify
 spring:

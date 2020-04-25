@@ -22,7 +22,7 @@ package net.troja.eve.pve.esi;
  * ====================================================
  */
 
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.security.oauth2.resource.ResourceServerProperties;
 
 import net.troja.eve.esi.ApiClient;
@@ -31,8 +31,8 @@ import net.troja.eve.esi.auth.OAuth;
 public class GeneralEsiService {
     public static final String DATASOURCE = "tranquility";
 
-    @Autowired
-    protected ResourceServerProperties resourceProperties;
+    @Value("${security.oauth2.client.clientId}")
+    protected String clientId;
 
     private OAuth auth;
 
@@ -42,19 +42,18 @@ public class GeneralEsiService {
 
     protected void init(final ApiClient apiClient) {
         auth = (OAuth) apiClient.getAuthentication("evesso");
-        auth.setClientId(resourceProperties.getClientId());
-        auth.setClientSecret(resourceProperties.getClientSecret());
+        auth.setClientId(clientId);
     }
 
     protected void switchRefreshToken(final String token) {
-        auth.setRefreshToken(token);
-    }
-
-    void setResourceProperties(final ResourceServerProperties resourceProperties) {
-        this.resourceProperties = resourceProperties;
+        auth.setAuth(clientId, token);
     }
 
     void setAuth(final OAuth auth) {
         this.auth = auth;
+    }
+
+    public void setClientId(String clientId) {
+        this.clientId = clientId;
     }
 }

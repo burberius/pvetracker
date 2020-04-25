@@ -22,48 +22,42 @@ package net.troja.eve.pve;
  * ====================================================
  */
 
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.servlet.Filter;
-
+import net.troja.eve.pve.db.account.AccountRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.security.oauth2.resource.ResourceServerProperties;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.security.oauth2.resource.UserInfoTokenServices;
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.oauth2.client.OAuth2ClientContext;
 import org.springframework.security.oauth2.client.OAuth2RestTemplate;
 import org.springframework.security.oauth2.client.filter.OAuth2ClientAuthenticationProcessingFilter;
-import org.springframework.security.oauth2.client.token.grant.code.AuthorizationCodeResourceDetails;
+import org.springframework.security.oauth2.client.token.grant.client.ClientCredentialsResourceDetails;
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableOAuth2Client;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
-import net.troja.eve.esi.auth.SsoScopes;
-import net.troja.eve.pve.db.account.AccountRepository;
+import javax.servlet.Filter;
 
 @Configuration
-@EnableOAuth2Client
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
-    private static final List<String> SCOPES = new ArrayList<>();
-
     @Autowired
     private OAuth2ClientContext oauth2ClientContext;
     @Autowired
-    private AuthorizationCodeResourceDetails oauth2Client;
-    @Autowired
-    private ResourceServerProperties resourceProperties;
+    private OAuth2RestTemplate restTemplate;
     @Autowired
     private AccountRepository accountRepository;
 
+    @Value("${security.oauth2.resource.userInfoUri}")
+    protected String userInfoUri;
+    @Value("${security.oauth2.client.clientId}")
+    protected String clientId;
+
     public SecurityConfiguration() {
         super();
-        SCOPES.add(SsoScopes.ESI_LOCATION_READ_LOCATION_V1);
-        SCOPES.add(SsoScopes.ESI_LOCATION_READ_SHIP_TYPE_V1);
-        SCOPES.add(SsoScopes.ESI_WALLET_READ_CHARACTER_WALLET_V1);
     }
 
     @Override
@@ -77,13 +71,23 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     private Filter ssoFilter() {
         final OAuth2ClientAuthenticationProcessingFilter filter = new OAuth2ClientAuthenticationProcessingFilter("/login");
-        oauth2Client.setScope(SCOPES);
-        final OAuth2RestTemplate restTemplate = new OAuth2RestTemplate(oauth2Client, oauth2ClientContext);
         filter.setRestTemplate(restTemplate);
-        final UserInfoTokenServices tokenServices = new UserInfoTokenServices(resourceProperties.getUserInfoUri(), oauth2Client.getClientId());
+        final UserInfoTokenServices tokenServices = new UserInfoTokenServices(userInfoUri, clientId);
         tokenServices.setRestTemplate(restTemplate);
         tokenServices.setPrincipalExtractor(new CharacterInfoExtractor(accountRepository, restTemplate));
         filter.setTokenServices(tokenServices);
         return filter;
+    }
+
+
+    @Bean
+    @ConfigurationProperties("security.oauth2.client")
+    protected ClientCredentialsResourceDetails oAuthDetails() {
+        return new ClientCredentialsResourceDetails();
+    }
+
+    @Bean
+    protected OAuth2RestTemplate restTemplate() {
+        return new OAuth2RestTemplate(oAuthDetails());
     }
 }

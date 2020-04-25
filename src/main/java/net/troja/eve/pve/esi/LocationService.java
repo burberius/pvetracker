@@ -70,7 +70,7 @@ public class LocationService extends GeneralEsiService {
         switchRefreshToken(account.getRefreshToken());
         try {
             final CharacterLocationResponse locationResponse = api.getCharactersCharacterIdLocation(account.getCharacterId(), DATASOURCE, null,
-                    null, null);
+                    null);
             final Optional<SolarSystemBean> solarSystem = solarSystemRepository.findById(locationResponse.getSolarSystemId());
             if (solarSystem.isPresent()) {
                 return solarSystem.get();
@@ -85,7 +85,7 @@ public class LocationService extends GeneralEsiService {
         switchRefreshToken(account.getRefreshToken());
         ShipBean ship = null;
         try {
-            final CharacterShipResponse shipResponse = api.getCharactersCharacterIdShip(account.getCharacterId(), DATASOURCE, null, null, null);
+            final CharacterShipResponse shipResponse = api.getCharactersCharacterIdShip(account.getCharacterId(), DATASOURCE, null, null);
             final String shipName = shipResponse.getShipName();
             final Integer shipTypeId = shipResponse.getShipTypeId();
             final Optional<ShipBean> shipOptional = shipRepository.findByNameAndTypeId(shipName, shipTypeId);

@@ -56,6 +56,7 @@ import net.troja.eve.pve.db.type.TypeTranslationRepository;
 
 public class LocationServiceTest {
     private static final int CHARACTER_ID = 12345;
+    private static final String CLIENT_ID = "The ID";
     private static final String REFRESH_TOKEN = "54321";
     private static final int LOCATION_ID = 9999;
     private static final String LOCATION = "Jita";
@@ -67,8 +68,6 @@ public class LocationServiceTest {
 
     @Mock
     private LocationApi locationApi;
-    @Mock
-    private ResourceServerProperties resourceProperties;
     @Mock
     private SolarSystemRepository solarSystemRepo;
     @Mock
@@ -83,8 +82,8 @@ public class LocationServiceTest {
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
-        classToTest.setResourceProperties(resourceProperties);
         classToTest.setApi(locationApi);
+        classToTest.setClientId(CLIENT_ID);
         when(locationApi.getApiClient()).thenReturn(apiClient);
         when(apiClient.getAuthentication("evesso")).thenReturn(auth);
         classToTest.init();
@@ -98,7 +97,7 @@ public class LocationServiceTest {
     public void getLocation() throws ApiException {
         final CharacterLocationResponse fakeLocation = new CharacterLocationResponse();
         fakeLocation.setSolarSystemId(LOCATION_ID);
-        when(locationApi.getCharactersCharacterIdLocation(CHARACTER_ID, GeneralEsiService.DATASOURCE, null, null, null)).thenReturn(fakeLocation);
+        when(locationApi.getCharactersCharacterIdLocation(CHARACTER_ID, GeneralEsiService.DATASOURCE, null, null)).thenReturn(fakeLocation);
         final SolarSystemBean solarSystem = new SolarSystemBean();
         solarSystem.setName(LOCATION);
         when(solarSystemRepo.findById(LOCATION_ID)).thenReturn(Optional.of(solarSystem));
@@ -106,33 +105,33 @@ public class LocationServiceTest {
         final SolarSystemBean location = classToTest.getLocation(getAccount());
 
         assertThat(location, equalTo(solarSystem));
-        verify(auth).setRefreshToken(REFRESH_TOKEN);
+        verify(auth).setAuth(CLIENT_ID, REFRESH_TOKEN);
     }
 
     @Test
     public void getLocationNotFound() throws ApiException {
         final CharacterLocationResponse fakeLocation = new CharacterLocationResponse();
         fakeLocation.setSolarSystemId(LOCATION_ID);
-        when(locationApi.getCharactersCharacterIdLocation(CHARACTER_ID, GeneralEsiService.DATASOURCE, null, null, null)).thenReturn(fakeLocation);
+        when(locationApi.getCharactersCharacterIdLocation(CHARACTER_ID, GeneralEsiService.DATASOURCE, null, null)).thenReturn(fakeLocation);
         when(solarSystemRepo.findById(LOCATION_ID)).thenReturn(Optional.empty());
 
         final SolarSystemBean location = classToTest.getLocation(getAccount());
 
         assertThat(location, nullValue());
-        verify(auth).setRefreshToken(REFRESH_TOKEN);
+        verify(auth).setAuth(CLIENT_ID, REFRESH_TOKEN);
     }
 
     @Test
     public void getLocationException() throws ApiException {
         final CharacterLocationResponse fakeLocation = new CharacterLocationResponse();
         fakeLocation.setSolarSystemId(LOCATION_ID);
-        when(locationApi.getCharactersCharacterIdLocation(CHARACTER_ID, GeneralEsiService.DATASOURCE, null, null, null))
+        when(locationApi.getCharactersCharacterIdLocation(CHARACTER_ID, GeneralEsiService.DATASOURCE, null, null))
                 .thenThrow(new ApiException());
 
         final SolarSystemBean location = classToTest.getLocation(getAccount());
 
         assertThat(location, nullValue());
-        verify(auth).setRefreshToken(REFRESH_TOKEN);
+        verify(auth).setAuth(CLIENT_ID, REFRESH_TOKEN);
     }
 
     @Test
@@ -141,7 +140,7 @@ public class LocationServiceTest {
         shipResponse.setShipName(SHIP_NAME);
         shipResponse.setShipTypeId(SHIP_TYPE_ID);
 
-        when(locationApi.getCharactersCharacterIdShip(CHARACTER_ID, GeneralEsiService.DATASOURCE, null, null, null)).thenReturn(shipResponse);
+        when(locationApi.getCharactersCharacterIdShip(CHARACTER_ID, GeneralEsiService.DATASOURCE, null, null)).thenReturn(shipResponse);
         final ShipBean shipBean = new ShipBean(SHIP_NAME, SHIP_TYPE, SHIP_TYPE_ID);
         when(shipRepo.findByNameAndTypeId(SHIP_NAME, SHIP_TYPE_ID)).thenReturn(Optional.of(shipBean));
 
@@ -149,7 +148,7 @@ public class LocationServiceTest {
 
         assertThat(ship.getName(), equalTo(SHIP_NAME));
         assertThat(ship.getType(), equalTo(SHIP_TYPE));
-        verify(auth).setRefreshToken(REFRESH_TOKEN);
+        verify(auth).setAuth(CLIENT_ID, REFRESH_TOKEN);
     }
 
     @Test
@@ -158,7 +157,7 @@ public class LocationServiceTest {
         shipResponse.setShipName(SHIP_NAME);
         shipResponse.setShipTypeId(SHIP_TYPE_ID);
 
-        when(locationApi.getCharactersCharacterIdShip(CHARACTER_ID, GeneralEsiService.DATASOURCE, null, null, null)).thenReturn(shipResponse);
+        when(locationApi.getCharactersCharacterIdShip(CHARACTER_ID, GeneralEsiService.DATASOURCE, null, null)).thenReturn(shipResponse);
         final TypeTranslationBean typeTranslation = new TypeTranslationBean();
         typeTranslation.setName(SHIP_TYPE);
         when(shipRepo.findByNameAndTypeId(SHIP_NAME, SHIP_TYPE_ID)).thenReturn(Optional.empty());
@@ -169,7 +168,7 @@ public class LocationServiceTest {
 
         assertThat(ship.getName(), equalTo(SHIP_NAME));
         assertThat(ship.getType(), equalTo(SHIP_TYPE));
-        verify(auth).setRefreshToken(REFRESH_TOKEN);
+        verify(auth).setAuth(CLIENT_ID, REFRESH_TOKEN);
     }
 
     @Test
@@ -178,7 +177,7 @@ public class LocationServiceTest {
         shipResponse.setShipName(SHIP_NAME);
         shipResponse.setShipTypeId(SHIP_TYPE_ID);
 
-        when(locationApi.getCharactersCharacterIdShip(CHARACTER_ID, GeneralEsiService.DATASOURCE, null, null, null)).thenReturn(shipResponse);
+        when(locationApi.getCharactersCharacterIdShip(CHARACTER_ID, GeneralEsiService.DATASOURCE, null, null)).thenReturn(shipResponse);
         when(shipRepo.findByNameAndTypeId(SHIP_NAME, SHIP_TYPE_ID)).thenReturn(Optional.empty());
         when(typeRepo.findByTypeIdAndLanguage(SHIP_TYPE_ID, "en")).thenReturn(Optional.empty());
         when(shipRepo.save(anyObject())).then(AdditionalAnswers.returnsFirstArg());
@@ -187,7 +186,7 @@ public class LocationServiceTest {
 
         assertThat(ship.getName(), equalTo(SHIP_NAME));
         assertThat(ship.getType(), equalTo("unknown"));
-        verify(auth).setRefreshToken(REFRESH_TOKEN);
+        verify(auth).setAuth(CLIENT_ID, REFRESH_TOKEN);
     }
 
     @Test
@@ -196,12 +195,12 @@ public class LocationServiceTest {
         shipResponse.setShipName(SHIP_NAME);
         shipResponse.setShipTypeId(SHIP_TYPE_ID);
 
-        when(locationApi.getCharactersCharacterIdShip(CHARACTER_ID, GeneralEsiService.DATASOURCE, null, null, null)).thenThrow(new ApiException());
+        when(locationApi.getCharactersCharacterIdShip(CHARACTER_ID, GeneralEsiService.DATASOURCE, null, null)).thenThrow(new ApiException());
 
         final ShipBean ship = classToTest.getShip(getAccount());
 
         assertThat(ship, nullValue());
-        verify(auth).setRefreshToken(REFRESH_TOKEN);
+        verify(auth).setAuth(CLIENT_ID, REFRESH_TOKEN);
     }
 
     private AccountBean getAccount() {

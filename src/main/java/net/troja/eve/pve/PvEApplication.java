@@ -1,12 +1,5 @@
 package net.troja.eve.pve;
 
-import java.nio.charset.Charset;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeFormatterBuilder;
-import java.util.Locale;
-import java.util.TimeZone;
-
 /*
  * ====================================================
  * Eve Online PvE Tracker
@@ -34,11 +27,19 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.format.Formatter;
 import org.springframework.scheduling.annotation.EnableScheduling;
-import org.springframework.security.oauth2.client.token.grant.code.AuthorizationCodeResourceDetails;
+import org.springframework.security.oauth2.config.annotation.web.configuration.EnableOAuth2Client;
 import org.thymeleaf.extras.java8time.dialect.Java8TimeDialect;
+
+import java.nio.charset.Charset;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeFormatterBuilder;
+import java.util.Locale;
+import java.util.TimeZone;
 
 @SpringBootApplication
 @EnableScheduling
+@EnableOAuth2Client
 public class PvEApplication {
     public static final Charset DEFAULT_CHARSET = Charset.forName("UTF-8");
 
@@ -49,11 +50,6 @@ public class PvEApplication {
     public static void main(final String[] args) {
         TimeZone.setDefault(TimeZone.getTimeZone("UTC"));
         SpringApplication.run(PvEApplication.class, args);
-    }
-
-    @Bean
-    public AuthorizationCodeResourceDetails getAuthorizationCodeResourceDetails() {
-        return new AuthorizationCodeResourceDetails();
     }
 
     @Bean
