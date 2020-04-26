@@ -1,16 +1,23 @@
-security:
-  oauth2:
-    client:
-      clientId: overwrite-me
-      clientSecret: overwrite-me
-      accessTokenUri: https://login.eveonline.com/oauth/token
-      userAuthorizationUri: https://login.eveonline.com/oauth/authorize
-      scope: esi-location.read_location.v1,esi-location.read_ship_type.v1,esi-wallet.read_character_wallet.v1
-    resource:
-      userInfoUri: https://login.eveonline.com/oauth/verify
 spring:
+  security:
+    oauth2:
+      client:
+        registration:
+          eve:
+            client-id: overwrite-me
+            client-secret: overwrite-me
+            scope: esi-location.read_location.v1,esi-location.read_ship_type.v1,esi-wallet.read_character_wallet.v1
+            redirect-uri: http://overwrite-me/login
+            authorization-grant-type: authorization_code
+        provider:
+          eve:
+            authorization-uri: https://login.eveonline.com/oauth/authorize
+            token-uri: https://login.eveonline.com/oauth/token
+            user-info-uri: https://login.eveonline.com/oauth/verify
+            user-info-authentication-method: header
+            user-name-attribute: CharacterName
   datasource:
-    url: jdbc:mysql://localhost:3306/pve?verifyServerCertificate=false&useSSL=false&requireSSL=false&characterEncoding=UTF-8
+    url: jdbc:mysql://localhost:3306/pve?verifyServerCertificate=false&useSSL=false&requireSSL=false&characterEncoding=UTF-8&serverTimezone=UTC
     username: pve
     password: pve
 server:

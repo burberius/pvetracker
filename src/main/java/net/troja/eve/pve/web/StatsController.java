@@ -9,8 +9,10 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import net.troja.eve.pve.sso.EveOAuth2User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -46,7 +48,7 @@ public class StatsController {
 
     @GetMapping
     public String getStats(final Model model, final Principal principal) {
-        final AccountBean account = (AccountBean) ((OAuth2Authentication) principal).getPrincipal();
+        AccountBean account = ControllerHelper.getAccount(principal);
         final LocalDateTime start = LocalDateTime.now().minusDays(NUMBER_OF_DAYS_IN_MONTH);
         final List<MonthOverviewStatBean> monthlyOverviewStats = outcomeRepository.getMonthlyOverviewStats(account, start);
         model.addAttribute("montly", convertMonthlyData(monthlyOverviewStats));
@@ -60,6 +62,9 @@ public class StatsController {
     private static ChartDataBean convertMonthlyData(final List<MonthOverviewStatBean> data) {
         final DateTimeFormatter formatter = DateTimeFormatter.ofPattern(DATE_FORMAT);
         final ChartDataBean result = new ChartDataBean();
+        if(data.isEmpty()) {
+            return result;
+        }
         LocalDate start = LocalDate.now().minusDays(NUMBER_OF_DAYS_IN_MONTH);
         final Iterator<MonthOverviewStatBean> iterator = data.iterator();
         MonthOverviewStatBean stat = iterator.next();

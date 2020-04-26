@@ -31,10 +31,14 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import net.troja.eve.pve.sso.EveOAuth2User;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -60,6 +64,7 @@ import net.troja.eve.pve.esi.LocationService;
 @Controller
 @RequestMapping("/site")
 public class SitesController {
+    private static final Logger LOGGER = LogManager.getLogger(SitesController.class);
     private static final String MODEL_OUTCOME = "outcome";
 
     @Autowired
@@ -77,7 +82,7 @@ public class SitesController {
 
     @GetMapping
     public String sites(final StartModelBean startModel, final Model model, final Principal principal) {
-        final AccountBean account = (AccountBean) ((OAuth2Authentication) principal).getPrincipal();
+        AccountBean account = ControllerHelper.getAccount(principal);
         final List<OutcomeBean> outcomes = outcomeRepo.findByAccountOrderByStartDesc(account);
         model.addAttribute("outcomes", outcomes);
         final List<SiteCountStatBean> siteCountStats = outcomeRepo.getSiteCountStats(account, PageRequest.of(0, 10));
@@ -97,7 +102,7 @@ public class SitesController {
 
     @PostMapping
     public String start(final StartModelBean startModel, final Model model, final Principal principal) {
-        final AccountBean account = (AccountBean) ((OAuth2Authentication) principal).getPrincipal();
+        AccountBean account = ControllerHelper.getAccount(principal);
         final String name = startModel.getName();
         if (StringUtils.isBlank(name)) {
             startModel.setError(true);
@@ -186,7 +191,7 @@ public class SitesController {
             throw new NotFoundException();
         }
         final OutcomeBean outcome = outcomeResult.get();
-        final AccountBean account = (AccountBean) ((OAuth2Authentication) principal).getPrincipal();
+        final AccountBean account = ControllerHelper.getAccount(principal);
         if (outcome.getAccount().getCharacterId() != account.getCharacterId()) {
             throw new AccessDeniedException("You are not allowed to view that");
         }

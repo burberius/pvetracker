@@ -23,38 +23,25 @@ package net.troja.eve.pve;
  */
 
 import net.troja.eve.pve.db.account.AccountRepository;
+import net.troja.eve.pve.sso.CharacterInfoUserService;
+import net.troja.eve.pve.sso.DelegatingClientService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.autoconfigure.security.oauth2.resource.UserInfoTokenServices;
-import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.oauth2.client.OAuth2ClientContext;
-import org.springframework.security.oauth2.client.OAuth2RestTemplate;
-import org.springframework.security.oauth2.client.filter.OAuth2ClientAuthenticationProcessingFilter;
-import org.springframework.security.oauth2.client.token.grant.client.ClientCredentialsResourceDetails;
-import org.springframework.security.oauth2.config.annotation.web.configuration.EnableOAuth2Client;
-import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
+import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService;
+import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
+import org.springframework.security.oauth2.client.userinfo.OAuth2UserService;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
-import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
-
-import javax.servlet.Filter;
 
 @Configuration
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Autowired
-    private OAuth2ClientContext oauth2ClientContext;
-    @Autowired
-    private OAuth2RestTemplate restTemplate;
-    @Autowired
     private AccountRepository accountRepository;
-
-    @Value("${security.oauth2.resource.userInfoUri}")
-    protected String userInfoUri;
-    @Value("${security.oauth2.client.clientId}")
-    protected String clientId;
+    @Autowired
+    private OAuth2AuthorizedClientService clientService;
 
     public SecurityConfiguration() {
         super();
@@ -62,32 +49,29 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(final HttpSecurity http) throws Exception {
-        http.antMatcher("/**").authorizeRequests()
-                .antMatchers("/", "/login**", "/js/**", "/css/**", "/images/**", "/favicon.ico", "/favicon.png", "/apple-touch-icon.png")
-                .permitAll().anyRequest().authenticated().and().logout().logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
-                .logoutSuccessUrl("/").permitAll().and().csrf().csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()).and()
-                .addFilterBefore(ssoFilter(), BasicAuthenticationFilter.class);
+        http
+                .authorizeRequests(a -> a
+                    .antMatchers("/", "/login**", "/js/**", "/css/**", "/images/**", "/favicon.ico", "/favicon.png", "/apple-touch-icon.png").permitAll()
+                    .anyRequest().authenticated()
+                )
+                .csrf(c -> c
+                        .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
+                )
+                .logout(l -> l
+                        .logoutSuccessUrl("/").permitAll()
+                )
+                .oauth2Login(oauth2 -> oauth2
+                        .authorizedClientService(new DelegatingClientService(clientService, accountRepository))
+                        .redirectionEndpoint(redirection -> redirection
+                                .baseUri("/login")
+                        )
+                        .userInfoEndpoint(userInfo -> userInfo
+                                .userService(getUserService())
+                        )
+                );
     }
 
-    private Filter ssoFilter() {
-        final OAuth2ClientAuthenticationProcessingFilter filter = new OAuth2ClientAuthenticationProcessingFilter("/login");
-        filter.setRestTemplate(restTemplate);
-        final UserInfoTokenServices tokenServices = new UserInfoTokenServices(userInfoUri, clientId);
-        tokenServices.setRestTemplate(restTemplate);
-        tokenServices.setPrincipalExtractor(new CharacterInfoExtractor(accountRepository, restTemplate));
-        filter.setTokenServices(tokenServices);
-        return filter;
-    }
-
-
-    @Bean
-    @ConfigurationProperties("security.oauth2.client")
-    protected ClientCredentialsResourceDetails oAuthDetails() {
-        return new ClientCredentialsResourceDetails();
-    }
-
-    @Bean
-    protected OAuth2RestTemplate restTemplate() {
-        return new OAuth2RestTemplate(oAuthDetails());
+    private OAuth2UserService<OAuth2UserRequest, OAuth2User> getUserService() {
+        return new CharacterInfoUserService(accountRepository);
     }
 }

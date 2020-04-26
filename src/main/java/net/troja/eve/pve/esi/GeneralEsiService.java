@@ -22,16 +22,14 @@ package net.troja.eve.pve.esi;
  * ====================================================
  */
 
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.autoconfigure.security.oauth2.resource.ResourceServerProperties;
-
 import net.troja.eve.esi.ApiClient;
 import net.troja.eve.esi.auth.OAuth;
+import org.springframework.beans.factory.annotation.Value;
 
 public class GeneralEsiService {
     public static final String DATASOURCE = "tranquility";
 
-    @Value("${security.oauth2.client.clientId}")
+    @Value("${spring.security.oauth2.client.registration.eve.client-id}")
     protected String clientId;
 
     private OAuth auth;
