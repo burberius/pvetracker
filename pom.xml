@@ -30,7 +30,7 @@
     <my.build.version>${maven.build.timestamp}</my.build.version>
 
     <esi.version>3.7.0</esi.version>
-    <mockito.version>1.10.19</mockito.version>
+    <mockito.version>3.3.3</mockito.version>
     <opencsv.version>5.1</opencsv.version>
     <security.version>2.4.1.RELEASE</security.version>
     <thymeleaf.security.version>3.0.4.RELEASE</thymeleaf.security.version>
@@ -149,8 +149,8 @@
     </dependency>
     <dependency>
       <groupId>org.mockito</groupId>
-      <artifactId>mockito-junit-jupiter</artifactId>
-      <version>3.3.3</version>
+      <artifactId>mockito-core</artifactId>
+      <version>${mockito.version}</version>
       <scope>test</scope>
     </dependency>
     <dependency>

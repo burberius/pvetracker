@@ -30,12 +30,14 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
+import net.troja.eve.pve.sso.EveOAuth2User;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.ui.Model;
 
@@ -69,12 +71,14 @@ public class SitesControllerTest {
 
     private final SitesController classToTest = new SitesController();
 
+    private AccountBean account = new AccountBean();
+
     @Mock
     private SiteRepository siteRepo;
     @Mock
     private OutcomeRepository outcomeRepo;
     @Mock
-    private OAuth2Authentication principal;
+    private OAuth2AuthenticationToken principal;
     @Mock
     private Model model;
     @Mock
@@ -85,6 +89,7 @@ public class SitesControllerTest {
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
+        account.setCharacterId(CHARACTER_ID);
         classToTest.setOutcomeRepo(outcomeRepo);
         classToTest.setSiteRepo(siteRepo);
         classToTest.setLocationService(locationService);
@@ -117,6 +122,7 @@ public class SitesControllerTest {
         final List<OutcomeBean> outcomes = new ArrayList<>();
 
         when(outcomeRepo.findByAccountOrderByStartDesc(any())).thenReturn(outcomes);
+        when(principal.getPrincipal()).thenReturn(getPricipal());
 
         final String result = classToTest.sites(null, model, principal);
 
@@ -129,6 +135,7 @@ public class SitesControllerTest {
     public void startError() {
         final StartModelBean startModel = new StartModelBean();
         startModel.setName(" ");
+        when(principal.getPrincipal()).thenReturn(getPricipal());
 
         final String result = classToTest.start(startModel, model, principal);
 
@@ -148,11 +155,9 @@ public class SitesControllerTest {
         final SolarSystemBean system = new SolarSystemBean();
         system.setId(123123);
 
-        final AccountBean account = new AccountBean();
-
         when(siteRepo.findByName(SITE_NAME)).thenReturn(Optional.of(site));
         when(outcomeRepo.save(any())).thenReturn(outcome);
-        when(principal.getPrincipal()).thenReturn(account);
+        when(principal.getPrincipal()).thenReturn(getPricipal());
         when(locationService.getLocation(account)).thenReturn(system);
 
         when(locationService.getShip(account)).thenReturn(new ShipBean());
@@ -173,6 +178,7 @@ public class SitesControllerTest {
 
         when(siteRepo.findByName(SITE_NAME)).thenReturn(Optional.of(site));
         when(locationService.getLocation(account)).thenReturn(null);
+        when(principal.getPrincipal()).thenReturn(getPricipal());
 
         final String result = classToTest.start(startModel, model, principal);
 
@@ -188,13 +194,11 @@ public class SitesControllerTest {
         final SolarSystemBean system = new SolarSystemBean();
         system.setId(123123);
 
-        final AccountBean account = new AccountBean();
-
         final ArgumentCaptor<OutcomeBean> argument = ArgumentCaptor.forClass(OutcomeBean.class);
 
         when(siteRepo.findByName(SITE_NAME)).thenReturn(Optional.empty());
         when(outcomeRepo.save(argument.capture())).then(returnsFirstArg());
-        when(principal.getPrincipal()).thenReturn(account);
+        when(principal.getPrincipal()).thenReturn(getPricipal());
         when(locationService.getLocation(account)).thenReturn(system);
 
         when(locationService.getShip(account)).thenReturn(new ShipBean());
@@ -210,11 +214,9 @@ public class SitesControllerTest {
     public void show() {
         final long id = 5;
         final OutcomeBean outcome = new OutcomeBean();
-        final AccountBean account = new AccountBean();
-        account.setCharacterId(CHARACTER_ID);
         outcome.setAccount(account);
         when(outcomeRepo.findById(id)).thenReturn(Optional.of(outcome));
-        when(principal.getPrincipal()).thenReturn(account);
+        when(principal.getPrincipal()).thenReturn(getPricipal());
 
         final String result = classToTest.show(model, principal, id);
 
@@ -232,7 +234,7 @@ public class SitesControllerTest {
         account2.setCharacterId(CHARACTER_ID + 1);
         outcome.setAccount(account1);
         when(outcomeRepo.findById(id)).thenReturn(Optional.of(outcome));
-        when(principal.getPrincipal()).thenReturn(account2);
+        when(principal.getPrincipal()).thenReturn(new EveOAuth2User(account2));
 
         classToTest.show(model, principal, id);
     }
@@ -258,11 +260,9 @@ public class SitesControllerTest {
         outcome.setRewardValue(REWARD);
         final OutcomeBean outcomeDb = new OutcomeBean();
         outcomeDb.setLoot(new ArrayList<>());
-        final AccountBean account = new AccountBean();
-        account.setCharacterId(CHARACTER_ID);
         outcomeDb.setAccount(account);
         when(outcomeRepo.findById(OUTCOME_ID)).thenReturn(Optional.of(outcomeDb));
-        when(principal.getPrincipal()).thenReturn(account);
+        when(principal.getPrincipal()).thenReturn(getPricipal());
         when(contentParserService.parse(LOOT)).thenReturn(Arrays.asList(lootBean));
 
         final String result = classToTest.save(model, outcome, principal, OUTCOME_ID);
@@ -294,11 +294,9 @@ public class SitesControllerTest {
         final OutcomeBean outcomeDb = new OutcomeBean();
         outcomeDb.setLoot(new ArrayList<>());
         outcomeDb.setEnd(old);
-        final AccountBean account = new AccountBean();
-        account.setCharacterId(CHARACTER_ID);
         outcomeDb.setAccount(account);
         when(outcomeRepo.findById(OUTCOME_ID)).thenReturn(Optional.of(outcomeDb));
-        when(principal.getPrincipal()).thenReturn(account);
+        when(principal.getPrincipal()).thenReturn(getPricipal());
         when(contentParserService.parse(LOOT)).thenReturn(Arrays.asList(lootBean));
 
         classToTest.save(model, outcome, principal, OUTCOME_ID);
@@ -326,7 +324,7 @@ public class SitesControllerTest {
         account.setCharacterId(CHARACTER_ID);
         outcomeDb.setAccount(account);
         when(outcomeRepo.findById(OUTCOME_ID)).thenReturn(Optional.of(outcomeDb));
-        when(principal.getPrincipal()).thenReturn(account);
+        when(principal.getPrincipal()).thenReturn(getPricipal());
         when(contentParserService.parse(LOOT)).thenReturn(Arrays.asList(lootBean));
 
         classToTest.save(model, outcome, principal, OUTCOME_ID);
@@ -334,6 +332,10 @@ public class SitesControllerTest {
         final ArgumentCaptor<OutcomeBean> ceptor = ArgumentCaptor.forClass(OutcomeBean.class);
         verify(outcomeRepo).save(ceptor.capture());
         assertThat(ceptor.getValue().getEnd(), equalTo(old));
+    }
+
+    private EveOAuth2User getPricipal() {
+        return new EveOAuth2User(account);
     }
 
     @Test
@@ -352,11 +354,9 @@ public class SitesControllerTest {
     public void delete() {
         final long id = 5;
         final OutcomeBean outcome = new OutcomeBean();
-        final AccountBean account = new AccountBean();
-        account.setCharacterId(CHARACTER_ID);
         outcome.setAccount(account);
         when(outcomeRepo.findById(id)).thenReturn(Optional.of(outcome));
-        when(principal.getPrincipal()).thenReturn(account);
+        when(principal.getPrincipal()).thenReturn(getPricipal());
 
         classToTest.delete(model, principal, id);
 
