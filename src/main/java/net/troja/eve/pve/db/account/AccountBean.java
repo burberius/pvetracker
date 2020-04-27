@@ -29,6 +29,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 import lombok.Data;
+import lombok.ToString;
 
 @Data
 @Entity
@@ -40,6 +41,7 @@ public class AccountBean {
     private String characterOwnerHash;
     private LocalDateTime created = LocalDateTime.now();
     private LocalDateTime lastLogin = LocalDateTime.now();
+    @ToString.Exclude
     private String refreshToken;
 
     public AccountBean() {

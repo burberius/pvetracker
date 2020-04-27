@@ -55,11 +55,11 @@ import net.troja.eve.pve.db.stats.MonthOverviewStatBean;
     classes = {
         @ConstructorResult(
             targetClass = MonthOverviewStatBean.class,
-            columns = { @ColumnResult(name = "start", type = LocalDate.class), @ColumnResult(name = "value", type = Double.class) }) })
+            columns = { @ColumnResult(name = "date", type = LocalDate.class), @ColumnResult(name = "value", type = Double.class) }) })
 
 @NamedNativeQuery(
     name = "OutcomeBean.getMonthlyOverviewStats",
-    query = "select DATE(start) as start, sum(loot_value + bounty_value + reward_value) as value from outcome o where "
+    query = "select DATE(start) as date, sum(loot_value + bounty_value + reward_value) as value from outcome o where "
             + "account_id = :account and start > :start group by DATE(start) order by DATE(start)",
     resultSetMapping = "MonthlyOverviewStatsMapping")
 @Data

@@ -44,11 +44,9 @@ public final class CharacterInfoUserService extends DefaultOAuth2UserService {
 
     public CharacterInfoUserService(final AccountRepository accountRepository) {
         this.accountRepository = accountRepository;
-        LOGGER.info("Started");
     }
 
     public AccountBean extractAccount(final Map<String, Object> map) {
-        LOGGER.info("extractAccount called: " + map.size());
         final Integer characterId = (Integer) map.get("CharacterID");
         AccountBean account = null;
         final Optional<AccountBean> accountSearch = accountRepository.findById(characterId);

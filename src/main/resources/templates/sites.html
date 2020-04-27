@@ -37,7 +37,7 @@
 		<div id="stats">
 			Quick select
 			<ul>
-				<li th:each="stat : ${stats}" th:text="${stat.name + ' (' + stat.count + ')'}" th:onClick="${'quick(&quot;' + stat.name + '&quot;);'}">
+				<li th:each="stat : ${stats}" th:text="${stat.name + ' (' + stat.count + ')'}" th:data-name="${stat.name}" th:onClick="quick(this.getAttribute('data-name'));">
 			</ul>
 		</div>
 		<script type="text/javascript">
