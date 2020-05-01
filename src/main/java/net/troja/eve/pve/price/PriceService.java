@@ -30,6 +30,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
+import net.troja.eve.pve.PvEApplication;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -90,7 +91,8 @@ public class PriceService {
 
     @Scheduled(fixedRate = DELETE_INTERVAL_1HOUR, initialDelay = INITIAL_DELAY_10S)
     public void deleteOld() {
-        priceRepository.deleteByCreatedBefore(LocalDateTime.now().minusHours(PRICE_AGE_HOURS));
+        priceRepository.deleteByCreatedBefore(LocalDateTime.now(PvEApplication.DEFAULT_ZONE)
+                .minusHours(PRICE_AGE_HOURS));
     }
 
     void setFuzzworkPriceService(final FuzzworkPriceService fuzzworkPriceService) {

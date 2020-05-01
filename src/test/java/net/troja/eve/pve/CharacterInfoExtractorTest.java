@@ -94,11 +94,11 @@ public class CharacterInfoExtractorTest {
     @Disabled
     public void extractPrincipalFound() {
         final Map<String, Object> map = getCharacterMap();
-        final LocalDateTime lastLogin = LocalDateTime.now().minusDays(1);
+        final LocalDateTime lastLogin = LocalDateTime.now(PvEApplication.DEFAULT_ZONE).minusDays(1);
 
         final AccountBean dbAccount = getExpectedAccount();
-        dbAccount.setLastLogin(LocalDateTime.now().minusDays(2));
-        dbAccount.setCreated(LocalDateTime.now().minusDays(5));
+        dbAccount.setLastLogin(LocalDateTime.now(PvEApplication.DEFAULT_ZONE).minusDays(2));
+        dbAccount.setCreated(LocalDateTime.now(PvEApplication.DEFAULT_ZONE).minusDays(5));
         dbAccount.setRefreshToken(HASH);
         when(accountRepository.findById(CHARACTER_ID)).thenReturn(Optional.of(dbAccount));
         when(restTemplate.getAccessToken()).thenReturn(getAccessToken());

@@ -45,6 +45,7 @@ import javax.persistence.SqlResultSetMapping;
 import javax.persistence.Table;
 
 import lombok.Data;
+import net.troja.eve.pve.PvEApplication;
 import net.troja.eve.pve.db.account.AccountBean;
 import net.troja.eve.pve.db.sites.SiteBean;
 import net.troja.eve.pve.db.solarsystem.SolarSystemBean;
@@ -84,7 +85,7 @@ public class OutcomeBean {
     @JoinColumn(name = "site_id")
     private SiteBean site;
     private String siteName;
-    private LocalDateTime start = LocalDateTime.now();
+    private LocalDateTime start = LocalDateTime.now(PvEApplication.DEFAULT_ZONE);
     private LocalDateTime end;
     private boolean faction;
     private boolean escalation;

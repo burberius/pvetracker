@@ -32,6 +32,7 @@ import org.thymeleaf.extras.java8time.dialect.Java8TimeDialect;
 
 import java.nio.charset.Charset;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
 import java.util.Locale;
@@ -42,6 +43,8 @@ import java.util.TimeZone;
 @EnableOAuth2Client
 public class PvEApplication {
     public static final Charset DEFAULT_CHARSET = Charset.forName("UTF-8");
+    public static final Locale DEFAULT_LOCALE = Locale.ENGLISH;
+    public static final ZoneId DEFAULT_ZONE = ZoneId.of("UTC");
 
     public PvEApplication() {
         super();

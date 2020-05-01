@@ -22,6 +22,7 @@ package net.troja.eve.pve.sso;
  * ====================================================
  */
 
+import net.troja.eve.pve.PvEApplication;
 import net.troja.eve.pve.db.account.AccountBean;
 import net.troja.eve.pve.db.account.AccountRepository;
 import org.apache.logging.log4j.LogManager;
@@ -52,7 +53,7 @@ public final class CharacterInfoUserService extends DefaultOAuth2UserService {
         final Optional<AccountBean> accountSearch = accountRepository.findById(characterId);
         if (accountSearch.isPresent()) {
             account = accountSearch.get();
-            account.setLastLogin(LocalDateTime.now());
+            account.setLastLogin(LocalDateTime.now(PvEApplication.DEFAULT_ZONE));
             LOGGER.info("Updated account " + account);
         } else {
             account = new AccountBean();

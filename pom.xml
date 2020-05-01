@@ -30,6 +30,8 @@
     <my.build.version>${maven.build.timestamp}</my.build.version>
 
     <esi.version>3.7.0</esi.version>
+    <forbiddenapis.version>3.0</forbiddenapis.version>
+    <jacoco.version>0.8.5</jacoco.version>
     <mockito.version>3.3.3</mockito.version>
     <opencsv.version>5.1</opencsv.version>
     <security.version>2.4.1.RELEASE</security.version>
@@ -189,13 +191,59 @@
         </configuration>
       </plugin>
       <plugin>
+        <groupId>de.thetaphi</groupId>
+        <artifactId>forbiddenapis</artifactId>
+        <version>${forbiddenapis.version}</version>
+        <configuration>
+          <failOnUnsupportedJava>false</failOnUnsupportedJava>
+          <bundledSignatures>
+            <bundledSignature>jdk-unsafe</bundledSignature>
+            <bundledSignature>jdk-deprecated</bundledSignature>
+            <bundledSignature>jdk-non-portable</bundledSignature>
+            <bundledSignature>jdk-reflection</bundledSignature>
+            <bundledSignature>jdk-system-out</bundledSignature>
+          </bundledSignatures>
+        </configuration>
+        <executions>
+          <execution>
+            <goals>
+              <goal>check</goal>
+              <goal>testCheck</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.jacoco</groupId>
+        <artifactId>jacoco-maven-plugin</artifactId>
+        <version>${jacoco.version}</version>
+        <configuration>
+          <outputDirectory>${project.build.directory}/jacoco</outputDirectory>
+        </configuration>
+        <executions>
+          <execution>
+            <id>jacoco-initialize</id>
+            <goals>
+              <goal>prepare-agent</goal>
+            </goals>
+          </execution>
+          <execution>
+            <id>jacoco-report</id>
+            <phase>package</phase>
+            <goals>
+              <goal>report</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>license-maven-plugin</artifactId>
-        <version>1.14</version>
+        <version>2.0.0</version>
         <configuration>
           <projectName>Eve Online PvE Tracker</projectName>
           <organizationName>Jens Oberender &lt;j.obi@troja.net&gt;</organizationName>
-          <inceptionYear>2017</inceptionYear>
+          <inceptionYear>2020</inceptionYear>
           <licenseName>gpl_v3</licenseName>
           <useJavaNoReformatCommentStartTag>false</useJavaNoReformatCommentStartTag>
           <processStartTag>====================================================</processStartTag>

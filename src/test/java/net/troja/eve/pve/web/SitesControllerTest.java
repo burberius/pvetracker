@@ -1,7 +1,5 @@
 package net.troja.eve.pve.web;
 
-import java.time.LocalDateTime;
-
 /*
  * ====================================================
  * Eve Online PvE Tracker
@@ -24,32 +22,7 @@ import java.time.LocalDateTime;
  * ====================================================
  */
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
-
-import net.troja.eve.pve.sso.EveOAuth2User;
-import org.junit.Before;
-import org.junit.Test;
-import org.mockito.ArgumentCaptor;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-import org.springframework.security.access.AccessDeniedException;
-import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
-import org.springframework.security.oauth2.provider.OAuth2Authentication;
-import org.springframework.ui.Model;
-
-import static org.hamcrest.Matchers.equalTo;
-
-import static org.junit.Assert.assertThat;
-
-import static org.mockito.AdditionalAnswers.returnsFirstArg;
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
+import net.troja.eve.pve.PvEApplication;
 import net.troja.eve.pve.content.ContentParserService;
 import net.troja.eve.pve.db.account.AccountBean;
 import net.troja.eve.pve.db.outcome.LootBean;
@@ -60,6 +33,25 @@ import net.troja.eve.pve.db.sites.SiteBean;
 import net.troja.eve.pve.db.sites.SiteRepository;
 import net.troja.eve.pve.db.solarsystem.SolarSystemBean;
 import net.troja.eve.pve.esi.LocationService;
+import net.troja.eve.pve.sso.EveOAuth2User;
+import org.junit.Before;
+import org.junit.Test;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
+import org.springframework.ui.Model;
+
+import java.time.LocalDateTime;
+import java.util.*;
+
+import static org.hamcrest.Matchers.equalTo;
+import static org.junit.Assert.assertThat;
+import static org.mockito.AdditionalAnswers.returnsFirstArg;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 public class SitesControllerTest {
     private static final String SITE_NAME = "Angel Vigil";
@@ -249,7 +241,7 @@ public class SitesControllerTest {
 
     @Test
     public void save() {
-        final LocalDateTime now = LocalDateTime.now().minusSeconds(1);
+        final LocalDateTime now = LocalDateTime.now(PvEApplication.DEFAULT_ZONE).minusSeconds(1);
         final LootBean lootBean = new LootBean();
         lootBean.setValue(BOUNTY + REWARD);
         final OutcomeModelBean outcome = new OutcomeModelBean();
@@ -280,7 +272,7 @@ public class SitesControllerTest {
 
     @Test
     public void saveDateOverwrite() {
-        final LocalDateTime now = LocalDateTime.now();
+        final LocalDateTime now = LocalDateTime.now(PvEApplication.DEFAULT_ZONE);
         final LocalDateTime old = now.minusHours(1);
         final LootBean lootBean = new LootBean();
         lootBean.setValue(BOUNTY + REWARD);
@@ -308,7 +300,7 @@ public class SitesControllerTest {
 
     @Test
     public void saveSetDate() {
-        final LocalDateTime old = LocalDateTime.now().minusHours(1);
+        final LocalDateTime old = LocalDateTime.now(PvEApplication.DEFAULT_ZONE).minusHours(1);
         final LootBean lootBean = new LootBean();
         lootBean.setValue(BOUNTY + REWARD);
         final OutcomeModelBean outcome = new OutcomeModelBean();

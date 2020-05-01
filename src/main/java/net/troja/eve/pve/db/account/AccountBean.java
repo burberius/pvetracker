@@ -30,6 +30,7 @@ import javax.persistence.Table;
 
 import lombok.Data;
 import lombok.ToString;
+import net.troja.eve.pve.PvEApplication;
 
 @Data
 @Entity
@@ -39,8 +40,8 @@ public class AccountBean {
     private int characterId;
     private String characterName;
     private String characterOwnerHash;
-    private LocalDateTime created = LocalDateTime.now();
-    private LocalDateTime lastLogin = LocalDateTime.now();
+    private LocalDateTime created = LocalDateTime.now(PvEApplication.DEFAULT_ZONE);
+    private LocalDateTime lastLogin = LocalDateTime.now(PvEApplication.DEFAULT_ZONE);
     @ToString.Exclude
     private String refreshToken;
 

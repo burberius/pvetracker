@@ -31,6 +31,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import net.troja.eve.pve.PvEApplication;
 import net.troja.eve.pve.sso.EveOAuth2User;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
@@ -149,7 +150,7 @@ public class SitesController {
         }
         outcomeDb.setStart(outcome.getStart());
         if (outcomeDb.getEnd() == null && outcome.getEnd() == null) {
-            outcomeDb.setEnd(LocalDateTime.now());
+            outcomeDb.setEnd(LocalDateTime.now(PvEApplication.DEFAULT_ZONE));
         } else {
             outcomeDb.setEnd(outcome.getEnd());
         }

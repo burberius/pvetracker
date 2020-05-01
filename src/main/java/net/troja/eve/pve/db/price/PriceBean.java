@@ -29,6 +29,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 import lombok.Data;
+import net.troja.eve.pve.PvEApplication;
 
 @Data
 @Entity
@@ -37,7 +38,7 @@ public class PriceBean {
     @Id
     private int typeId;
     private double value;
-    private LocalDateTime created = LocalDateTime.now();
+    private LocalDateTime created = LocalDateTime.now(PvEApplication.DEFAULT_ZONE);
 
     public PriceBean() {
         super();

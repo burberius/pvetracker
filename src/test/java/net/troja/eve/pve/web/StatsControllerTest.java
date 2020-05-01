@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 
+import net.troja.eve.pve.PvEApplication;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -47,7 +48,7 @@ public class StatsControllerTest {
     public void getStats() {
         final AccountBean account = new AccountBean();
         when(principal.getPrincipal()).thenReturn(account);
-        final LocalDate now = LocalDate.now();
+        final LocalDate now = LocalDate.now(PvEApplication.DEFAULT_ZONE);
         final MonthOverviewStatBean statBean = new MonthOverviewStatBean(now, 123456789D);
         when(outcomeRepo.getMonthlyOverviewStats(eq(account), any(LocalDateTime.class))).thenReturn(Arrays.asList(statBean));
 

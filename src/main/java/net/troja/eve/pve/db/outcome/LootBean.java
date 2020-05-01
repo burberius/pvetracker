@@ -29,6 +29,9 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 import lombok.Data;
+import net.troja.eve.pve.PvEApplication;
+
+import java.util.Locale;
 
 @Data
 @Entity
@@ -63,9 +66,10 @@ public class LootBean {
 
     public String getValueString() {
         if (count == 1) {
-            return String.format("%,d", Math.round(value)) + " ISK";
+            return String.format(Locale.GERMAN, "%,d", Math.round(value)) + " ISK";
         } else {
-            return String.format("%,d", Math.round(value * count)) + " ISK (" + String.format("%,d", Math.round(value)) + " ISK per unit)";
+            return String.format(Locale.GERMAN, "%,d", Math.round(value * count)) + " ISK ("
+                    + String.format(Locale.GERMAN, "%,d", Math.round(value)) + " ISK per unit)";
         }
     }
 }

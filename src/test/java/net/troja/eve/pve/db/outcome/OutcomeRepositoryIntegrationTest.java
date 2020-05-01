@@ -25,6 +25,7 @@ package net.troja.eve.pve.db.outcome;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
+import net.troja.eve.pve.PvEApplication;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -75,7 +76,7 @@ public class OutcomeRepositoryIntegrationTest {
         ShipBean ship = new ShipBean("Test", "Gila", 123);
         ship = shipRepo.save(ship);
         outcome.setShip(ship);
-        outcome.setStart(LocalDateTime.now());
+        outcome.setStart(LocalDateTime.now(PvEApplication.DEFAULT_ZONE));
 
         final LootBean loot = new LootBean();
         loot.setCount(5);

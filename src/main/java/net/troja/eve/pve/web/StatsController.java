@@ -9,6 +9,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import net.troja.eve.pve.PvEApplication;
 import net.troja.eve.pve.sso.EveOAuth2User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -27,15 +28,14 @@ import net.troja.eve.pve.price.PriceService;
 @Controller
 @RequestMapping("/stats")
 public class StatsController {
+    private static final String DATE_FORMAT = "yyyy-MM-dd";
+    private static final DateTimeFormatter formatter =
+            DateTimeFormatter.ofPattern(DATE_FORMAT, PvEApplication.DEFAULT_LOCALE);
     private static final int TYPE_ID_PLEX = 44992;
-
     private static final int NUMBER_OF_DAYS_IN_MONTH = 30;
-
     private static final double VALUE_100 = 100D;
-
     private static final double VALUE_10K = 10_000D;
 
-    private static final String DATE_FORMAT = "yyyy-MM-dd";
 
     @Autowired
     private OutcomeRepository outcomeRepository;
@@ -49,7 +49,7 @@ public class StatsController {
     @GetMapping
     public String getStats(final Model model, final Principal principal) {
         AccountBean account = ControllerHelper.getAccount(principal);
-        final LocalDateTime start = LocalDateTime.now().minusDays(NUMBER_OF_DAYS_IN_MONTH);
+        final LocalDateTime start = LocalDateTime.now(PvEApplication.DEFAULT_ZONE).minusDays(NUMBER_OF_DAYS_IN_MONTH);
         final List<MonthOverviewStatBean> monthlyOverviewStats = outcomeRepository.getMonthlyOverviewStats(account, start);
         model.addAttribute("montly", convertMonthlyData(monthlyOverviewStats));
         model.addAttribute("lastValueSites", outcomeRepository.findLastSiteEarnings(account, PageRequest.of(0, 10)));
@@ -60,12 +60,11 @@ public class StatsController {
     }
 
     private static ChartDataBean convertMonthlyData(final List<MonthOverviewStatBean> data) {
-        final DateTimeFormatter formatter = DateTimeFormatter.ofPattern(DATE_FORMAT);
         final ChartDataBean result = new ChartDataBean();
         if(data.isEmpty()) {
             return result;
         }
-        LocalDate start = LocalDate.now().minusDays(NUMBER_OF_DAYS_IN_MONTH);
+        LocalDate start = LocalDate.now(PvEApplication.DEFAULT_ZONE).minusDays(NUMBER_OF_DAYS_IN_MONTH);
         final Iterator<MonthOverviewStatBean> iterator = data.iterator();
         MonthOverviewStatBean stat = iterator.next();
         for (int days = 0; days <= NUMBER_OF_DAYS_IN_MONTH; days++) {

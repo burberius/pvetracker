@@ -22,6 +22,7 @@ package net.troja.eve.pve.esi;
  * ====================================================
  */
 
+import java.util.Locale;
 import java.util.Optional;
 
 import javax.annotation.PostConstruct;
@@ -87,6 +88,7 @@ public class LocationService extends GeneralEsiService {
         try {
             final CharacterShipResponse shipResponse = api.getCharactersCharacterIdShip(account.getCharacterId(), DATASOURCE, null, null);
             final String shipName = shipResponse.getShipName();
+            LOGGER.info("Shipname {} with locale {}", shipName, Locale.getDefault());
             final Integer shipTypeId = shipResponse.getShipTypeId();
             final Optional<ShipBean> shipOptional = shipRepository.findByNameAndTypeId(shipName, shipTypeId);
 
