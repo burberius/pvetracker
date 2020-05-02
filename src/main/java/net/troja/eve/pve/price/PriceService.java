@@ -34,6 +34,7 @@ import net.troja.eve.pve.PvEApplication;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
@@ -41,6 +42,7 @@ import net.troja.eve.pve.db.price.PriceBean;
 import net.troja.eve.pve.db.price.PriceRepository;
 import net.troja.eve.pve.price.evemarketer.EveMarketerPriceService;
 import net.troja.eve.pve.price.fuzzwork.FuzzworkPriceService;
+import org.springframework.web.client.RestTemplate;
 
 @Service
 public class PriceService {
@@ -105,5 +107,10 @@ public class PriceService {
 
     void setPriceRepository(final PriceRepository priceRepository) {
         this.priceRepository = priceRepository;
+    }
+
+    @Bean
+    public RestTemplate getRestTemplate() {
+        return new RestTemplate();
     }
 }

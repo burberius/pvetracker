@@ -59,11 +59,6 @@ public abstract class AbstractOnlinePriceService<T> {
         return prices.stream().map((final Integer value) -> value.toString()).collect(Collectors.joining(","));
     }
 
-    @Bean
-    public RestTemplate getRestTemplate() {
-        return new RestTemplate();
-    }
-
     protected void setRestTemplate(final RestTemplate restTemplate) {
         this.restTemplate = restTemplate;
     }

@@ -135,4 +135,8 @@ public class OutcomeBean {
         result.append(Math.floorMod(seconds, SECONDS2MINUTES)).append('s');
         return result.toString();
     }
+
+    public long getSumValue() {
+        return lootValue + bountyValue + rewardValue;
+    }
 }
