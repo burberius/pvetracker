@@ -29,12 +29,12 @@
 				<td th:text="${outcome.site} ? ${outcome.site.name} : ${outcome.siteName}">site</td>
 				<td th:text="${#temporals.format(outcome.start, 'yyyy-MM-dd HH:mm')}">start</td>
 				<td th:text="${outcome.duration}">duration</td>
-				<td><i th:if="${outcome.end} == null" class="material-icons orange">play_circle_filled</i>
+				<td class="left"><i th:if="${outcome.end} == null" class="material-icons orange">play_circle_filled</i>
 					<i th:if="${outcome.end} != null" class="material-icons green">check_circle</i>
 					<i th:if="${outcome.faction}" class="material-icons lightblue">account_circle</i>
 					<i th:if="${outcome.escalation}" class="material-icons lightblue">trending_up</i>
 				</td>
-				<td><span th:text="${#numbers.formatDecimal(outcome.sumValue, 1, 'POINT', 0, 'COMMA')}">sum</span> ISK</td>
+				<td class="right"><span th:text="${#numbers.formatDecimal(outcome.sumValue, 1, 'POINT', 0, 'COMMA')}">sum</span> ISK</td>
 				<td><a th:href="@{/site/__${outcome.id}__}"><i class="material-icons">arrow_forward</i></a></td>
 				<td><a th:href="@{/site/__${outcome.id}__/edit}"><i class="material-icons">mode_edit</i></a></td>
 			</tr>

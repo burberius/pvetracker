@@ -10,7 +10,7 @@ body {
 	background-color: #12191c;
 	color: #eee;
 	margin: 0px;
-	font-family: 'Dosis', sans-serif;
+	font-family: 'Varela Round', sans-serif;
 }
 
 a:after, a:before {
@@ -87,7 +87,7 @@ a:active {
 
 span.menu {
 	position: relative;
-	top: 10px;
+	top: 6px;
 	left: 10px;
 }
 
@@ -141,7 +141,7 @@ span.menu {
 	margin-top: 10px;
 	margin-left: auto;
 	margin-right: auto;
-	width: 800px;
+	width: 900px;
 }
 
 .highlight {
@@ -219,6 +219,14 @@ td img {
 
 .center {
 	text-align: center;
+}
+
+.compact td.left {
+    text-align: left;
+}
+
+.compact td.right {
+    text-align: right;
 }
 
 table.compact {
