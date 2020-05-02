@@ -22,8 +22,7 @@ import net.troja.eve.pve.db.price.PriceBean;
 public abstract class AbstractOnlinePriceService<T> {
     private static final Logger LOGGER = LogManager.getLogger(AbstractOnlinePriceService.class);
 
-    @Autowired
-    protected RestTemplate restTemplate;
+    protected RestTemplate restTemplate = new RestTemplate();
 
     public List<PriceBean> getPrices(final Collection<Integer> prices) {
         LOGGER.info("Get prices for {}", prices);

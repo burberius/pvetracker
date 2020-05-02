@@ -108,9 +108,4 @@ public class PriceService {
     void setPriceRepository(final PriceRepository priceRepository) {
         this.priceRepository = priceRepository;
     }
-
-    @Bean
-    public RestTemplate getRestTemplate() {
-        return new RestTemplate();
-    }
 }
