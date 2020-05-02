@@ -26,9 +26,9 @@
 				<th class="head">Edit</th>
 			</tr>
 			<tr th:each="outcome : ${outcomes}">
-				<td th:text="${outcome.site} ? ${outcome.site.name} : ${outcome.siteName}">site</td>
+				<td class="right" th:text="${outcome.site} ? ${outcome.site.name} : ${outcome.siteName}">site</td>
 				<td th:text="${#temporals.format(outcome.start, 'yyyy-MM-dd HH:mm')}">start</td>
-				<td th:text="${outcome.duration}">duration</td>
+				<td class="left" th:text="${outcome.duration}">duration</td>
 				<td class="left"><i th:if="${outcome.end} == null" class="material-icons orange">play_circle_filled</i>
 					<i th:if="${outcome.end} != null" class="material-icons green">check_circle</i>
 					<i th:if="${outcome.faction}" class="material-icons lightblue">account_circle</i>

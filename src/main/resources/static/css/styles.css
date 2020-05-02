@@ -239,7 +239,7 @@ table.compact {
 
 .compact td {
 	padding: 0px 6px;
-	font-size: smaller;
+	font-size: 14px;
 }
 
 .compact th, .compact td {
@@ -292,7 +292,9 @@ table.compact {
 #stats ul {
 	margin: 2px;
 	padding: 0px;
-	font-size: small;
+	font-size: 13px;
+	display: grid;
+    grid-template-columns: repeat(2, 1fr);
 }
 
 #stats li {

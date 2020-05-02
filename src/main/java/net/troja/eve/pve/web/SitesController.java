@@ -86,7 +86,7 @@ public class SitesController {
         AccountBean account = ControllerHelper.getAccount(principal);
         final List<OutcomeBean> outcomes = outcomeRepo.findByAccountOrderByStartDesc(account);
         model.addAttribute("outcomes", outcomes);
-        final List<SiteCountStatBean> siteCountStats = outcomeRepo.getSiteCountStats(account, PageRequest.of(0, 10));
+        final List<SiteCountStatBean> siteCountStats = outcomeRepo.getSiteCountStats(account, PageRequest.of(0, 18));
         model.addAttribute("stats", siteCountStats);
         return "sites";
     }
