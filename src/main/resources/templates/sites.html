@@ -18,6 +18,7 @@
 		<table class="compact">
 			<tr>
 				<th class="head">Site</th>
+				<th class="head">System</th>
 				<th class="head">Start</th>
 				<th class="head">Duration</th>
 				<th class="head">State</th>
@@ -26,9 +27,10 @@
 				<th class="head">Edit</th>
 			</tr>
 			<tr th:each="outcome : ${outcomes}">
-				<td class="right" th:text="${outcome.site} ? ${outcome.site.name} : ${outcome.siteName}">site</td>
+				<td class="left" th:text="${outcome.site} ? ${outcome.site.name} : ${outcome.siteName}">site</td>
+				<td class="left"><span th:text="${outcome.system.name}">system</span> <span th:text="${#numbers.formatDecimal(outcome.system.security, 1, 1)}" th:class="${outcome.system.secClass}">sec</span></td>
 				<td th:text="${#temporals.format(outcome.start, 'yyyy-MM-dd HH:mm')}">start</td>
-				<td class="left" th:text="${outcome.duration}">duration</td>
+				<td class="right" th:text="${outcome.duration}">duration</td>
 				<td class="left"><i th:if="${outcome.end} == null" class="material-icons orange">play_circle_filled</i>
 					<i th:if="${outcome.end} != null" class="material-icons green">check_circle</i>
 					<i th:if="${outcome.faction}" class="material-icons lightblue">account_circle</i>

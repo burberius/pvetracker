@@ -141,7 +141,7 @@ span.menu {
 	margin-top: 10px;
 	margin-left: auto;
 	margin-right: auto;
-	width: 900px;
+	width: 950px;
 }
 
 .highlight {
@@ -294,12 +294,13 @@ table.compact {
 	padding: 0px;
 	font-size: 13px;
 	display: grid;
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: repeat(8, 15px);
+    grid-auto-flow: column;
 }
 
 #stats li {
 	list-style-type: none;
-	padding-left: 5px;
+	padding: 0px 5px;
 	cursor: pointer;
 }
 
