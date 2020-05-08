@@ -203,6 +203,24 @@ public class LocationServiceTest {
         verify(auth).setAuth(CLIENT_ID, REFRESH_TOKEN);
     }
 
+    @Test
+    public void cleanShipname() {
+        String[] source = {"u\"Golden Gnu's Gila\"",
+                "u\"Golden Gnu's Worm\"",
+                "u'Girly 2'",
+                "u'W\\xfcrmchen'",
+                "u'Schei\\xdf\\xe4\\xf6\\xfc\\xe9'"};
+        String [] result = {"Golden Gnu's Gila",
+                "Golden Gnu's Worm",
+                "Girly 2",
+                "Würmchen",
+                "Scheißäöüé"};
+
+        for(int pos = 0; pos < source.length; pos++) {
+            assertThat(classToTest.cleanShipname(source[pos]), equalTo(result[pos]));
+        }
+    }
+
     private AccountBean getAccount() {
         final AccountBean account = new AccountBean();
         account.setCharacterId(CHARACTER_ID);

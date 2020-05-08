@@ -22,17 +22,6 @@ package net.troja.eve.pve.esi;
  * ====================================================
  */
 
-import java.util.Locale;
-import java.util.Optional;
-
-import javax.annotation.PostConstruct;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
-import org.springframework.stereotype.Service;
-
 import net.troja.eve.esi.ApiException;
 import net.troja.eve.esi.api.LocationApi;
 import net.troja.eve.esi.model.CharacterLocationResponse;
@@ -44,10 +33,23 @@ import net.troja.eve.pve.db.solarsystem.SolarSystemBean;
 import net.troja.eve.pve.db.solarsystem.SolarSystemRepository;
 import net.troja.eve.pve.db.type.TypeTranslationBean;
 import net.troja.eve.pve.db.type.TypeTranslationRepository;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
+import org.springframework.stereotype.Service;
+
+import javax.annotation.PostConstruct;
+import java.net.URLDecoder;
+import java.nio.charset.Charset;
+import java.util.Optional;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Service
 public class LocationService extends GeneralEsiService {
     private static final Logger LOGGER = LogManager.getLogger(LocationService.class);
+    private static final Pattern SHIPNAME_MATCHER = Pattern.compile(".['|\"](.*)['|\"]");
 
     @Autowired
     private SolarSystemRepository solarSystemRepository;
@@ -87,8 +89,7 @@ public class LocationService extends GeneralEsiService {
         ShipBean ship = null;
         try {
             final CharacterShipResponse shipResponse = api.getCharactersCharacterIdShip(account.getCharacterId(), DATASOURCE, null, null);
-            final String shipName = shipResponse.getShipName();
-            LOGGER.info("Shipname {} with locale {}", shipName, Locale.getDefault());
+            final String shipName = cleanShipname(shipResponse.getShipName());
             final Integer shipTypeId = shipResponse.getShipTypeId();
             final Optional<ShipBean> shipOptional = shipRepository.findByNameAndTypeId(shipName, shipTypeId);
 
@@ -102,6 +103,16 @@ public class LocationService extends GeneralEsiService {
             LOGGER.warn("Could not get ship of character {}", account.getCharacterName(), e);
         }
         return ship;
+    }
+
+    protected String cleanShipname(String shipName) {
+        Matcher matcher = SHIPNAME_MATCHER.matcher(shipName);
+        if(matcher.matches()) {
+            String result = matcher.group(1);
+            result = result.replaceAll("\\\\x", "%");
+            return URLDecoder.decode(result, Charset.forName("ISO-8859-15"));
+        }
+        return shipName;
     }
 
     private ShipBean createShip(final String shipName, final Integer shipTypeId) {
