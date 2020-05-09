@@ -34,15 +34,12 @@ import net.troja.eve.pve.PvEApplication;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import net.troja.eve.pve.db.price.PriceBean;
 import net.troja.eve.pve.db.price.PriceRepository;
-import net.troja.eve.pve.price.evemarketer.EveMarketerPriceService;
 import net.troja.eve.pve.price.fuzzwork.FuzzworkPriceService;
-import org.springframework.web.client.RestTemplate;
 
 @Service
 public class PriceService {
@@ -52,8 +49,6 @@ public class PriceService {
 
     private static final Logger LOGGER = LogManager.getLogger(PriceService.class);
 
-    @Autowired
-    private EveMarketerPriceService eveMarketerPriceService;
     @Autowired
     private FuzzworkPriceService fuzzworkPriceService;
     @Autowired
@@ -74,14 +69,6 @@ public class PriceService {
         }
         LOGGER.info("retrieve Prices: {}", rest);
         if (!rest.isEmpty()) {
-            final List<PriceBean> list = eveMarketerPriceService.getPrices(new ArrayList<>(rest));
-            priceRepository.saveAll(list);
-            for (final PriceBean price : list) {
-                result.put(price.getTypeId(), price.getValue());
-                rest.remove(price.getTypeId());
-            }
-        }
-        if (!rest.isEmpty()) {
             final List<PriceBean> list = fuzzworkPriceService.getPrices(new ArrayList<>(rest));
             priceRepository.saveAll(list);
             for (final PriceBean price : list) {
@@ -99,10 +86,6 @@ public class PriceService {
 
     void setFuzzworkPriceService(final FuzzworkPriceService fuzzworkPriceService) {
         this.fuzzworkPriceService = fuzzworkPriceService;
-    }
-
-    void setEveMarketerPriceService(final EveMarketerPriceService eveMarketerPriceService) {
-        this.eveMarketerPriceService = eveMarketerPriceService;
     }
 
     void setPriceRepository(final PriceRepository priceRepository) {

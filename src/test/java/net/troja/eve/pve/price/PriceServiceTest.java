@@ -42,7 +42,6 @@ import static org.mockito.Mockito.when;
 
 import net.troja.eve.pve.db.price.PriceBean;
 import net.troja.eve.pve.db.price.PriceRepository;
-import net.troja.eve.pve.price.evemarketer.EveMarketerPriceService;
 import net.troja.eve.pve.price.fuzzwork.FuzzworkPriceService;
 
 public class PriceServiceTest {
@@ -53,15 +52,12 @@ public class PriceServiceTest {
     @Mock
     private FuzzworkPriceService fuzzworkPriceService;
     @Mock
-    private EveMarketerPriceService eveMarketerPriceService;
-    @Mock
     private PriceRepository priceRepository;
 
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
         classToTest.setFuzzworkPriceService(fuzzworkPriceService);
-        classToTest.setEveMarketerPriceService(eveMarketerPriceService);
         classToTest.setPriceRepository(priceRepository);
     }
 
@@ -69,21 +65,6 @@ public class PriceServiceTest {
     public void getPrices() {
         final List<PriceBean> dbPrices = Arrays.asList(new PriceBean(34, 5.123));
         when(priceRepository.findAllById(TYPE_IDS)).thenReturn(dbPrices);
-        final List<PriceBean> restPrices = Arrays.asList(new PriceBean(35, 6.2123));
-        when(eveMarketerPriceService.getPrices(Arrays.asList(35))).thenReturn(restPrices);
-
-        final Map<Integer, Double> prices = classToTest.getPrices(TYPE_IDS);
-
-        assertThat(prices.size(), equalTo(2));
-        verify(priceRepository).saveAll(restPrices);
-        verifyNoMoreInteractions(fuzzworkPriceService);
-    }
-
-    @Test
-    public void getPricesUseFallback() {
-        final List<PriceBean> dbPrices = Arrays.asList(new PriceBean(34, 5.123));
-        when(priceRepository.findAllById(TYPE_IDS)).thenReturn(dbPrices);
-        when(eveMarketerPriceService.getPrices(Arrays.asList(35))).thenReturn(Collections.emptyList());
         final List<PriceBean> restPrices = Arrays.asList(new PriceBean(35, 6.2123));
         when(fuzzworkPriceService.getPrices(Arrays.asList(35))).thenReturn(restPrices);
 
@@ -100,7 +81,6 @@ public class PriceServiceTest {
 
         final Map<Integer, Double> prices = classToTest.getPrices(TYPE_IDS);
 
-        verifyNoMoreInteractions(eveMarketerPriceService);
         verifyNoMoreInteractions(fuzzworkPriceService);
         assertThat(prices.size(), equalTo(2));
     }
