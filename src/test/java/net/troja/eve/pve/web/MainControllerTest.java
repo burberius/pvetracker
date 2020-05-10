@@ -22,12 +22,11 @@ package net.troja.eve.pve.web;
  * ====================================================
  */
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.springframework.security.authentication.TestingAuthenticationToken;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
-
-import static org.junit.Assert.assertThat;
 
 public class MainControllerTest {
     private final MainController classToTest = new MainController();

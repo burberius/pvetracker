@@ -22,24 +22,6 @@ package net.troja.eve.pve.esi;
  * ====================================================
  */
 
-import java.util.Optional;
-
-import org.junit.Before;
-import org.junit.Test;
-import org.mockito.AdditionalAnswers;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-import org.springframework.boot.autoconfigure.security.oauth2.resource.ResourceServerProperties;
-
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.nullValue;
-
-import static org.junit.Assert.assertThat;
-
-import static org.mockito.Matchers.anyObject;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
 import net.troja.eve.esi.ApiClient;
 import net.troja.eve.esi.ApiException;
 import net.troja.eve.esi.api.LocationApi;
@@ -53,6 +35,20 @@ import net.troja.eve.pve.db.solarsystem.SolarSystemBean;
 import net.troja.eve.pve.db.solarsystem.SolarSystemRepository;
 import net.troja.eve.pve.db.type.TypeTranslationBean;
 import net.troja.eve.pve.db.type.TypeTranslationRepository;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.mockito.AdditionalAnswers;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+
+import java.util.Optional;
+
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.nullValue;
+import static org.mockito.Matchers.anyObject;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 public class LocationServiceTest {
     private static final int CHARACTER_ID = 12345;
@@ -79,7 +75,7 @@ public class LocationServiceTest {
     @Mock
     private OAuth auth;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         MockitoAnnotations.initMocks(this);
         classToTest.setApi(locationApi);

@@ -34,8 +34,8 @@ import net.troja.eve.pve.db.sites.SiteRepository;
 import net.troja.eve.pve.db.solarsystem.SolarSystemBean;
 import net.troja.eve.pve.esi.LocationService;
 import net.troja.eve.pve.sso.EveOAuth2User;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
@@ -46,8 +46,9 @@ import org.springframework.ui.Model;
 import java.time.LocalDateTime;
 import java.util.*;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
-import static org.junit.Assert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.AdditionalAnswers.returnsFirstArg;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.verify;
@@ -78,7 +79,7 @@ public class SitesControllerTest {
     @Mock
     private ContentParserService contentParserService;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         MockitoAnnotations.initMocks(this);
         account.setCharacterId(CHARACTER_ID);
@@ -216,7 +217,7 @@ public class SitesControllerTest {
         assertThat(result, equalTo("site"));
     }
 
-    @Test(expected = AccessDeniedException.class)
+    @Test
     public void showNotAllowed() {
         final long id = 5;
         final OutcomeBean outcome = new OutcomeBean();
@@ -228,15 +229,15 @@ public class SitesControllerTest {
         when(outcomeRepo.findById(id)).thenReturn(Optional.of(outcome));
         when(principal.getPrincipal()).thenReturn(new EveOAuth2User(account2));
 
-        classToTest.show(model, principal, id);
+        assertThrows(AccessDeniedException.class, () -> classToTest.show(model, principal, id));
     }
 
-    @Test(expected = NotFoundException.class)
+    @Test
     public void showNotFound() {
         final long id = 5;
         when(outcomeRepo.findById(id)).thenReturn(Optional.empty());
 
-        classToTest.show(model, principal, id);
+        assertThrows(NotFoundException.class, () -> classToTest.show(model, principal, id));
     }
 
     @Test
