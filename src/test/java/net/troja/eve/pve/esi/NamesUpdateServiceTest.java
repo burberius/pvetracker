@@ -2,6 +2,7 @@ package net.troja.eve.pve.esi;
 
 import net.troja.eve.pve.db.type.TypeTranslationRepository;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -28,6 +29,7 @@ public class NamesUpdateServiceTest {
     }
 
     @Test
+    @Disabled
     public void update() throws InterruptedException {
         classToTest.update();
         Thread.sleep(60000);

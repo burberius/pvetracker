@@ -60,12 +60,11 @@ public class PvEApplication {
     }
 
     @Bean
-    public Executor taskExecutor() {
+    public ThreadPoolTaskExecutor taskExecutor() {
         ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
         executor.setCorePoolSize(2);
         executor.setMaxPoolSize(20);
-        executor.setKeepAliveSeconds(60);
-        executor.setQueueCapacity(100);
+        executor.setQueueCapacity(1000);
         executor.setThreadNamePrefix("EveTypesLookup-");
         executor.initialize();
         return executor;

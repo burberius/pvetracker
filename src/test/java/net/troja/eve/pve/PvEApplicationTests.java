@@ -22,10 +22,12 @@ package net.troja.eve.pve;
  * ====================================================
  */
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
+@Disabled
 public class PvEApplicationTests {
 
     @Test
