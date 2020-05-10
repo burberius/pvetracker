@@ -1,48 +1,75 @@
 package net.troja.eve.pve.esi;
 
+import groovy.time.TimeDuration;
 import net.troja.eve.esi.ApiCallback;
 import net.troja.eve.esi.ApiException;
+import net.troja.eve.esi.api.StatusApi;
 import net.troja.eve.esi.api.UniverseApi;
+import net.troja.eve.esi.model.StatusResponse;
 import net.troja.eve.esi.model.TypeResponse;
 import net.troja.eve.pve.db.type.TypeTranslationBean;
 import net.troja.eve.pve.db.type.TypeTranslationRepository;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.BatchPreparedStatementSetter;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Queue;
-import java.util.concurrent.ConcurrentLinkedQueue;
+import javax.annotation.PostConstruct;
+import java.time.Duration;
+import java.util.*;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 
 @Service
 public class NamesUpdateService {
     private static final Logger LOGGER = LogManager.getLogger(NamesUpdateService.class);
+    private static final String STORAGE_LANGUAGE = "xx";
+    private static final int STORAGE_ID = 0;
     private static final String[] LANGUAGES = {"de", "en", "fr", "ru", "ja"};
-    private static final int BATCH_SIZE = 100;
-    private static final String QUERY_SAVE = "INSERT INTO type_translation_new(type_id, language, name) values (?, ?, ?)";
 
     @Autowired
     private TypeTranslationRepository typeTranslationRepository;
-    @Autowired
-    private JdbcTemplate jdbcTemplate;
 
     private UniverseApi universeApi = new UniverseApi();
+    private StatusApi statusApi = new StatusApi();
     private List<Integer> typeIds = new ArrayList<>();
-    private Queue<TypeTranslationBean> typesQueue = new ConcurrentLinkedQueue<>();
-    private int typesPage = 1;
+    private int typesPage;
     private long start;
+    private AtomicInteger counter = new AtomicInteger();
+    private String lastApiVersion;
+
+    @PostConstruct
+    public void init() {
+        Optional<TypeTranslationBean> storage =
+                typeTranslationRepository.findByTypeIdAndLanguage(STORAGE_ID, STORAGE_LANGUAGE);
+        if(storage.isPresent()) {
+            lastApiVersion = storage.get().getName();
+        }
+        LOGGER.info("Last Api Version: {}", lastApiVersion);
+
+        update();
+    }
 
     public void update() {
+        Boolean status;
+        do {
+            status = checkApiDifferentVersion();
+            if(status == Boolean.FALSE) {
+                return;
+            } else if(status == null) {
+                try {
+                    TimeUnit.MINUTES.sleep(5);
+                } catch (InterruptedException e) {
+                    LOGGER.error("Could not sleep");
+                }
+            }
+        } while (status == null);
+        LOGGER.info("Starting name update");
+        counter.set(0);
+        typesPage = 1;
+        typeIds.clear();
         start = System.currentTimeMillis();
-        jdbcTemplate.execute("CREATE TABLE type_translation_new LIKE type_translation");
         try {
             universeApi.getUniverseTypesAsync(GeneralEsiService.DATASOURCE, null, typesPage, getApiCallback());
         } catch (ApiException e) {
@@ -50,52 +77,77 @@ public class NamesUpdateService {
         }
     }
 
+    private Boolean checkApiDifferentVersion() {
+        try {
+            StatusResponse status = statusApi.getStatus(GeneralEsiService.DATASOURCE, null);
+            LOGGER.info("Current Api Version: {}", status.getServerVersion());
+            return !status.getServerVersion().equals(lastApiVersion);
+        } catch (ApiException e) {
+            LOGGER.error("Could not get API Status", e);
+            return null;
+        }
+    }
+
     private void updateNames() {
         typeIds.stream().forEach(t -> updateName(t));
-        System.out.println(typeIds.size() + " " + (System.currentTimeMillis() - start));
+        LOGGER.info("Started all threads for {} typeIds after {} ms", typeIds.size(), (System.currentTimeMillis() - start));
     }
 
     @Async
     private void updateName(int typeId) {
         try {
-            TypeResponse response = universeApi.getUniverseTypesTypeId(typeId, null, GeneralEsiService.DATASOURCE, null, null);
-            System.out.println("TypeId: " + typeId + " " + response.getName());
-            typesQueue.add(new TypeTranslationBean(typeId, "en", response.getName()));
-            if(typesQueue.size() >= BATCH_SIZE) {
-                writeToDb();
+            String lang = "en";
+            TypeResponse response = universeApi.getUniverseTypesTypeId(typeId, lang.equals("en") ? "en-us" : lang,
+                    GeneralEsiService.DATASOURCE, null, lang.equals("en") ? "en-us" : lang);
+            TypeTranslationBean translationBean = new TypeTranslationBean(typeId, lang, response.getName());
+            Optional<TypeTranslationBean> result = typeTranslationRepository.findByTypeIdAndLanguage(typeId, lang);
+            if(!result.isPresent()) {
+                typeTranslationRepository.save(translationBean);
+            } else if (!translationBean.equals(result.get())) {
+                TypeTranslationBean dbBean = result.get();
+                dbBean.setName(translationBean.getName());
+                typeTranslationRepository.save(dbBean);
+            }
+            int count = counter.incrementAndGet();
+            if(count == typeIds.size()) {
+                LOGGER.info("Finished all entries after {} ms", count, System.currentTimeMillis() - start );
+                updateApiVersion();
+            } else if( count % 100 == 0) {
+                long timeDiff = System.currentTimeMillis() - start;
+                LOGGER.info("Finished entry {} after {} ms, rest: {}",
+                        count, timeDiff, calcRest(count, timeDiff));
             }
         } catch (ApiException e) {
-            System.out.println(e.getCode() + " " + e.getMessage());
+            LOGGER.error("TypeId: {} Code: {}", typeId, e.getCode());
+            updateName(typeId);
         }
-
     }
 
-    private void writeToDb() {
-        LOGGER.info("Writing batch to DB");
-        List<TypeTranslationBean> batch = new ArrayList<>();
-        int max = Math.min(BATCH_SIZE, typesQueue.size());
-        for (int pos = 0; pos < max; pos++) {
-            batch.add(typesQueue.poll());
-        }
-        jdbcTemplate.batchUpdate(QUERY_SAVE, new BatchPreparedStatementSetter() {
-            @Override
-            public void setValues(PreparedStatement ps, int i)
-                    throws SQLException {
-                TypeTranslationBean translationBean = batch.get(i);
-                ps.setInt(1, translationBean.getTypeId());
-                ps.setString(2, translationBean.getLanguage());
-                ps.setString(3, translationBean.getName());
-            }
+    private String calcRest(int count, long timeDiff) {
+        double timePer = timeDiff / count;
+        int rest = typeIds.size() - count;
+        Duration timeLeft = Duration.ofMillis(Math.round(timePer * rest));
+        return timeLeft.toMinutes() + "m " + timeLeft.toSecondsPart() + "s";
+    }
 
-            @Override
-            public int getBatchSize() {
-                return batch.size();
+    private void updateApiVersion() {
+        try {
+            StatusResponse status = statusApi.getStatus(GeneralEsiService.DATASOURCE, null);
+            lastApiVersion = status.getServerVersion();
+            Optional<TypeTranslationBean> storage = typeTranslationRepository.findByTypeIdAndLanguage(STORAGE_ID, STORAGE_LANGUAGE);
+            TypeTranslationBean storageBean = new TypeTranslationBean(STORAGE_ID, STORAGE_LANGUAGE, lastApiVersion);
+            if(storage.isPresent()) {
+                storageBean = storage.get();
+                storageBean.setName(lastApiVersion);
             }
-        });
+            typeTranslationRepository.save(storageBean);
+            LOGGER.info("Saved new Api Version: {}", lastApiVersion);
+        } catch (ApiException e) {
+            LOGGER.error("Could not get API Status", e);
+        }
     }
 
     private ApiCallback<List<Integer>> getApiCallback() {
-        System.out.println("Api Callback");
         return new ApiCallback<>() {
             @Override
             public void onFailure(ApiException e, int statusCode, Map<String, List<String>> responseHeaders) {
@@ -104,7 +156,6 @@ public class NamesUpdateService {
 
             @Override
             public void onSuccess(List<Integer> result, int statusCode, Map<String, List<String>> responseHeaders) {
-                System.out.println("Success");
                 typeIds.addAll(result);
                 int maxPages = Integer.valueOf(responseHeaders.get("X-Pages").get(0));
                 if(typesPage < maxPages) {
@@ -133,9 +184,5 @@ public class NamesUpdateService {
 
     public void setTypeTranslationRepository(TypeTranslationRepository typeTranslationRepository) {
         this.typeTranslationRepository = typeTranslationRepository;
-    }
-
-    public void setJdbcTemplate(JdbcTemplate jdbcTemplate) {
-        this.jdbcTemplate = jdbcTemplate;
     }
 }

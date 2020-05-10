@@ -22,9 +22,7 @@ package net.troja.eve.pve.db.type;
  * ====================================================
  */
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 import lombok.Data;
 
@@ -33,6 +31,7 @@ import lombok.Data;
 @Table(name = "type_translation")
 public class TypeTranslationBean {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     private int typeId;
     private String language;
@@ -43,6 +42,7 @@ public class TypeTranslationBean {
     }
 
     public TypeTranslationBean(int typeId, String language, String name) {
+        super();
         this.typeId = typeId;
         this.language = language;
         this.name = name;

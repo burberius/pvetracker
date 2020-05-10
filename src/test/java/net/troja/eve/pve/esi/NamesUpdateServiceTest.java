@@ -1,33 +1,29 @@
 package net.troja.eve.pve.esi;
 
 import net.troja.eve.pve.db.type.TypeTranslationRepository;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.jdbc.core.JdbcTemplate;
 
-import static org.junit.Assert.assertNotNull;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @DataJpaTest
 public class NamesUpdateServiceTest {
 
     @Autowired
     private TypeTranslationRepository typeTranslationRepository;
-    @Autowired
-    private JdbcTemplate jdbcTemplate;
 
     private NamesUpdateService classToTest = new NamesUpdateService();
 
-    @Before
+    @BeforeEach
     public void setUp() {
-        classToTest.setJdbcTemplate(jdbcTemplate);
         classToTest.setTypeTranslationRepository(typeTranslationRepository);
     }
 
     @Test
     public void injectedComponentsAreNotNull(){
-        assertNotNull(jdbcTemplate);
         assertNotNull(typeTranslationRepository);
     }
 
@@ -35,5 +31,7 @@ public class NamesUpdateServiceTest {
     public void update() throws InterruptedException {
         classToTest.update();
         Thread.sleep(60000);
+
+        assertThat(typeTranslationRepository.count()).isEqualTo(1040);
     }
 }
