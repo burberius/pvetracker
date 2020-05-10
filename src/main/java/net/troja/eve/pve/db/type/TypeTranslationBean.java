@@ -41,4 +41,10 @@ public class TypeTranslationBean {
     public TypeTranslationBean() {
         super();
     }
+
+    public TypeTranslationBean(int typeId, String language, String name) {
+        this.typeId = typeId;
+        this.language = language;
+        this.name = name;
+    }
 }

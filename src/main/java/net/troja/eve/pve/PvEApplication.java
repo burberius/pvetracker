@@ -26,7 +26,9 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.format.Formatter;
+import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableOAuth2Client;
 import org.thymeleaf.extras.java8time.dialect.Java8TimeDialect;
 
@@ -37,10 +39,12 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
 import java.util.Locale;
 import java.util.TimeZone;
+import java.util.concurrent.Executor;
 
 @SpringBootApplication
 @EnableScheduling
 @EnableOAuth2Client
+@EnableAsync
 public class PvEApplication {
     public static final Charset DEFAULT_CHARSET = Charset.forName("UTF-8");
     public static final Locale DEFAULT_LOCALE = Locale.ENGLISH;
@@ -53,6 +57,17 @@ public class PvEApplication {
     public static void main(final String[] args) {
         TimeZone.setDefault(TimeZone.getTimeZone("UTC"));
         SpringApplication.run(PvEApplication.class, args);
+    }
+
+    @Bean
+    public Executor taskExecutor() {
+        ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
+        executor.setCorePoolSize(2);
+        executor.setMaxPoolSize(8);
+        executor.setQueueCapacity(500);
+        executor.setThreadNamePrefix("EveTypesLookup-");
+        executor.initialize();
+        return executor;
     }
 
     @Bean
