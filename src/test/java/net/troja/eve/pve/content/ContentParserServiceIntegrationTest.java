@@ -31,19 +31,16 @@ import java.util.List;
 import java.util.Map;
 
 import org.assertj.core.util.Files;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.test.context.junit4.SpringRunner;
 
 import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
-
-import static org.junit.Assert.assertThat;
 
 import static org.mockito.Mockito.when;
 
@@ -51,7 +48,6 @@ import net.troja.eve.pve.db.outcome.LootBean;
 import net.troja.eve.pve.db.type.TypeTranslationRepository;
 import net.troja.eve.pve.price.PriceService;
 
-@RunWith(SpringRunner.class)
 @DataJpaTest
 public class ContentParserServiceIntegrationTest {
     private final ContentParserService classToTest = new ContentParserService();
@@ -64,7 +60,7 @@ public class ContentParserServiceIntegrationTest {
     private Map<Integer, Double> prices;
     private final List<Integer> typeIds = Arrays.asList(27401, 28363, 28366, 28364, 21815, 28668, 24533, 15466);
 
-    @Before
+    @BeforeEach
     public void setUp() {
         MockitoAnnotations.initMocks(this);
         classToTest.setTranslationsRepository(translationsRepository);

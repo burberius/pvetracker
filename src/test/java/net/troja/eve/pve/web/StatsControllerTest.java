@@ -5,18 +5,17 @@ import java.time.LocalDateTime;
 import java.util.Arrays;
 
 import net.troja.eve.pve.PvEApplication;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.ui.Model;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
-
-import static org.junit.Assert.assertThat;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
@@ -37,14 +36,14 @@ public class StatsControllerTest {
     @Mock
     private OutcomeRepository outcomeRepo;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         MockitoAnnotations.initMocks(this);
         classToTest.setOutcomeRepo(outcomeRepo);
     }
 
     @Test
-    @Ignore
+    @Disabled
     public void getStats() {
         final AccountBean account = new AccountBean();
         when(principal.getPrincipal()).thenReturn(account);

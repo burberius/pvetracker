@@ -24,8 +24,8 @@ package net.troja.eve.pve.web;
 
 import javax.servlet.http.HttpServletResponse;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.ui.Model;
@@ -41,7 +41,7 @@ public class GlobalErrorControllerTest {
 
     private final GlobalErrorController classToTest = new GlobalErrorController();
 
-    @Before
+    @BeforeEach
     public void setUp() {
         MockitoAnnotations.initMocks(this);
     }

@@ -28,9 +28,9 @@ import java.util.Map;
 import java.util.Optional;
 
 import net.troja.eve.pve.sso.CharacterInfoUserService;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.security.oauth2.client.OAuth2RestTemplate;
@@ -38,11 +38,9 @@ import org.springframework.security.oauth2.common.DefaultOAuth2AccessToken;
 import org.springframework.security.oauth2.common.DefaultOAuth2RefreshToken;
 import org.springframework.security.oauth2.common.OAuth2AccessToken;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 
-import static org.junit.Assert.assertThat;
-
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import net.troja.eve.pve.db.account.AccountBean;
@@ -62,7 +60,7 @@ public class CharacterInfoExtractorTest {
     @Mock
     private OAuth2RestTemplate restTemplate;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         MockitoAnnotations.initMocks(this);
         classToTest = new CharacterInfoUserService(accountRepository);
@@ -102,15 +100,6 @@ public class CharacterInfoExtractorTest {
         dbAccount.setRefreshToken(HASH);
         when(accountRepository.findById(CHARACTER_ID)).thenReturn(Optional.of(dbAccount));
         when(restTemplate.getAccessToken()).thenReturn(getAccessToken());
-
-        /*final AccountBean account = (AccountBean) classToTest.extractAccount(map, userRequest.getAccessToken());
-
-        verify(accountRepository).save(account);
-
-        assertEqual(account, getExpectedAccount());
-        assertThat(account.getLastLogin().isAfter(lastLogin), equalTo(true));
-        assertThat(account.getCreated(), equalTo(dbAccount.getCreated()));
-        assertThat(account.getRefreshToken(), equalTo(dbAccount.getRefreshToken()));*/
     }
 
     private void assertEqual(final AccountBean actual, final AccountBean expected) {

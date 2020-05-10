@@ -25,13 +25,12 @@ package net.troja.eve.pve.price;
 import java.util.Arrays;
 import java.util.List;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.springframework.web.client.RestTemplate;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.greaterThan;
-
-import static org.junit.Assert.assertThat;
 
 import net.troja.eve.pve.db.price.PriceBean;
 import net.troja.eve.pve.price.fuzzwork.FuzzworkPriceService;
