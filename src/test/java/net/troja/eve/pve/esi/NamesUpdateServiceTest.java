@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -15,12 +16,16 @@ public class NamesUpdateServiceTest {
 
     @Autowired
     private TypeTranslationRepository typeTranslationRepository;
+    @Autowired
+    private ThreadPoolTaskExecutor taskExecutor;
 
     private NamesUpdateService classToTest = new NamesUpdateService();
 
     @BeforeEach
     public void setUp() {
         classToTest.setTypeTranslationRepository(typeTranslationRepository);
+        classToTest.setTaskExecutor(taskExecutor);
+        classToTest.init();
     }
 
     @Test

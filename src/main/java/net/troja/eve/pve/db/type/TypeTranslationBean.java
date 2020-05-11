@@ -36,15 +36,17 @@ public class TypeTranslationBean {
     private int typeId;
     private String language;
     private String name;
+    private String etag;
 
     public TypeTranslationBean() {
         super();
     }
 
-    public TypeTranslationBean(int typeId, String language, String name) {
+    public TypeTranslationBean(int typeId, String language, String name, String etag) {
         super();
         this.typeId = typeId;
         this.language = language;
         this.name = name;
+        this.etag = etag;
     }
 }

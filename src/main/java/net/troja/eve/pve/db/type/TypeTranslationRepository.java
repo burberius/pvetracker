@@ -30,5 +30,7 @@ import org.springframework.data.repository.CrudRepository;
 public interface TypeTranslationRepository extends CrudRepository<TypeTranslationBean, Integer> {
     List<TypeTranslationBean> findByName(String name);
 
+    List<TypeTranslationBean> findByTypeId(Integer typeId);
+
     Optional<TypeTranslationBean> findByTypeIdAndLanguage(Integer typeId, String language);
 }
