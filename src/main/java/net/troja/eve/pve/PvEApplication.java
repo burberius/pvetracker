@@ -63,7 +63,7 @@ public class PvEApplication {
         ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
         executor.setCorePoolSize(2);
         executor.setMaxPoolSize(20);
-        executor.setQueueCapacity(1000);
+        executor.setQueueCapacity(2000);
         executor.setThreadNamePrefix("EveTypesLookup-");
         executor.initialize();
         return executor;

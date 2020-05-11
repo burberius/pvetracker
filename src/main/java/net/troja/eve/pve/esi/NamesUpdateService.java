@@ -118,7 +118,7 @@ public class NamesUpdateService {
 
     private void updateNames() {
         for (Integer typeId : typeIds) {
-            while (taskExecutor.getActiveCount() == taskExecutor.getMaxPoolSize() && taskQueue.remainingCapacity() < 200) {
+            while (taskExecutor.getActiveCount() == taskExecutor.getMaxPoolSize() && taskQueue.remainingCapacity() < 500) {
                 try {
                     TimeUnit.SECONDS.sleep(2);
                 } catch (InterruptedException e) {
