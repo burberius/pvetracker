@@ -5,7 +5,7 @@
 </Properties>
 
 <Appenders>
-    <RollingFile name="fileLogger" fileName="${logPath}/pvetracker.log" filePattern="${logPath}/pvetracker-%d{yyyy-MM-dd}.log.gz">
+    <RollingFile name="fileLogger" filePattern="${logPath}/pvetracker-%d{yyyy-MM-dd}.log">
         <PatternLayout>
             <pattern>[%-5level] %d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %c{1} - %msg%n</pattern>
         </PatternLayout>
@@ -22,3 +22,4 @@
     </Root>
 </Loggers>
 </Configuration>
+
