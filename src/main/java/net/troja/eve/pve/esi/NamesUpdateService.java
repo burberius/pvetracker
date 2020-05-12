@@ -88,8 +88,7 @@ public class NamesUpdateService {
                 }
             }
         } while (status == null);
-        typeIds.clear();
-        start = System.currentTimeMillis();
+        reset();
         int typesPage = 1;
         int typesPagesMax = 0;
         while (typesPagesMax == 0 || typesPage <= typesPagesMax) {
@@ -103,6 +102,14 @@ public class NamesUpdateService {
             }
         }
         updateNames();
+    }
+
+    private void reset() {
+        typeIds.clear();
+        counter.set(0);
+        updateCount.set(0);
+        unchangedCount.set(0);
+        start = System.currentTimeMillis();
     }
 
     private Boolean checkApiDifferentVersion() {

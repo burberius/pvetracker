@@ -1,14 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="INFO">
-    <Appenders>
-        <Console name="console" target="SYSTEM_OUT">
-            <PatternLayout
-                pattern="[%-5level] %d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %c{1} - %msg%n" />
-        </Console>
-    </Appenders>
-    <Loggers>
-        <Root level="info" additivity="false">
-            <AppenderRef ref="console" />
-        </Root>
-    </Loggers>
+<Configuration status="warn">
+<Properties>
+    <Property name="logPath">.</Property>
+</Properties>
+
+<Appenders>
+    <RollingFile name="fileLogger" fileName="${logPath}/pvetracker.log" filePattern="${logPath}/pvetracker-%d{yyyy-MM-dd}.log.gz">
+        <PatternLayout>
+            <pattern>[%-5level] %d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %c{1} - %msg%n</pattern>
+        </PatternLayout>
+        <Policies>
+            <TimeBasedTriggeringPolicy interval="1" modulate="true" />
+        </Policies>
+        <DirectWriteRolloverStrategy maxFiles="30"/>
+    </RollingFile>
+</Appenders>
+
+<Loggers>
+    <Root level="info" additivity="false">
+        <appender-ref ref="fileLogger" />
+    </Root>
+</Loggers>
 </Configuration>
