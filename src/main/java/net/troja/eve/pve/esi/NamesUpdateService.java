@@ -9,6 +9,7 @@ import net.troja.eve.esi.model.TypeResponse;
 import net.troja.eve.pve.db.type.Language;
 import net.troja.eve.pve.db.type.TypeTranslationBean;
 import net.troja.eve.pve.db.type.TypeTranslationRepository;
+import net.troja.eve.pve.discord.DiscordService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,6 +38,8 @@ public class NamesUpdateService {
     private TypeTranslationRepository typeTranslationRepository;
     @Autowired
     private ThreadPoolTaskExecutor taskExecutor;
+    @Autowired
+    private DiscordService discordService;
 
     private boolean initialized = false;
     private long start;
@@ -79,6 +82,7 @@ public class NamesUpdateService {
             status = checkApiDifferentVersion();
             if (status == Boolean.FALSE) {
                 LOGGER.info("Version didn't change");
+                discordService.sendMessage("API Version didn't change");
                 return;
             } else if (status == null) {
                 try {
@@ -88,6 +92,7 @@ public class NamesUpdateService {
                 }
             }
         } while (status == null);
+        discordService.sendMessage("Starting name update");
         reset();
         int typesPage = 1;
         int typesPagesMax = 0;
@@ -171,6 +176,7 @@ public class NamesUpdateService {
         if (count == typeIds.size()) {
             String time = getDurationString(System.currentTimeMillis() - start);
             LOGGER.info("Finished all {} entries after {} - {}/{}", count, time, updateCount.get(), unchangedCount.get());
+            discordService.sendMessage("Updated " + count + " entries after " + time + " (" + updateCount.get() + "/" + unchangedCount.get() + ")");
             typeIds.clear();
             updateApiVersion();
         } else if (count % 100 == 0) {

@@ -23,4 +23,6 @@ spring:
 server:
   session:
     timeout: 10800
-    
+discord:
+  token: AddYourTokenHere
+  channel: AddYourChannelHere
