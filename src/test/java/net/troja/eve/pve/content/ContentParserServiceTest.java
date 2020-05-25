@@ -122,7 +122,8 @@ public class ContentParserServiceTest {
     @Test
     public void parseWithBlueprint() {
         final String content = "Cynabal Blueprint\t\tCruiser Blueprint\t\t\t0,01 m3 \n"
-                + "Scourge Fury Heavy Missile\t864\tAdvanced Heavy Missile\t\t\t25,92 m3\t394.251,84 ISK";
+                + "Scourge Fury Heavy Missile\t864\tAdvanced Heavy Missile\t\t\t25,92 m3\t394.251,84 ISK" +
+                "Gistum B-Type Adaptive Invulnerability Shield Hardener\t1\tShield Hardener\tMedium\t5 m3\t340.247.434,12 ISK";
         final List<TypeTranslationBean> transList1 = new ArrayList<>();
         final TypeTranslationBean trans1 = new TypeTranslationBean();
         trans1.setTypeId(1);

@@ -26,3 +26,5 @@ server:
 discord:
   token: AddYourTokenHere
   channel: AddYourChannelHere
+  min-loot-value: 10000000
+  min-item-value: 1000000

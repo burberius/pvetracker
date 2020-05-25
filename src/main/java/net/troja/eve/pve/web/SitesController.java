@@ -32,6 +32,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import net.troja.eve.pve.PvEApplication;
+import net.troja.eve.pve.discord.DiscordService;
 import net.troja.eve.pve.sso.EveOAuth2User;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
@@ -76,6 +77,8 @@ public class SitesController {
     private LocationService locationService;
     @Autowired
     private ContentParserService contentParserService;
+    @Autowired
+    private DiscordService discordService;
 
     public SitesController() {
         super();
@@ -150,8 +153,10 @@ public class SitesController {
             throw new AccessDeniedException("You are not allowed to view that");
         }
         outcomeDb.setStart(outcome.getStart());
+        boolean isNew = false;
         if (outcomeDb.getEnd() == null && outcome.getEnd() == null) {
             outcomeDb.setEnd(LocalDateTime.now(PvEApplication.DEFAULT_ZONE));
+            isNew = true;
         } else {
             outcomeDb.setEnd(outcome.getEnd());
         }
@@ -164,6 +169,9 @@ public class SitesController {
         outcomeDb.getLoot().addAll(loot);
         outcomeDb.setLootValue(getLootValue(outcomeDb.getLoot()));
         outcomeRepo.save(outcomeDb);
+        if(isNew) {
+            discordService.postOutcome(outcomeDb);
+        }
         model.addAttribute(MODEL_OUTCOME, outcomeDb);
         return "site";
     }
@@ -200,19 +208,23 @@ public class SitesController {
         return outcome;
     }
 
-    void setSiteRepo(final SiteRepository siteRepo) {
+    public void setSiteRepo(final SiteRepository siteRepo) {
         this.siteRepo = siteRepo;
     }
 
-    void setOutcomeRepo(final OutcomeRepository outcomeRepo) {
+    public void setOutcomeRepo(final OutcomeRepository outcomeRepo) {
         this.outcomeRepo = outcomeRepo;
     }
 
-    void setLocationService(final LocationService locationService) {
+    public void setLocationService(final LocationService locationService) {
         this.locationService = locationService;
     }
 
-    void setContentParserService(final ContentParserService contentParserService) {
+    public void setContentParserService(final ContentParserService contentParserService) {
         this.contentParserService = contentParserService;
+    }
+
+    public void setDiscordService(DiscordService discordService) {
+        this.discordService = discordService;
     }
 }

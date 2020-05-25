@@ -32,6 +32,7 @@ import net.troja.eve.pve.db.outcome.ShipBean;
 import net.troja.eve.pve.db.sites.SiteBean;
 import net.troja.eve.pve.db.sites.SiteRepository;
 import net.troja.eve.pve.db.solarsystem.SolarSystemBean;
+import net.troja.eve.pve.discord.DiscordService;
 import net.troja.eve.pve.esi.LocationService;
 import net.troja.eve.pve.sso.EveOAuth2User;
 import org.junit.jupiter.api.BeforeEach;
@@ -78,6 +79,8 @@ public class SitesControllerTest {
     private LocationService locationService;
     @Mock
     private ContentParserService contentParserService;
+    @Mock
+    private DiscordService discordService;
 
     @BeforeEach
     public void setUp() {
@@ -87,6 +90,7 @@ public class SitesControllerTest {
         classToTest.setSiteRepo(siteRepo);
         classToTest.setLocationService(locationService);
         classToTest.setContentParserService(contentParserService);
+        classToTest.setDiscordService(discordService);
     }
 
     @Test
