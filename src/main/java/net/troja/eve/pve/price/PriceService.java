@@ -31,6 +31,7 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 import net.troja.eve.pve.PvEApplication;
+import net.troja.eve.pve.price.contract.ContractPriceService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,6 +53,8 @@ public class PriceService {
     @Autowired
     private FuzzworkPriceService fuzzworkPriceService;
     @Autowired
+    private ContractPriceService contractPriceService;
+    @Autowired
     private PriceRepository priceRepository;
 
     public PriceService() {
@@ -67,12 +70,23 @@ public class PriceService {
             result.put(price.getTypeId(), price.getValue());
             rest.remove(price.getTypeId());
         }
-        LOGGER.info("retrieve Prices: {}", rest);
         if (!rest.isEmpty()) {
+            LOGGER.info("retrieve prices from fuzzwork: {}", rest);
             final List<PriceBean> list = fuzzworkPriceService.getPrices(new ArrayList<>(rest));
             priceRepository.saveAll(list);
             for (final PriceBean price : list) {
+                rest.remove(price.getTypeId());
                 result.put(price.getTypeId(), price.getValue());
+            }
+        }
+        if (!rest.isEmpty()) {
+            LOGGER.info("retrieve prices from conract prices: {}", rest);
+            for(int typeId : rest) {
+                PriceBean price = contractPriceService.getPrice(typeId);
+                if(price != null) {
+                    priceRepository.save(price);
+                    result.put(price.getTypeId(), price.getValue());
+                }
             }
         }
         return result;
@@ -84,11 +98,15 @@ public class PriceService {
                 .minusHours(PRICE_AGE_HOURS));
     }
 
-    void setFuzzworkPriceService(final FuzzworkPriceService fuzzworkPriceService) {
+    public void setFuzzworkPriceService(final FuzzworkPriceService fuzzworkPriceService) {
         this.fuzzworkPriceService = fuzzworkPriceService;
     }
 
-    void setPriceRepository(final PriceRepository priceRepository) {
+    public void setContractPriceService(ContractPriceService contractPriceService) {
+        this.contractPriceService = contractPriceService;
+    }
+
+    public void setPriceRepository(final PriceRepository priceRepository) {
         this.priceRepository = priceRepository;
     }
 }

@@ -32,6 +32,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import net.troja.eve.pve.PvEApplication;
+import net.troja.eve.pve.db.outcome.*;
 import net.troja.eve.pve.discord.DiscordService;
 import net.troja.eve.pve.sso.EveOAuth2User;
 import org.apache.commons.lang3.StringUtils;
@@ -53,10 +54,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import net.troja.eve.pve.content.ContentParserService;
 import net.troja.eve.pve.db.account.AccountBean;
-import net.troja.eve.pve.db.outcome.LootBean;
-import net.troja.eve.pve.db.outcome.OutcomeBean;
-import net.troja.eve.pve.db.outcome.OutcomeRepository;
-import net.troja.eve.pve.db.outcome.ShipBean;
 import net.troja.eve.pve.db.sites.SiteBean;
 import net.troja.eve.pve.db.sites.SiteRepository;
 import net.troja.eve.pve.db.solarsystem.SolarSystemBean;
@@ -73,6 +70,8 @@ public class SitesController {
     private SiteRepository siteRepo;
     @Autowired
     private OutcomeRepository outcomeRepo;
+    @Autowired
+    private LootRepository lootRepo;
     @Autowired
     private LocationService locationService;
     @Autowired
@@ -166,6 +165,10 @@ public class SitesController {
         outcomeDb.setRewardValue(outcome.getRewardValue());
         final List<LootBean> loot = contentParserService.parse(outcome.getLootContent());
         Collections.sort(loot, getLootComparator());
+        if(!outcomeDb.getLoot().isEmpty()) {
+            outcomeDb.getLoot().forEach(l -> lootRepo.delete(l));
+            outcomeDb.getLoot().clear();
+        }
         outcomeDb.getLoot().addAll(loot);
         outcomeDb.setLootValue(getLootValue(outcomeDb.getLoot()));
         outcomeRepo.save(outcomeDb);

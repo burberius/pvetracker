@@ -25,7 +25,6 @@ public abstract class AbstractOnlinePriceService<T> {
     protected RestTemplate restTemplate = new RestTemplate();
 
     public List<PriceBean> getPrices(final Collection<Integer> prices) {
-        LOGGER.info("Get prices for {}", prices);
         final String values = getTypeValuesString(prices);
 
         ResponseEntity<T> response = null;
@@ -46,7 +45,7 @@ public abstract class AbstractOnlinePriceService<T> {
     protected HttpEntity<String> getHttpEntity() {
         final HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
-        headers.add("User-Agent", "PvE today");
+        headers.add("User-Agent", "PvE tracker");
         return new HttpEntity<>("", headers);
     }
 

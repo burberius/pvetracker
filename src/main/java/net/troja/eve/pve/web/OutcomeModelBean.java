@@ -25,6 +25,7 @@ package net.troja.eve.pve.web;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import net.troja.eve.pve.db.account.AccountBean;
+import net.troja.eve.pve.db.outcome.LootBean;
 import net.troja.eve.pve.db.outcome.OutcomeBean;
 import net.troja.eve.pve.db.outcome.ShipBean;
 import net.troja.eve.pve.db.sites.SiteBean;
@@ -59,5 +60,10 @@ public class OutcomeModelBean extends OutcomeBean {
         setSiteName(original.getSiteName());
         setStart(original.getStart());
         setSystem(original.getSystem());
+        StringBuilder lootString = new StringBuilder();
+        for(LootBean loot : original.getLoot()) {
+            lootString.append(loot.getName()).append("\t").append(loot.getCount()).append("\t\n");
+        }
+        lootContent = lootString.toString();
     }
 }

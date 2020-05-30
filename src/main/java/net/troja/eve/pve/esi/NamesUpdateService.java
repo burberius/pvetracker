@@ -13,6 +13,7 @@ import net.troja.eve.pve.discord.DiscordService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
@@ -40,6 +41,8 @@ public class NamesUpdateService {
     private ThreadPoolTaskExecutor taskExecutor;
     @Autowired
     private DiscordService discordService;
+    @Value("${namesupdate}")
+    private boolean namesUpdateActive;
 
     private boolean initialized = false;
     private long start;
@@ -92,6 +95,12 @@ public class NamesUpdateService {
                 }
             }
         } while (status == null);
+
+        if(!namesUpdateActive) {
+            LOGGER.info("Names updated disabled!");
+            return;
+        }
+
         discordService.sendMessage("Starting name update");
         reset();
         int typesPage = 1;
