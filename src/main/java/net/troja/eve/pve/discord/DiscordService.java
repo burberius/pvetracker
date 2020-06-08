@@ -77,15 +77,14 @@ public class DiscordService implements EventListener {
 
     public void postOutcome(OutcomeBean outcomeDb) {
         List<LootBean> loot = outcomeDb.getLoot().stream()
-                .filter(l -> l.getValue() * l.getCount() > minLootValue || l.getName().contains("Blueprint")).collect(Collectors.toList());
-        boolean containsBlueprint = loot.stream().anyMatch(l -> l.getName().contains("Blueprint"));
-        if(outcomeDb.getLootValue() < minLootValue && !containsBlueprint) {
+                .filter(l -> l.getValue() * l.getCount() > minLootValue).collect(Collectors.toList());
+        if(outcomeDb.getLootValue() < minLootValue) {
             return;
         }
         StringBuilder result = new StringBuilder();
         result.append("**").append(outcomeDb.getAccount().getCharacterName()).append("** just finished a *").append(outcomeDb.getSite().getName());
         Integer ded = outcomeDb.getSite().getDed();
-        if(ded != null) {
+        if(ded != null && ded > 0) {
             result.append(" (").append(ded).append("/10)");
         }
         result.append("* in a *").append(outcomeDb.getShip().getType());

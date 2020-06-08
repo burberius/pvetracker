@@ -45,7 +45,7 @@ class DiscordServiceTest {
         String expected = "**Marvin** just finished a *Angel Cartel's Red Light District (5/10)* in a *Gila* getting " +
                 "**12,345,678** ISK with the following loot:\n" +
                 "2 x *Gistum C-Type 50MN Microwarpdrive* **123,455,234** ISK\n" +
-                "1 x *Cynabal Blueprint*";
+                "1 x *Cynabal Blueprint* **111,111,111** ISK";
         when(channel.sendMessage(expected)).thenReturn(messageAction);
 
         classToTest.postOutcome(outcome);
@@ -54,7 +54,7 @@ class DiscordServiceTest {
     }
 
     @Test
-    public void postOutcomeNotDed() {
+    public void postOutcomeDedNull() {
         OutcomeBean outcome = createOutcome();
         outcome.getSite().setDed(null);
         outcome.getSite().setName("Angel Den");
@@ -67,13 +67,14 @@ class DiscordServiceTest {
         verify(messageAction).queue();
     }
 
+
     @Test
-    public void postOutcomeBlueprintOnly() {
+    public void postOutcomeDedZero() {
         OutcomeBean outcome = createOutcome();
-        outcome.setLoot(List.of(outcome.getLoot().get(1)));
-        String expected = "**Marvin** just finished a *Angel Cartel's Red Light District (5/10)* in a *Gila* getting " +
-                "**12,345,678** ISK with the following loot:\n" +
-                "1 x *Cynabal Blueprint*";
+        outcome.getSite().setDed(0);
+        outcome.getSite().setName("Angel Den");
+        outcome.setLoot(Collections.emptyList());
+        String expected = "**Marvin** just finished a *Angel Den* in a *Gila* getting **12,345,678** ISK";
         when(channel.sendMessage(expected)).thenReturn(messageAction);
 
         classToTest.postOutcome(outcome);
@@ -126,7 +127,7 @@ class DiscordServiceTest {
         lootBean.setCount(2);
         lootBean.setName("Gistum C-Type 50MN Microwarpdrive");
         LootBean lootBean2 = new LootBean();
-        lootBean2.setValue(0d);
+        lootBean2.setValue(111_111_111d);
         lootBean2.setCount(1);
         lootBean2.setName("Cynabal Blueprint");
         outcomeBean.setLoot(List.of(lootBean, lootBean2));

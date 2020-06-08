@@ -31,8 +31,8 @@
         <maven.build.timestamp.format>yyyy-MM-dd-HH-mm</maven.build.timestamp.format>
         <my.build.version>${maven.build.timestamp}</my.build.version>
 
-        <discord4j.version>3.1.0.RC1</discord4j.version>
-        <esi.version>3.7.0</esi.version>
+        <discord4j.version>3.1.0.RC2</discord4j.version>
+        <esi.version>4.0.0</esi.version>
         <forbiddenapis.version>3.0</forbiddenapis.version>
         <jacoco.version>0.8.5</jacoco.version>
         <mockito.version>3.3.3</mockito.version>
