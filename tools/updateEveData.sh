@@ -1,23 +1,20 @@
 #!/bin/bash
 
-PASSWORD="pve"
-MP="-u pve -p$PASSWORD pve"
-
 wget -q https://www.fuzzwork.co.uk/dump/latest/invTypes.sql.bz2
 wget -q https://www.fuzzwork.co.uk/dump/latest/trnTranslations.sql.bz2
 
 bunzip2 invTypes.sql.bz2
 bunzip2 trnTranslations.sql.bz2
 
-mysql $MP < invTypes.sql
-mysql $MP < trnTranslations.sql
+./mysql2sqlite invTypes.sql | sqlite3 test.db
+./mysql2sqlite trnTranslations.sql | sqlite3 test.db
 
-echo "TRUNCATE TABLE type_translation;" | mysql $MP
+echo "CREATE TABLE type_translation (id SERIAL,type_id int NOT NULL, language varchar(2) DEFAULT NULL, name varchar(150) DEFAULT NULL, PRIMARY KEY (id));" | sqlite3 test.db
 
-echo "INSERT INTO type_translation (type_id, language, name) SELECT i.typeID, t.languageID, t.text FROM invTypes i JOIN trnTranslations t ON i.typeID = t.keyID WHERE i.published = 1 AND t.languageID IN ('de' , 'en', 'fr', 'ja', 'ru') AND t.tcID = 8;" | mysql $MP
+echo "INSERT INTO type_translation (type_id, language, name) SELECT i.typeID, t.languageID, t.text FROM invTypes i JOIN trnTranslations t ON i.typeID = t.keyID WHERE i.published = 1 AND t.languageID IN ('de' , 'en', 'fr', 'ja', 'ru') AND t.tcID = 8;" | sqlite3 test.db
 
-echo "DROP TABLE invTypes; DROP TABLE trnTranslations;" | mysql $MP
+echo "DROP TABLE invTypes; DROP TABLE trnTranslations;" | sqlite3 test.db
 
-mysqldump $MP -t --compact type_translation > type_translation.sql
+sqlite3 test.db .dump | sed -e '/^INSERT/!d' > type_translation.sql
 
-rm invTypes.sql trnTranslations.sql
+rm invTypes.sql trnTranslations.sql test.db

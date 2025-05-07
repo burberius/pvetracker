@@ -17,11 +17,9 @@ spring:
             user-info-authentication-method: header
             user-name-attribute: CharacterName
   datasource:
-    url: jdbc:mysql://localhost:3306/pve?verifyServerCertificate=false&useSSL=false&requireSSL=false&characterEncoding=UTF-8&serverTimezone=UTC
+    url: jdbc:postgresql://localhost:5432/pve?currentSchema=pve
     username: pve
     password: pve
-  flyway:
-      locations: classpath:db/migration/{vendor}
 server:
   session:
     timeout: 10800

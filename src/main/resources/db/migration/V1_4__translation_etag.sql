@@ -1,1 +1,0 @@
-ALTER TABLE `type_translation` ADD COLUMN `etag` VARCHAR(100) NULL DEFAULT NULL AFTER `name`;

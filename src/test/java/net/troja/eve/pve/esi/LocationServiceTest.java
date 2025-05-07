@@ -63,8 +63,6 @@ public class LocationServiceTest {
     private static final String SHIP_TYPE = "Gila";
     private static final int SHIP_TYPE_ID = 666;
 
-    private final LocationService classToTest = new LocationService();
-
     @Mock
     private LocationApi locationApi;
     @Mock
@@ -78,16 +76,15 @@ public class LocationServiceTest {
     @Mock
     private OAuth auth;
 
+    private LocationService classToTest;
+
     @BeforeEach
     public void setUp() {
-        classToTest.setApi(locationApi);
+        classToTest = new LocationService(solarSystemRepo, typeRepo, shipRepo, locationApi);
         classToTest.setClientId(CLIENT_ID);
         when(locationApi.getApiClient()).thenReturn(apiClient);
         when(apiClient.getAuthentication("evesso")).thenReturn(auth);
         classToTest.init();
-        classToTest.setSolarSystemRepository(solarSystemRepo);
-        classToTest.setTypeRepository(typeRepo);
-        classToTest.setShipRepository(shipRepo);
         classToTest.setAuth(auth);
     }
 

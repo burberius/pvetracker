@@ -22,6 +22,7 @@ package net.troja.eve.pve.esi;
  * ====================================================
  */
 
+import lombok.Setter;
 import net.troja.eve.esi.ApiClient;
 import net.troja.eve.esi.auth.OAuth;
 import org.springframework.beans.factory.annotation.Value;
@@ -29,14 +30,11 @@ import org.springframework.beans.factory.annotation.Value;
 public class GeneralEsiService {
     public static final String DATASOURCE = "tranquility";
 
+    @Setter
     @Value("${spring.security.oauth2.client.registration.eve.client-id}")
     protected String clientId;
 
     private OAuth auth;
-
-    protected GeneralEsiService() {
-        super();
-    }
 
     protected void init(final ApiClient apiClient) {
         auth = (OAuth) apiClient.getAuthentication("evesso");
@@ -49,9 +47,5 @@ public class GeneralEsiService {
 
     void setAuth(final OAuth auth) {
         this.auth = auth;
-    }
-
-    public void setClientId(String clientId) {
-        this.clientId = clientId;
     }
 }

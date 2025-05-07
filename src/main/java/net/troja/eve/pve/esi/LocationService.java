@@ -23,6 +23,7 @@ package net.troja.eve.pve.esi;
  */
 
 import jakarta.annotation.PostConstruct;
+import lombok.RequiredArgsConstructor;
 import net.troja.eve.esi.ApiException;
 import net.troja.eve.esi.api.LocationApi;
 import net.troja.eve.esi.model.CharacterLocationResponse;
@@ -36,8 +37,6 @@ import net.troja.eve.pve.db.type.TypeTranslationBean;
 import net.troja.eve.pve.db.type.TypeTranslationRepository;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
 
 import java.net.URLDecoder;
@@ -47,22 +46,15 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 @Service
+@RequiredArgsConstructor
 public class LocationService extends GeneralEsiService {
     private static final Logger LOGGER = LogManager.getLogger(LocationService.class);
     private static final Pattern SHIPNAME_MATCHER = Pattern.compile(".['|\"](.*)['|\"]");
 
-    @Autowired
-    private SolarSystemRepository solarSystemRepository;
-    @Autowired
-    private TypeTranslationRepository typeRepository;
-    @Autowired
-    private ShipRepository shipRepository;
-    @Autowired
-    private LocationApi api;
-
-    public LocationService() {
-        super();
-    }
+    private final SolarSystemRepository solarSystemRepository;
+    private final TypeTranslationRepository typeRepository;
+    private final ShipRepository shipRepository;
+    private final LocationApi api;
 
     @PostConstruct
     public void init() {
@@ -122,26 +114,5 @@ public class LocationService extends GeneralEsiService {
             shipTypeName = type.get().getName();
         }
         return new ShipBean(shipName, shipTypeName, shipTypeId);
-    }
-
-    @Bean
-    public LocationApi getLocationApi() {
-        return new LocationApi();
-    }
-
-    void setApi(final LocationApi api) {
-        this.api = api;
-    }
-
-    void setSolarSystemRepository(final SolarSystemRepository solarSystemRepository) {
-        this.solarSystemRepository = solarSystemRepository;
-    }
-
-    void setTypeRepository(final TypeTranslationRepository typeRepository) {
-        this.typeRepository = typeRepository;
-    }
-
-    void setShipRepository(final ShipRepository shipRepository) {
-        this.shipRepository = shipRepository;
     }
 }

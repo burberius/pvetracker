@@ -22,6 +22,7 @@ package net.troja.eve.pve;
  * ====================================================
  */
 
+import net.troja.eve.esi.api.LocationApi;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -85,5 +86,10 @@ public class PvEApplication {
                 return formater.format(object);
             }
         };
+    }
+
+    @Bean
+    public LocationApi getLocationApi() {
+        return new LocationApi();
     }
 }
