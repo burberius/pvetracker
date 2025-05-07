@@ -1,5 +1,6 @@
 package net.troja.eve.pve.web;
 
+import java.security.Principal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Arrays;
@@ -8,17 +9,20 @@ import net.troja.eve.pve.PvEApplication;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-import org.springframework.security.oauth2.provider.OAuth2Authentication;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
+import org.springframework.security.oauth2.client.authentication.OAuth2AuthorizationCodeAuthenticationToken;
+import org.springframework.security.oauth2.client.authentication.OAuth2LoginAuthenticationToken;
 import org.springframework.ui.Model;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.eq;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -26,19 +30,19 @@ import net.troja.eve.pve.db.account.AccountBean;
 import net.troja.eve.pve.db.outcome.OutcomeRepository;
 import net.troja.eve.pve.db.stats.MonthOverviewStatBean;
 
+@ExtendWith(MockitoExtension.class)
 public class StatsControllerTest {
     private final StatsController classToTest = new StatsController();
 
     @Mock
     private Model model;
     @Mock
-    private OAuth2Authentication principal;
+    private OAuth2AuthorizationCodeAuthenticationToken principal;
     @Mock
     private OutcomeRepository outcomeRepo;
 
     @BeforeEach
     public void setUp() {
-        MockitoAnnotations.initMocks(this);
         classToTest.setOutcomeRepo(outcomeRepo);
     }
 

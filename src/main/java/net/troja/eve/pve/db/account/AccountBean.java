@@ -24,16 +24,17 @@ package net.troja.eve.pve.db.account;
 
 import java.time.LocalDateTime;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
-
-import lombok.Data;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.ToString;
 import net.troja.eve.pve.PvEApplication;
 
-@Data
 @Entity
+@Getter
+@Setter
 @Table(name = "account")
 public class AccountBean {
     @Id

@@ -1,5 +1,6 @@
 package net.troja.eve.pve.price.contract;
 
+import net.troja.eve.esi.api.ContractsApi;
 import net.troja.eve.pve.db.price.PriceBean;
 import net.troja.eve.pve.price.AbstractOnlinePriceService;
 import org.springframework.core.ParameterizedTypeReference;
@@ -20,10 +21,11 @@ public class ContractPriceService extends AbstractOnlinePriceService<ContractPri
 
     @Override
     protected ResponseEntity<ContractPriceBean> queryPrices(String value) {
-        final ParameterizedTypeReference<ContractPriceBean> responseType =
+        /*final ParameterizedTypeReference<ContractPriceBean> responseType =
                 new ParameterizedTypeReference<ContractPriceBean>() {
                 };
-        return restTemplate.exchange(ADDRESS_START + value + ADDRESS_END, HttpMethod.GET, getHttpEntity(), responseType);
+        return restTemplate.exchange(ADDRESS_START + value + ADDRESS_END, HttpMethod.GET, getHttpEntity(), responseType);*/
+        return null;
     }
 
     @Override

@@ -29,8 +29,8 @@ import java.util.Map;
 import net.troja.eve.pve.price.contract.ContractPriceService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
@@ -39,11 +39,11 @@ import static org.mockito.Mockito.*;
 import net.troja.eve.pve.db.price.PriceBean;
 import net.troja.eve.pve.db.price.PriceRepository;
 import net.troja.eve.pve.price.fuzzwork.FuzzworkPriceService;
+import org.mockito.junit.jupiter.MockitoExtension;
 
+@ExtendWith(MockitoExtension.class)
 public class PriceServiceTest {
     private static final List<Integer> TYPE_IDS = Arrays.asList(34, 35, 17716);
-
-    private final PriceService classToTest = new PriceService();
 
     @Mock
     private FuzzworkPriceService fuzzworkPriceService;
@@ -52,19 +52,18 @@ public class PriceServiceTest {
     @Mock
     private PriceRepository priceRepository;
 
+    private PriceService classToTest;
+
     @BeforeEach
     public void setUp() {
-        MockitoAnnotations.initMocks(this);
-        classToTest.setFuzzworkPriceService(fuzzworkPriceService);
-        classToTest.setContractPriceService(contractPriceService);
-        classToTest.setPriceRepository(priceRepository);
+        classToTest = new PriceService(fuzzworkPriceService, contractPriceService, priceRepository);
     }
 
     @Test
     public void getPrices() {
-        final List<PriceBean> dbPrices = Arrays.asList(new PriceBean(34, 5.123));
+        final List<PriceBean> dbPrices = List.of(new PriceBean(34, 5.123));
         when(priceRepository.findAllById(TYPE_IDS)).thenReturn(dbPrices);
-        final List<PriceBean> restPrices = Arrays.asList(new PriceBean(35, 6.2123));
+        final List<PriceBean> restPrices = List.of(new PriceBean(35, 6.2123));
         when(fuzzworkPriceService.getPrices(Arrays.asList(35, 17716))).thenReturn(restPrices);
         PriceBean gila = new PriceBean(17716, 150_000_00);
         when(contractPriceService.getPrice(17716)).thenReturn(gila);

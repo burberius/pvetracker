@@ -37,9 +37,10 @@ import net.troja.eve.pve.esi.LocationService;
 import net.troja.eve.pve.sso.EveOAuth2User;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.ui.Model;
@@ -51,10 +52,11 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.AdditionalAnswers.returnsFirstArg;
-import static org.mockito.Matchers.any;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+@ExtendWith(MockitoExtension.class)
 public class SitesControllerTest {
     private static final String SITE_NAME = "Angel Vigil";
     private static final int CHARACTER_ID = 1234;
@@ -65,7 +67,7 @@ public class SitesControllerTest {
 
     private final SitesController classToTest = new SitesController();
 
-    private AccountBean account = new AccountBean();
+    private final AccountBean account = new AccountBean();
 
     @Mock
     private SiteRepository siteRepo;
@@ -84,7 +86,6 @@ public class SitesControllerTest {
 
     @BeforeEach
     public void setUp() {
-        MockitoAnnotations.initMocks(this);
         account.setCharacterId(CHARACTER_ID);
         classToTest.setOutcomeRepo(outcomeRepo);
         classToTest.setSiteRepo(siteRepo);
@@ -118,7 +119,7 @@ public class SitesControllerTest {
     public void sites() {
         final List<OutcomeBean> outcomes = new ArrayList<>();
 
-        when(outcomeRepo.findByAccountOrderByStartDesc(any())).thenReturn(outcomes);
+        when(outcomeRepo.findByAccountOrderByStartTimeDesc(any())).thenReturn(outcomes);
         when(principal.getPrincipal()).thenReturn(getPricipal());
 
         final String result = classToTest.sites(null, model, principal);
@@ -169,7 +170,6 @@ public class SitesControllerTest {
     public void startLocationError() {
         final StartModelBean startModel = new StartModelBean();
         startModel.setName(SITE_NAME);
-        final AccountBean account = new AccountBean();
         final SiteBean site = new SiteBean();
         site.setName(SITE_NAME);
 
@@ -272,7 +272,7 @@ public class SitesControllerTest {
         assertThat(result, equalTo("site"));
         final OutcomeBean value = ceptor.getValue();
         assertThat(value.getLootValue(), equalTo((long) lootBean.getValue()));
-        assertThat(value.getEnd().isAfter(now), equalTo(true));
+        assertThat(value.getEndTime().isAfter(now), equalTo(true));
     }
 
     @Test
@@ -287,10 +287,10 @@ public class SitesControllerTest {
         outcome.setEscalation(true);
         outcome.setBountyValue(BOUNTY);
         outcome.setRewardValue(REWARD);
-        outcome.setEnd(now);
+        outcome.setEndTime(now);
         final OutcomeBean outcomeDb = new OutcomeBean();
         outcomeDb.setLoot(new ArrayList<>());
-        outcomeDb.setEnd(old);
+        outcomeDb.setEndTime(old);
         outcomeDb.setAccount(account);
         when(outcomeRepo.findById(OUTCOME_ID)).thenReturn(Optional.of(outcomeDb));
         when(principal.getPrincipal()).thenReturn(getPricipal());
@@ -300,7 +300,7 @@ public class SitesControllerTest {
 
         final ArgumentCaptor<OutcomeBean> ceptor = ArgumentCaptor.forClass(OutcomeBean.class);
         verify(outcomeRepo).save(ceptor.capture());
-        assertThat(ceptor.getValue().getEnd(), equalTo(now));
+        assertThat(ceptor.getValue().getEndTime(), equalTo(now));
     }
 
     @Test
@@ -314,7 +314,7 @@ public class SitesControllerTest {
         outcome.setEscalation(true);
         outcome.setBountyValue(BOUNTY);
         outcome.setRewardValue(REWARD);
-        outcome.setEnd(old);
+        outcome.setEndTime(old);
         final OutcomeBean outcomeDb = new OutcomeBean();
         outcomeDb.setLoot(new ArrayList<>());
         final AccountBean account = new AccountBean();
@@ -328,7 +328,7 @@ public class SitesControllerTest {
 
         final ArgumentCaptor<OutcomeBean> ceptor = ArgumentCaptor.forClass(OutcomeBean.class);
         verify(outcomeRepo).save(ceptor.capture());
-        assertThat(ceptor.getValue().getEnd(), equalTo(old));
+        assertThat(ceptor.getValue().getEndTime(), equalTo(old));
     }
 
     private EveOAuth2User getPricipal() {

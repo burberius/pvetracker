@@ -1,55 +1,32 @@
 package net.troja.eve.pve.db.outcome;
 
-import java.time.Duration;
-import java.time.LocalDate;
-
-/*
- * ====================================================
- * Eve Online PvE Tracker
- * ----------------------------------------------------
- * Copyright (C) 2017 Jens Oberender <j.obi@troja.net>
- * ----------------------------------------------------
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as
- * published by the Free Software Foundation, either version 3 of the
- * License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public
- * License along with this program.  If not, see
- * <http://www.gnu.org/licenses/gpl-3.0.html>.
- * ====================================================
- */
-
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.persistence.CascadeType;
-import javax.persistence.ColumnResult;
-import javax.persistence.ConstructorResult;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.NamedNativeQuery;
-import javax.persistence.OneToMany;
-import javax.persistence.SqlResultSetMapping;
-import javax.persistence.Table;
-
-import lombok.Data;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.ColumnResult;
+import jakarta.persistence.ConstructorResult;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.NamedNativeQuery;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.SqlResultSetMapping;
+import jakarta.persistence.Table;
+import lombok.Getter;
+import lombok.Setter;
 import net.troja.eve.pve.PvEApplication;
 import net.troja.eve.pve.db.account.AccountBean;
 import net.troja.eve.pve.db.sites.SiteBean;
 import net.troja.eve.pve.db.solarsystem.SolarSystemBean;
 import net.troja.eve.pve.db.stats.MonthOverviewStatBean;
+
+import java.time.Duration;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @SqlResultSetMapping(
     name = "MonthlyOverviewStatsMapping",
@@ -63,8 +40,9 @@ import net.troja.eve.pve.db.stats.MonthOverviewStatBean;
     query = "select DATE(start) as date, sum(loot_value + bounty_value + reward_value) as value from outcome o where "
             + "account_id = :account and start > :start group by DATE(start) order by DATE(start)",
     resultSetMapping = "MonthlyOverviewStatsMapping")
-@Data
 @Entity
+@Getter
+@Setter
 @Table(name = "outcome")
 public class OutcomeBean {
     private static final int SECONDS2MINUTES = 60;
@@ -85,8 +63,8 @@ public class OutcomeBean {
     @JoinColumn(name = "site_id")
     private SiteBean site;
     private String siteName;
-    private LocalDateTime start = LocalDateTime.now(PvEApplication.DEFAULT_ZONE);
-    private LocalDateTime end;
+    private LocalDateTime startTime = LocalDateTime.now(PvEApplication.DEFAULT_ZONE);
+    private LocalDateTime endTime;
     private boolean faction;
     private boolean escalation;
     private long bountyValue;
@@ -117,10 +95,10 @@ public class OutcomeBean {
     }
 
     public String getDuration() {
-        if (end == null) {
+        if (endTime == null) {
             return "running";
         }
-        final Duration duration = Duration.between(start, end);
+        final Duration duration = Duration.between(startTime, endTime);
         long seconds = duration.getSeconds();
         final StringBuilder result = new StringBuilder();
         final int hours = (int) Math.floorDiv(seconds, SECONDS2HOURS);

@@ -22,6 +22,7 @@ package net.troja.eve.pve.esi;
  * ====================================================
  */
 
+import jakarta.annotation.PostConstruct;
 import net.troja.eve.esi.ApiException;
 import net.troja.eve.esi.api.LocationApi;
 import net.troja.eve.esi.model.CharacterLocationResponse;
@@ -39,7 +40,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.PostConstruct;
 import java.net.URLDecoder;
 import java.nio.charset.Charset;
 import java.util.Optional;

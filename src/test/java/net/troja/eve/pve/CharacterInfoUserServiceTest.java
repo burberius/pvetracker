@@ -1,4 +1,4 @@
-package net.troja.eve.pve.web;
+package net.troja.eve.pve;
 
 /*
  * ====================================================
@@ -22,31 +22,23 @@ package net.troja.eve.pve.web;
  * ====================================================
  */
 
-import jakarta.servlet.http.HttpServletResponse;
-import org.junit.jupiter.api.Test;
+import net.troja.eve.pve.db.account.AccountRepository;
+import net.troja.eve.pve.sso.CharacterInfoUserService;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.ui.Model;
-
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class GlobalErrorControllerTest {
+public class CharacterInfoUserServiceTest {
+    private static final int CHARACTER_ID = 12345;
+    private static final String NAME = "Noname";
+    private static final String HASH = "Hash";
+    private static final String TOKEN = "Token";
+
+    private CharacterInfoUserService classToTest;
+
     @Mock
-    private HttpServletResponse response;
-    @Mock
-    private Model model;
+    private AccountRepository accountRepository;
+    // @ToDo
 
-    private final GlobalErrorController classToTest = new GlobalErrorController();
-
-    @Test
-    public void error() {
-        when(response.getStatus()).thenReturn(418);
-
-        classToTest.error(response, model);
-
-        verify(model).addAttribute("errorMessage", "418 - I'm a teapot");
-    }
 }

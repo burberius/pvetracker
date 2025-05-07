@@ -22,14 +22,15 @@ package net.troja.eve.pve.db.solarsystem;
  * ====================================================
  */
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+import lombok.Getter;
+import lombok.Setter;
 
-import lombok.Data;
-
-@Data
 @Entity
+@Getter
+@Setter
 @Table(name = "solar_system")
 public class SolarSystemBean {
     private static final double SEC_LOW = 0.4;

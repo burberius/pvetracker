@@ -1,11 +1,12 @@
 package net.troja.eve.pve.discord;
 
+import jakarta.annotation.PostConstruct;
 import lombok.extern.log4j.Log4j2;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
-import net.dv8tion.jda.api.entities.TextChannel;
+import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.dv8tion.jda.api.events.GenericEvent;
-import net.dv8tion.jda.api.events.ReadyEvent;
+import net.dv8tion.jda.api.events.session.ReadyEvent;
 import net.dv8tion.jda.api.hooks.EventListener;
 import net.troja.eve.pve.PvEApplication;
 import net.troja.eve.pve.db.outcome.LootBean;
@@ -14,11 +15,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Nonnull;
-import javax.annotation.PostConstruct;
-import javax.security.auth.login.LoginException;
 import java.text.NumberFormat;
 import java.util.List;
-import java.util.Locale;
 import java.util.stream.Collectors;
 
 @Service
@@ -41,16 +39,12 @@ public class DiscordService implements EventListener {
     @PostConstruct
     public void init() {
         log.info("Init");
-        try {
-            jda = JDABuilder.createDefault(token).build();
-            jda.addEventListener(this);
-        } catch (LoginException e) {
-            log.error("Could not create discord bot", e);
-        }
+        jda = JDABuilder.createDefault(token).build();
+        jda.addEventListener(this);
     }
 
     public void sendMessage(String message) {
-        if(channel != null) {
+        if (channel != null) {
             channel.sendMessage(message).queue();
         } else {
             log.info("Channel null - {}", message);
@@ -61,7 +55,7 @@ public class DiscordService implements EventListener {
     public void onEvent(@Nonnull GenericEvent event) {
         if (event instanceof ReadyEvent) {
             channel = jda.getTextChannelById(channelId);
-            if(channel == null) {
+            if (channel == null) {
                 log.error("Could not get channel with id: {}", channelId);
             }
         }
@@ -78,19 +72,20 @@ public class DiscordService implements EventListener {
     public void postOutcome(OutcomeBean outcomeDb) {
         List<LootBean> loot = outcomeDb.getLoot().stream()
                 .filter(l -> l.getValue() * l.getCount() > minLootValue).collect(Collectors.toList());
-        if(outcomeDb.getLootValue() < minLootValue) {
+        if (outcomeDb.getLootValue() < minLootValue) {
             return;
         }
         StringBuilder result = new StringBuilder();
-        result.append("**").append(outcomeDb.getAccount().getCharacterName()).append("** just finished a *").append(outcomeDb.getSite().getName());
+        result.append("**").append(outcomeDb.getAccount().getCharacterName()).append("** just finished a *")
+                .append(outcomeDb.getSite().getName());
         Integer ded = outcomeDb.getSite().getDed();
-        if(ded != null && ded > 0) {
+        if (ded != null && ded > 0) {
             result.append(" (").append(ded).append("/10)");
         }
         result.append("* in a *").append(outcomeDb.getShip().getType());
         result.append("* getting **").append(ISK_FORMAT.format(outcomeDb.getLootValue())).append("** ISK");
         String lootString = getLootString(loot);
-        if(lootString != null) {
+        if (lootString != null) {
             result.append(" with the following loot:\n").append(lootString);
         }
         sendMessage(result.toString());
@@ -100,12 +95,12 @@ public class DiscordService implements EventListener {
         StringBuilder result = new StringBuilder();
         loot.stream()
                 .forEach(l -> {
-                    if(result.length() > 0) {
+                    if (result.length() > 0) {
                         result.append("\n");
                     }
                     result.append(l.getCount()).append(" x *").append(l.getName())
                             .append("*");
-                    if(l.getValue() > 0) {
+                    if (l.getValue() > 0) {
                         result.append(" **").append(ISK_FORMAT.format(Math.round(l.getValue()))).append("** ISK");
                     }
                 });

@@ -20,6 +20,8 @@ spring:
     url: jdbc:mysql://localhost:3306/pve?verifyServerCertificate=false&useSSL=false&requireSSL=false&characterEncoding=UTF-8&serverTimezone=UTC
     username: pve
     password: pve
+  flyway:
+      locations: classpath:db/migration/{vendor}
 server:
   session:
     timeout: 10800

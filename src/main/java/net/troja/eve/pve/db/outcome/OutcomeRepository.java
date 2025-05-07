@@ -37,9 +37,9 @@ import net.troja.eve.pve.db.stats.SiteCountStatBean;
 import net.troja.eve.pve.db.stats.ValuesStatBean;
 
 public interface OutcomeRepository extends CrudRepository<OutcomeBean, Long> {
-    List<OutcomeBean> findByAccountOrderByStartDesc(AccountBean account);
+    List<OutcomeBean> findByAccountOrderByStartTimeDesc(AccountBean account);
 
-    @Query(value = "select o from OutcomeBean o where (bountyValue + rewardValue + lootValue) > 0 and account = :account order by start desc")
+    @Query(value = "select o from OutcomeBean o where (bountyValue + rewardValue + lootValue) > 0 and account = :account order by startTime desc")
     List<OutcomeBean> findLastSiteEarnings(@Param(value = "account") AccountBean account, Pageable pageable);
 
     @Query(
@@ -52,6 +52,6 @@ public interface OutcomeRepository extends CrudRepository<OutcomeBean, Long> {
 
     @Query(
         value = "select new net.troja.eve.pve.db.stats.ValuesStatBean(sum(rewardValue), sum(bountyValue), "
-                + "sum(lootValue)) from OutcomeBean where account = :account and start > :start")
+                + "sum(lootValue)) from OutcomeBean where account = :account and startTime > :start")
     ValuesStatBean getValueStats(@Param(value = "account") AccountBean account, @Param(value = "start") LocalDateTime start);
 }

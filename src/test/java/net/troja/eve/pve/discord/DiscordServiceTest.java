@@ -1,8 +1,8 @@
 package net.troja.eve.pve.discord;
 
 import net.dv8tion.jda.api.JDA;
-import net.dv8tion.jda.api.entities.TextChannel;
-import net.dv8tion.jda.api.requests.restaction.MessageAction;
+import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
+import net.dv8tion.jda.api.requests.restaction.MessageCreateAction;
 import net.troja.eve.pve.db.account.AccountBean;
 import net.troja.eve.pve.db.outcome.LootBean;
 import net.troja.eve.pve.db.outcome.OutcomeBean;
@@ -26,7 +26,7 @@ class DiscordServiceTest {
     @Mock
     private TextChannel channel;
     @Mock
-    private MessageAction messageAction;
+    private MessageCreateAction messageAction;
 
     private DiscordService classToTest;
 

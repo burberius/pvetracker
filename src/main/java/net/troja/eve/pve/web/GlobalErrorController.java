@@ -22,8 +22,8 @@ package net.troja.eve.pve.web;
  * ====================================================
  */
 
-import javax.servlet.http.HttpServletResponse;
 
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.boot.web.servlet.error.ErrorController;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
@@ -44,10 +44,5 @@ public class GlobalErrorController implements ErrorController {
         final String message = status.value() + " - " + status.getReasonPhrase();
         model.addAttribute("errorMessage", message);
         return "error";
-    }
-
-    @Override
-    public String getErrorPath() {
-        return PATH;
     }
 }

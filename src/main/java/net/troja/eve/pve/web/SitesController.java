@@ -22,27 +22,26 @@ package net.troja.eve.pve.web;
  * ====================================================
  */
 
-import java.security.Principal;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
-
 import net.troja.eve.pve.PvEApplication;
-import net.troja.eve.pve.db.outcome.*;
+import net.troja.eve.pve.content.ContentParserService;
+import net.troja.eve.pve.db.account.AccountBean;
+import net.troja.eve.pve.db.outcome.LootBean;
+import net.troja.eve.pve.db.outcome.LootRepository;
+import net.troja.eve.pve.db.outcome.OutcomeBean;
+import net.troja.eve.pve.db.outcome.OutcomeRepository;
+import net.troja.eve.pve.db.outcome.ShipBean;
+import net.troja.eve.pve.db.sites.SiteBean;
+import net.troja.eve.pve.db.sites.SiteRepository;
+import net.troja.eve.pve.db.solarsystem.SolarSystemBean;
+import net.troja.eve.pve.db.stats.SiteCountStatBean;
 import net.troja.eve.pve.discord.DiscordService;
-import net.troja.eve.pve.sso.EveOAuth2User;
+import net.troja.eve.pve.esi.LocationService;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.security.access.AccessDeniedException;
-import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
-import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -52,13 +51,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import net.troja.eve.pve.content.ContentParserService;
-import net.troja.eve.pve.db.account.AccountBean;
-import net.troja.eve.pve.db.sites.SiteBean;
-import net.troja.eve.pve.db.sites.SiteRepository;
-import net.troja.eve.pve.db.solarsystem.SolarSystemBean;
-import net.troja.eve.pve.db.stats.SiteCountStatBean;
-import net.troja.eve.pve.esi.LocationService;
+import java.security.Principal;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/site")
@@ -86,7 +86,7 @@ public class SitesController {
     @GetMapping
     public String sites(final StartModelBean startModel, final Model model, final Principal principal) {
         AccountBean account = ControllerHelper.getAccount(principal);
-        final List<OutcomeBean> outcomes = outcomeRepo.findByAccountOrderByStartDesc(account);
+        final List<OutcomeBean> outcomes = outcomeRepo.findByAccountOrderByStartTimeDesc(account);
         model.addAttribute("outcomes", outcomes);
         final List<SiteCountStatBean> siteCountStats = outcomeRepo.getSiteCountStats(account, PageRequest.of(0, 16));
         Collections.sort(siteCountStats, Comparator.comparing(SiteCountStatBean::getName));
@@ -151,13 +151,13 @@ public class SitesController {
         if (outcomeDb.getId() != outcome.getId()) {
             throw new AccessDeniedException("You are not allowed to view that");
         }
-        outcomeDb.setStart(outcome.getStart());
+        outcomeDb.setStartTime(outcome.getStartTime());
         boolean isNew = false;
-        if (outcomeDb.getEnd() == null && outcome.getEnd() == null) {
-            outcomeDb.setEnd(LocalDateTime.now(PvEApplication.DEFAULT_ZONE));
+        if (outcomeDb.getEndTime() == null && outcome.getEndTime() == null) {
+            outcomeDb.setEndTime(LocalDateTime.now(PvEApplication.DEFAULT_ZONE));
             isNew = true;
         } else {
-            outcomeDb.setEnd(outcome.getEnd());
+            outcomeDb.setEndTime(outcome.getEndTime());
         }
         outcomeDb.setFaction(outcome.isFaction());
         outcomeDb.setEscalation(outcome.isEscalation());

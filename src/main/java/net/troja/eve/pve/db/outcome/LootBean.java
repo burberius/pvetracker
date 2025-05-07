@@ -22,19 +22,23 @@ package net.troja.eve.pve.db.outcome;
  * ====================================================
  */
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
 
-import lombok.Data;
-import net.troja.eve.pve.PvEApplication;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 
 import java.util.Locale;
 
-@Data
 @Entity
+@Getter
+@Setter
+@ToString
 @Table(name = "loot")
 public class LootBean {
     @Id
@@ -43,6 +47,7 @@ public class LootBean {
     private int count = 1;
     private String name;
     private int typeId;
+    @Column(name = "money")
     private double value;
 
     public LootBean() {

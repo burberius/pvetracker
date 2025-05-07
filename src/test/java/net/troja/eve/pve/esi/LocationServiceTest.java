@@ -37,19 +37,22 @@ import net.troja.eve.pve.db.type.TypeTranslationBean;
 import net.troja.eve.pve.db.type.TypeTranslationRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.AdditionalAnswers;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Optional;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.nullValue;
-import static org.mockito.Matchers.anyObject;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+@ExtendWith(MockitoExtension.class)
 public class LocationServiceTest {
     private static final int CHARACTER_ID = 12345;
     private static final String CLIENT_ID = "The ID";
@@ -77,7 +80,6 @@ public class LocationServiceTest {
 
     @BeforeEach
     public void setUp() {
-        MockitoAnnotations.initMocks(this);
         classToTest.setApi(locationApi);
         classToTest.setClientId(CLIENT_ID);
         when(locationApi.getApiClient()).thenReturn(apiClient);
@@ -158,7 +160,7 @@ public class LocationServiceTest {
         typeTranslation.setName(SHIP_TYPE);
         when(shipRepo.findByNameAndTypeId(SHIP_NAME, SHIP_TYPE_ID)).thenReturn(Optional.empty());
         when(typeRepo.findByTypeIdAndLanguage(SHIP_TYPE_ID, "en")).thenReturn(Optional.of(typeTranslation));
-        when(shipRepo.save(anyObject())).then(AdditionalAnswers.returnsFirstArg());
+        when(shipRepo.save(any())).then(AdditionalAnswers.returnsFirstArg());
 
         final ShipBean ship = classToTest.getShip(getAccount());
 
@@ -176,7 +178,7 @@ public class LocationServiceTest {
         when(locationApi.getCharactersCharacterIdShip(CHARACTER_ID, GeneralEsiService.DATASOURCE, null, null)).thenReturn(shipResponse);
         when(shipRepo.findByNameAndTypeId(SHIP_NAME, SHIP_TYPE_ID)).thenReturn(Optional.empty());
         when(typeRepo.findByTypeIdAndLanguage(SHIP_TYPE_ID, "en")).thenReturn(Optional.empty());
-        when(shipRepo.save(anyObject())).then(AdditionalAnswers.returnsFirstArg());
+        when(shipRepo.save(any())).then(AdditionalAnswers.returnsFirstArg());
 
         final ShipBean ship = classToTest.getShip(getAccount());
 

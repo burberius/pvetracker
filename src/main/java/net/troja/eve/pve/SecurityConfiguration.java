@@ -22,37 +22,32 @@ package net.troja.eve.pve;
  * ====================================================
  */
 
+import lombok.RequiredArgsConstructor;
 import net.troja.eve.pve.db.account.AccountRepository;
 import net.troja.eve.pve.sso.CharacterInfoUserService;
 import net.troja.eve.pve.sso.DelegatingClientService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserService;
 import org.springframework.security.oauth2.core.user.OAuth2User;
+import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 
 @Configuration
-public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
-    @Autowired
-    private AccountRepository accountRepository;
-    @Autowired
-    private OAuth2AuthorizedClientService clientService;
+@RequiredArgsConstructor
+public class SecurityConfiguration {
+    private final AccountRepository accountRepository;
+    private final OAuth2AuthorizedClientService clientService;
 
-    public SecurityConfiguration() {
-        super();
-    }
-
-    @Override
-    protected void configure(final HttpSecurity http) throws Exception {
-        http
-                .authorizeRequests(a -> a
-                    .antMatchers("/", "/login**", "/js/**", "/css/**", "/images/**", "/favicon.ico", "/favicon.png", "/apple-touch-icon.png").permitAll()
-                    .anyRequest().authenticated()
+    @Bean
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+        http.authorizeHttpRequests(a -> a
+                        .requestMatchers("/", "/login**", "/js/**", "/css/**", "/images/**", "/favicon.ico", "/favicon.png",
+                                "/apple-touch-icon.png").permitAll()
+                        .anyRequest().authenticated()
                 )
                 .csrf(c -> c
                         .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
@@ -69,6 +64,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                                 .userService(getUserService())
                         )
                 );
+        return http.build();
     }
 
     private OAuth2UserService<OAuth2UserRequest, OAuth2User> getUserService() {

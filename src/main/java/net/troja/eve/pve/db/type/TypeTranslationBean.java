@@ -22,12 +22,18 @@ package net.troja.eve.pve.db.type;
  * ====================================================
  */
 
-import javax.persistence.*;
 
-import lombok.Data;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
 @Entity
+@Getter
+@Setter
 @Table(name = "type_translation")
 public class TypeTranslationBean {
     @Id

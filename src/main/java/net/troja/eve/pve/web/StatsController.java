@@ -1,5 +1,17 @@
 package net.troja.eve.pve.web;
 
+import net.troja.eve.pve.PvEApplication;
+import net.troja.eve.pve.db.account.AccountBean;
+import net.troja.eve.pve.db.outcome.OutcomeRepository;
+import net.troja.eve.pve.db.stats.MonthOverviewStatBean;
+import net.troja.eve.pve.price.PriceService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+
 import java.security.Principal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -8,22 +20,6 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-
-import net.troja.eve.pve.PvEApplication;
-import net.troja.eve.pve.sso.EveOAuth2User;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
-import org.springframework.security.oauth2.provider.OAuth2Authentication;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-
-import net.troja.eve.pve.db.account.AccountBean;
-import net.troja.eve.pve.db.outcome.OutcomeRepository;
-import net.troja.eve.pve.db.stats.MonthOverviewStatBean;
-import net.troja.eve.pve.price.PriceService;
 
 @Controller
 @RequestMapping("/stats")

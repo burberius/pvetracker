@@ -49,7 +49,7 @@ public class OutcomeModelBean extends OutcomeBean {
         super();
         setAccount(original.getAccount());
         setBountyValue(original.getBountyValue());
-        setEnd(original.getEnd());
+        setEndTime(original.getEndTime());
         setEscalation(original.isEscalation());
         setFaction(original.isFaction());
         setId(original.getId());
@@ -58,7 +58,7 @@ public class OutcomeModelBean extends OutcomeBean {
         setShip(original.getShip());
         setSite(original.getSite());
         setSiteName(original.getSiteName());
-        setStart(original.getStart());
+        setStartTime(original.getStartTime());
         setSystem(original.getSystem());
         StringBuilder lootString = new StringBuilder();
         for(LootBean loot : original.getLoot()) {

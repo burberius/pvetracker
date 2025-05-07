@@ -24,19 +24,22 @@ package net.troja.eve.pve.db.price;
 
 import java.time.LocalDateTime;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
-
-import lombok.Data;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+import lombok.Getter;
+import lombok.Setter;
 import net.troja.eve.pve.PvEApplication;
 
-@Data
 @Entity
+@Getter
+@Setter
 @Table(name = "price")
 public class PriceBean {
     @Id
     private int typeId;
+    @Column(name = "money")
     private double value;
     private LocalDateTime created = LocalDateTime.now(PvEApplication.DEFAULT_ZONE);
 

@@ -22,6 +22,17 @@ package net.troja.eve.pve.price;
  * ====================================================
  */
 
+import lombok.RequiredArgsConstructor;
+import net.troja.eve.pve.PvEApplication;
+import net.troja.eve.pve.db.price.PriceBean;
+import net.troja.eve.pve.db.price.PriceRepository;
+import net.troja.eve.pve.price.contract.ContractPriceService;
+import net.troja.eve.pve.price.fuzzwork.FuzzworkPriceService;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.stereotype.Service;
+
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -30,19 +41,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
-import net.troja.eve.pve.PvEApplication;
-import net.troja.eve.pve.price.contract.ContractPriceService;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.stereotype.Service;
-
-import net.troja.eve.pve.db.price.PriceBean;
-import net.troja.eve.pve.db.price.PriceRepository;
-import net.troja.eve.pve.price.fuzzwork.FuzzworkPriceService;
-
 @Service
+@RequiredArgsConstructor
 public class PriceService {
     private static final int PRICE_AGE_HOURS = 2;
     private static final int INITIAL_DELAY_10S = 10_000;
@@ -50,16 +50,9 @@ public class PriceService {
 
     private static final Logger LOGGER = LogManager.getLogger(PriceService.class);
 
-    @Autowired
-    private FuzzworkPriceService fuzzworkPriceService;
-    @Autowired
-    private ContractPriceService contractPriceService;
-    @Autowired
-    private PriceRepository priceRepository;
-
-    public PriceService() {
-        super();
-    }
+    private final FuzzworkPriceService fuzzworkPriceService;
+    private final ContractPriceService contractPriceService;
+    private final PriceRepository priceRepository;
 
     public Map<Integer, Double> getPrices(final List<Integer> prices) {
         LOGGER.info("getPrices: {}", prices);
@@ -96,17 +89,5 @@ public class PriceService {
     public void deleteOld() {
         priceRepository.deleteByCreatedBefore(LocalDateTime.now(PvEApplication.DEFAULT_ZONE)
                 .minusHours(PRICE_AGE_HOURS));
-    }
-
-    public void setFuzzworkPriceService(final FuzzworkPriceService fuzzworkPriceService) {
-        this.fuzzworkPriceService = fuzzworkPriceService;
-    }
-
-    public void setContractPriceService(ContractPriceService contractPriceService) {
-        this.contractPriceService = contractPriceService;
-    }
-
-    public void setPriceRepository(final PriceRepository priceRepository) {
-        this.priceRepository = priceRepository;
     }
 }

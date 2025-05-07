@@ -41,12 +41,6 @@ public class SiteRepositoryIntegrationTest {
 
     @Test
     public void saveAndFind() {
-        final SiteBean site = new SiteBean();
-        site.setName("Nix");
-        site.setFaction(Faction.AMARR_EMPIRE);
-
-        classToTest.save(site);
-
         final Optional<SiteBean> result = classToTest.findById(1);
 
         assertThat(result.isPresent(), equalTo(true));
