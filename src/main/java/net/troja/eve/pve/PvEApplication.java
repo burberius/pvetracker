@@ -22,6 +22,7 @@ package net.troja.eve.pve;
  * ====================================================
  */
 
+import org.jetbrains.annotations.NotNull;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
@@ -30,7 +31,6 @@ import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
-import java.nio.charset.Charset;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
@@ -42,7 +42,6 @@ import java.util.TimeZone;
 @EnableScheduling
 @EnableAsync
 public class PvEApplication {
-    public static final Charset DEFAULT_CHARSET = Charset.forName("UTF-8");
     public static final Locale DEFAULT_LOCALE = Locale.ENGLISH;
     public static final ZoneId DEFAULT_ZONE = ZoneId.of("UTC");
 
@@ -68,17 +67,21 @@ public class PvEApplication {
 
     @Bean
     public Formatter<LocalDateTime> localDateFormatter() {
-        return new Formatter<LocalDateTime>() {
-            private final DateTimeFormatter formater = new DateTimeFormatterBuilder().parseCaseInsensitive().appendPattern("yyyy-MM-dd HH:mm:ss")
-                    .toFormatter();
+        return new Formatter<>() {
+            private final DateTimeFormatter formater = new DateTimeFormatterBuilder()
+                    .parseCaseInsensitive()
+                    .appendPattern("yyyy-MM-dd HH:mm:ss")
+                    .toFormatter(Locale.GERMAN);
 
+            @NotNull
             @Override
-            public LocalDateTime parse(final String text, final Locale locale) {
+            public LocalDateTime parse(@NotNull final String text, @NotNull final Locale locale) {
                 return LocalDateTime.parse(text, formater);
             }
 
+            @NotNull
             @Override
-            public String print(final LocalDateTime object, final Locale locale) {
+            public String print(@NotNull final LocalDateTime object, @NotNull final Locale locale) {
                 return formater.format(object);
             }
         };
