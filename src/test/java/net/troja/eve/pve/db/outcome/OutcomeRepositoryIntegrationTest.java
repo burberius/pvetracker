@@ -73,6 +73,8 @@ public class OutcomeRepositoryIntegrationTest {
         ship = shipRepo.save(ship);
         outcome.setShip(ship);
         outcome.setStartTime(LocalDateTime.now(PvEApplication.DEFAULT_ZONE));
+        outcome.setEscalation(false);
+        outcome.setFaction(false);
 
         final LootBean loot = new LootBean();
         loot.setCount(5);
