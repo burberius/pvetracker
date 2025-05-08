@@ -47,7 +47,7 @@
 			<tr th:each="outcome : ${lastValueSites}">
 				<td th:text="${outcome.site} ? ${outcome.site.name} : ${outcome.siteName}">site</td>
 				<td><span th:text="${#numbers.formatDecimal(outcome.bountyValue + outcome.lootValue + outcome.rewardValue, 1, 'POINT', 0, 'COMMA')}">bounty</span> ISK</td>
-				<td th:text="${#temporals.format(outcome.start, 'yyyy-MM-dd HH:mm')}">start</td>
+				<td th:text="${#temporals.format(outcome.startTime, 'yyyy-MM-dd HH:mm')}">start</td>
 			</tr>
 		</table>
 
