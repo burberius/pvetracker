@@ -35,6 +35,7 @@ import net.troja.eve.pve.PvEApplication;
 @Entity
 @Getter
 @Setter
+@ToString(exclude = "refreshToken")
 @Table(name = "account")
 public class AccountBean {
     @Id
@@ -43,7 +44,6 @@ public class AccountBean {
     private String characterOwnerHash;
     private LocalDateTime created = LocalDateTime.now(PvEApplication.DEFAULT_ZONE);
     private LocalDateTime lastLogin = LocalDateTime.now(PvEApplication.DEFAULT_ZONE);
-    @ToString.Exclude
     private String refreshToken;
 
     public AccountBean() {
