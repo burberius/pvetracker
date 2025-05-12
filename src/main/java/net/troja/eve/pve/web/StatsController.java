@@ -1,11 +1,11 @@
 package net.troja.eve.pve.web;
 
+import lombok.RequiredArgsConstructor;
 import net.troja.eve.pve.PvEApplication;
 import net.troja.eve.pve.db.account.AccountBean;
 import net.troja.eve.pve.db.outcome.OutcomeRepository;
 import net.troja.eve.pve.db.stats.MonthOverviewStatBean;
 import net.troja.eve.pve.price.PriceService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Map;
 
 @Controller
+@RequiredArgsConstructor
 @RequestMapping("/stats")
 public class StatsController {
     private static final String DATE_FORMAT = "yyyy-MM-dd";
@@ -32,15 +33,8 @@ public class StatsController {
     private static final double VALUE_100 = 100D;
     private static final double VALUE_10K = 10_000D;
 
-
-    @Autowired
-    private OutcomeRepository outcomeRepository;
-    @Autowired
-    private PriceService priceService;
-
-    public StatsController() {
-        super();
-    }
+    private final OutcomeRepository outcomeRepository;
+    private final PriceService priceService;
 
     @GetMapping
     public String getStats(final Model model, final Principal principal) {
@@ -50,7 +44,7 @@ public class StatsController {
         model.addAttribute("montly", convertMonthlyData(monthlyOverviewStats));
         model.addAttribute("lastValueSites", outcomeRepository.findLastSiteEarnings(account, PageRequest.of(0, 10)));
         model.addAttribute("values", outcomeRepository.getValueStats(account, start));
-        final Map<Integer, Double> prices = priceService.getPrices(Arrays.asList(TYPE_ID_PLEX));
+        final Map<Integer, Double> prices = priceService.getPrices(List.of(TYPE_ID_PLEX));
         model.addAttribute("plex", prices.get(TYPE_ID_PLEX));
         return "stats";
     }
@@ -79,9 +73,5 @@ public class StatsController {
             start = start.plusDays(1);
         }
         return result;
-    }
-
-    public void setOutcomeRepo(final OutcomeRepository outcomeRepo) {
-        outcomeRepository = outcomeRepo;
     }
 }

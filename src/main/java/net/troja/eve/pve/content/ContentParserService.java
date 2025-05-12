@@ -27,6 +27,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -39,23 +41,17 @@ import net.troja.eve.pve.db.type.TypeTranslationRepository;
 import net.troja.eve.pve.price.PriceService;
 
 @Service
+@RequiredArgsConstructor
 public class ContentParserService {
     private static final Logger LOGGER = LogManager.getLogger(ContentParserService.class);
     private static final int EXPECTED_COLUMN_COUNT = 2;
 
-    @Autowired
-    private TypeTranslationRepository translationsRepository;
-    @Autowired
-    private PriceService priceService;
-
-    public ContentParserService() {
-        super();
-    }
+    private final TypeTranslationRepository translationsRepository;
+    private final PriceService priceService;
 
     public List<LootBean> parse(final String content) {
         if (!StringUtils.isBlank(content)) {
             return processContent(content);
-
         }
         return Collections.emptyList();
     }
@@ -101,13 +97,5 @@ public class ContentParserService {
                 loot.setValue(value);
             }
         }
-    }
-
-    void setTranslationsRepository(final TypeTranslationRepository translationsRepository) {
-        this.translationsRepository = translationsRepository;
-    }
-
-    void setPriceService(final PriceService priceService) {
-        this.priceService = priceService;
     }
 }

@@ -9,7 +9,7 @@ import java.time.LocalDate;
 @AllArgsConstructor
 public class MonthOverviewStatBean {
     private LocalDate date;
-    private double value;
+    private long value;
 
     public MonthOverviewStatBean(final LocalDate date, final long lootValue, final long bountyValue, final long rewardValue) {
         super();

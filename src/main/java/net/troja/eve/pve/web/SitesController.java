@@ -22,6 +22,7 @@ package net.troja.eve.pve.web;
  * ====================================================
  */
 
+import lombok.RequiredArgsConstructor;
 import net.troja.eve.pve.PvEApplication;
 import net.troja.eve.pve.content.ContentParserService;
 import net.troja.eve.pve.db.account.AccountBean;
@@ -37,9 +38,6 @@ import net.troja.eve.pve.db.stats.SiteCountStatBean;
 import net.troja.eve.pve.discord.DiscordService;
 import net.troja.eve.pve.esi.LocationService;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Controller;
@@ -54,33 +52,23 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import java.security.Principal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Controller
+@RequiredArgsConstructor
 @RequestMapping("/site")
 public class SitesController {
     private static final String MODEL_OUTCOME = "outcome";
 
-    @Autowired
-    private SiteRepository siteRepo;
-    @Autowired
-    private OutcomeRepository outcomeRepo;
-    @Autowired
-    private LootRepository lootRepo;
-    @Autowired
-    private LocationService locationService;
-    @Autowired
-    private ContentParserService contentParserService;
-    @Autowired
-    private DiscordService discordService;
-
-    public SitesController() {
-        super();
-    }
+    private final SiteRepository siteRepo;
+    private final OutcomeRepository outcomeRepo;
+    private final LootRepository lootRepo;
+    private final LocationService locationService;
+    private final ContentParserService contentParserService;
+    private final DiscordService discordService;
 
     @GetMapping
     public String sites(final StartModelBean startModel, final Model model, final Principal principal) {
@@ -163,9 +151,9 @@ public class SitesController {
         outcomeDb.setBountyValue(outcome.getBountyValue());
         outcomeDb.setRewardValue(outcome.getRewardValue());
         final List<LootBean> loot = contentParserService.parse(outcome.getLootContent());
-        Collections.sort(loot, getLootComparator());
+        loot.sort(getLootComparator());
         if(!outcomeDb.getLoot().isEmpty()) {
-            outcomeDb.getLoot().forEach(l -> lootRepo.delete(l));
+            lootRepo.deleteAll(outcomeDb.getLoot());
             outcomeDb.getLoot().clear();
         }
         outcomeDb.getLoot().addAll(loot);
@@ -199,7 +187,7 @@ public class SitesController {
 
     private OutcomeBean getOutcome(final Principal principal, final long id) {
         final Optional<OutcomeBean> outcomeResult = outcomeRepo.findById(id);
-        if (!outcomeResult.isPresent()) {
+        if (outcomeResult.isEmpty()) {
             throw new NotFoundException();
         }
         final OutcomeBean outcome = outcomeResult.get();
@@ -208,25 +196,5 @@ public class SitesController {
             throw new AccessDeniedException("You are not allowed to view that");
         }
         return outcome;
-    }
-
-    public void setSiteRepo(final SiteRepository siteRepo) {
-        this.siteRepo = siteRepo;
-    }
-
-    public void setOutcomeRepo(final OutcomeRepository outcomeRepo) {
-        this.outcomeRepo = outcomeRepo;
-    }
-
-    public void setLocationService(final LocationService locationService) {
-        this.locationService = locationService;
-    }
-
-    public void setContentParserService(final ContentParserService contentParserService) {
-        this.contentParserService = contentParserService;
-    }
-
-    public void setDiscordService(DiscordService discordService) {
-        this.discordService = discordService;
     }
 }

@@ -1,6 +1,7 @@
 package net.troja.eve.pve.esi;
 
 import jakarta.annotation.PostConstruct;
+import lombok.RequiredArgsConstructor;
 import net.troja.eve.esi.ApiException;
 import net.troja.eve.esi.ApiResponse;
 import net.troja.eve.esi.api.StatusApi;
@@ -13,7 +14,6 @@ import net.troja.eve.pve.db.type.TypeTranslationRepository;
 import net.troja.eve.pve.discord.DiscordService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -29,17 +29,15 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
 @Service
+@RequiredArgsConstructor
 public class NamesUpdateService {
     private static final Logger LOGGER = LogManager.getLogger(NamesUpdateService.class);
     private static final String STORAGE_LANGUAGE = "xx";
     private static final int STORAGE_ID = 0;
 
-    @Autowired
-    private TypeTranslationRepository typeTranslationRepository;
-    @Autowired
-    private ThreadPoolTaskExecutor taskExecutor;
-    @Autowired
-    private DiscordService discordService;
+    private final TypeTranslationRepository typeTranslationRepository;
+    private final ThreadPoolTaskExecutor taskExecutor;
+    private final DiscordService discordService;
     @Value("${namesupdate}")
     private boolean namesUpdateActive;
 
@@ -58,9 +56,7 @@ public class NamesUpdateService {
     public void init() {
         Optional<TypeTranslationBean> storage =
                 typeTranslationRepository.findByTypeIdAndLanguage(STORAGE_ID, STORAGE_LANGUAGE);
-        if (storage.isPresent()) {
-            lastApiVersion = storage.get().getName();
-        }
+        storage.ifPresent(typeTranslationBean -> lastApiVersion = typeTranslationBean.getName());
         LOGGER.info("Last Api Version: {}", lastApiVersion);
 
         taskQueue = taskExecutor.getThreadPoolExecutor().getQueue();
@@ -91,6 +87,7 @@ public class NamesUpdateService {
                     TimeUnit.MINUTES.sleep(5);
                 } catch (InterruptedException e) {
                     LOGGER.error("Could not sleep");
+                    Thread.currentThread().interrupt();
                 }
             }
         } while (status == null);
@@ -143,6 +140,7 @@ public class NamesUpdateService {
                     TimeUnit.SECONDS.sleep(2);
                 } catch (InterruptedException e) {
                     LOGGER.error("Could not sleep");
+                    Thread.currentThread().interrupt();
                 }
             }
             taskExecutor.execute(() -> updateName(typeId));
@@ -154,7 +152,7 @@ public class NamesUpdateService {
         for (Language language : Language.values()) {
             String lang = language.name();
             Optional<TypeTranslationBean> entry = existing.stream().filter(x -> lang.equals(x.getLanguage())).findFirst();
-            String etag = entry.isPresent() ? entry.get().getEtag() : null;
+            String etag = entry.map(TypeTranslationBean::getEtag).orElse(null);
             try {
                 ApiResponse<TypeResponse> response = universeApi.getUniverseTypesTypeIdWithHttpInfo(typeId, lang.equals("en") ? "en-us" : lang,
                         GeneralEsiService.DATASOURCE, etag, lang.equals("en") ? "en-us" : lang);
@@ -195,7 +193,7 @@ public class NamesUpdateService {
     }
 
     private String calcRest(int count, long timeDiff) {
-        double timePer = timeDiff / count;
+        double timePer = (double) timeDiff / count;
         int rest = typeIds.size() - count;
         long left = Math.round(timePer * rest);
         return getDurationString(left);
@@ -223,19 +221,11 @@ public class NamesUpdateService {
         }
     }
 
-    public void setTypeTranslationRepository(TypeTranslationRepository typeTranslationRepository) {
-        this.typeTranslationRepository = typeTranslationRepository;
-    }
-
-    public void setTaskExecutor(ThreadPoolTaskExecutor taskExecutor) {
-        this.taskExecutor = taskExecutor;
-    }
-
     private String getETag(ApiResponse<TypeResponse> resp) {
-        return resp.getHeaders().get("etag").get(0);
+        return resp.getHeaders().get("etag").getFirst();
     }
 
     private Integer getPagesMax(ApiResponse<?> resp) {
-        return Integer.valueOf(resp.getHeaders().get("X-Pages").get(0));
+        return Integer.valueOf(resp.getHeaders().get("X-Pages").getFirst());
     }
 }
