@@ -11,11 +11,8 @@ spring:
             authorization-grant-type: authorization_code
         provider:
           eve:
-            authorization-uri: https://login.eveonline.com/oauth/authorize
-            token-uri: https://login.eveonline.com/oauth/token
-            user-info-uri: https://login.eveonline.com/oauth/verify
-            user-info-authentication-method: header
-            user-name-attribute: CharacterName
+            authorization-uri: https://login.eveonline.com/v2/oauth/authorize
+            token-uri: https://login.eveonline.com/v2/oauth/token
   datasource:
     url: jdbc:postgresql://localhost:5432/pve?currentSchema=pve
     username: pve

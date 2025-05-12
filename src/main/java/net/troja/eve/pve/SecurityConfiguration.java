@@ -33,6 +33,7 @@ import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserService;
 import org.springframework.security.oauth2.core.user.OAuth2User;
+import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 
@@ -45,7 +46,7 @@ public class SecurityConfiguration {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.authorizeHttpRequests(a -> a
-                        .requestMatchers("/", "/login**", "/js/**", "/css/**", "/images/**", "/favicon.ico", "/favicon.png",
+                        .requestMatchers("/", "/login", "/js/**", "/css/**", "/images/**", "/favicon.ico", "/favicon.png",
                                 "/apple-touch-icon.png").permitAll()
                         .anyRequest().authenticated()
                 )
@@ -68,6 +69,7 @@ public class SecurityConfiguration {
     }
 
     private OAuth2UserService<OAuth2UserRequest, OAuth2User> getUserService() {
-        return new CharacterInfoUserService(accountRepository);
+        return new CharacterInfoUserService(accountRepository,
+                NimbusJwtDecoder.withJwkSetUri("https://login.eveonline.com/oauth/jwks").build());
     }
 }

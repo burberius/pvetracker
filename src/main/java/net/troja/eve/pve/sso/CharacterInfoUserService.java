@@ -27,12 +27,12 @@ import net.troja.eve.pve.db.account.AccountBean;
 import net.troja.eve.pve.db.account.AccountRepository;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
-import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.oauth2.core.user.OAuth2User;
+import org.springframework.security.oauth2.jwt.Jwt;
+import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 
 import java.time.LocalDateTime;
 import java.util.Map;
@@ -42,36 +42,38 @@ public final class CharacterInfoUserService extends DefaultOAuth2UserService {
     private static final Logger LOGGER = LogManager.getLogger(CharacterInfoUserService.class);
 
     private final AccountRepository accountRepository;
+    private final NimbusJwtDecoder jwtDecoder;
 
-    public CharacterInfoUserService(final AccountRepository accountRepository) {
+    public CharacterInfoUserService(final AccountRepository accountRepository, final NimbusJwtDecoder jwtDecoder) {
         this.accountRepository = accountRepository;
+        this.jwtDecoder = jwtDecoder;
     }
 
     public AccountBean extractAccount(final Map<String, Object> map) {
-        final Integer characterId = (Integer) map.get("CharacterID");
-        AccountBean account = null;
+        final int characterId = Integer.parseInt(((String) map.get("sub")).substring("CHARACTER:EVE:".length()));
+        AccountBean account;
         final Optional<AccountBean> accountSearch = accountRepository.findById(characterId);
         if (accountSearch.isPresent()) {
             account = accountSearch.get();
             account.setLastLogin(LocalDateTime.now(PvEApplication.DEFAULT_ZONE));
-            LOGGER.info("Updated account " + account);
+            LOGGER.info("Updated account {}", account);
         } else {
             account = new AccountBean();
             account.setCharacterId(characterId);
-            account.setCharacterName((String) map.get("CharacterName"));
-            account.setCharacterOwnerHash((String) map.get("CharacterOwnerHash"));
-            LOGGER.info("Saved new account " + account);
+            account.setCharacterName((String) map.get("name"));
+            account.setCharacterOwnerHash((String) map.get("owner"));
+            LOGGER.info("Saved new account {}", account);
         }
         accountRepository.save(account);
-        LOGGER.info("Current count " + accountRepository.count());
+        LOGGER.info("Current count {}", accountRepository.count());
 
         return account;
     }
 
     @Override
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
-        OAuth2User oAuth2User = super.loadUser(userRequest);
-        AccountBean account = extractAccount(oAuth2User.getAttributes());
+        Jwt decode = jwtDecoder.decode(userRequest.getAccessToken().getTokenValue());
+        AccountBean account = extractAccount(decode.getClaims());
         return new EveOAuth2User(account);
     }
 }

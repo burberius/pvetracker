@@ -22,29 +22,28 @@ package net.troja.eve.pve.content;
  * ====================================================
  */
 
+import net.troja.eve.pve.db.outcome.LootBean;
+import net.troja.eve.pve.db.type.TypeTranslationBean;
+import net.troja.eve.pve.db.type.TypeTranslationRepository;
+import net.troja.eve.pve.price.PriceService;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.aspectj.lang.annotation.Before;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.notNullValue;
-
 import static org.mockito.Mockito.when;
 
-import net.troja.eve.pve.db.outcome.LootBean;
-import net.troja.eve.pve.db.type.TypeTranslationBean;
-import net.troja.eve.pve.db.type.TypeTranslationRepository;
-import net.troja.eve.pve.price.PriceService;
-
+@ExtendWith(MockitoExtension.class)
 public class ContentParserServiceTest {
     private ContentParserService classToTest;
 
@@ -55,7 +54,6 @@ public class ContentParserServiceTest {
 
     @BeforeEach
     public void setUp() {
-        MockitoAnnotations.initMocks(this);
         classToTest = new ContentParserService();
         classToTest.setTranslationsRepository(repository);
         classToTest.setPriceService(priceService);
