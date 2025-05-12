@@ -22,6 +22,18 @@ package net.troja.eve.pve.content;
  * ====================================================
  */
 
+import net.troja.eve.pve.db.outcome.LootBean;
+import net.troja.eve.pve.db.type.TypeTranslationRepository;
+import net.troja.eve.pve.price.PriceService;
+import org.assertj.core.util.Files;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -30,48 +42,36 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.assertj.core.util.Files;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
-
+import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.Mockito.when;
 
-import net.troja.eve.pve.db.outcome.LootBean;
-import net.troja.eve.pve.db.type.TypeTranslationRepository;
-import net.troja.eve.pve.price.PriceService;
-
 @DataJpaTest
+@ExtendWith(MockitoExtension.class)
 public class ContentParserServiceIntegrationTest {
-    private final ContentParserService classToTest = new ContentParserService();
-
     @Autowired
     private TypeTranslationRepository translationsRepository;
     @Mock
     private PriceService priceService;
+
+    private ContentParserService classToTest;
+
     private List<LootBean> reference;
     private Map<Integer, Double> prices;
-    private final List<Integer> typeIds = Arrays.asList(27401, 28363, 28366, 28364, 21815, 28668, 24533, 15466);
+    private final List<Integer> typeIds = List.of(27401, 28363, 28366, 28364, 21815, 28668, 24533, 15466);
 
     @BeforeEach
     public void setUp() {
-        MockitoAnnotations.initMocks(this);
-        classToTest.setTranslationsRepository(translationsRepository);
-        classToTest.setPriceService(priceService);
+        classToTest = new ContentParserService(translationsRepository, priceService);
         if (reference == null) {
             generateReference();
         }
         if (prices == null) {
             generatePrices();
         }
-        when(priceService.getPrices(typeIds)).thenReturn(prices);
+        when(priceService.getPrices(anyList())).thenReturn(prices);
     }
 
     @Test
@@ -119,8 +119,7 @@ public class ContentParserServiceIntegrationTest {
     private List<LootBean> parseLangFile(final String lang) {
         final Path path = Paths.get("src/test/resources/content_" + lang + ".txt");
         final String content = Files.contentOf(path.toFile(), "UTF-8");
-        final List<LootBean> list = classToTest.parse(content);
-        return list;
+        return classToTest.parse(content);
     }
 
     private void generateReference() {

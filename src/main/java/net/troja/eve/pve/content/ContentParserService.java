@@ -22,23 +22,20 @@ package net.troja.eve.pve.content;
  * ====================================================
  */
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import net.troja.eve.pve.db.outcome.LootBean;
 import net.troja.eve.pve.db.type.TypeTranslationBean;
 import net.troja.eve.pve.db.type.TypeTranslationRepository;
 import net.troja.eve.pve.price.PriceService;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor

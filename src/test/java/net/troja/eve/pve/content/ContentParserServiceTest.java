@@ -29,6 +29,8 @@ import net.troja.eve.pve.price.PriceService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Incubating;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
@@ -45,19 +47,13 @@ import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 public class ContentParserServiceTest {
-    private ContentParserService classToTest;
 
     @Mock
     private TypeTranslationRepository repository;
     @Mock
     private PriceService priceService;
-
-    @BeforeEach
-    public void setUp() {
-        classToTest = new ContentParserService();
-        classToTest.setTranslationsRepository(repository);
-        classToTest.setPriceService(priceService);
-    }
+    @InjectMocks
+    private ContentParserService classToTest;
 
     @Test
     public void parseNull() {
@@ -105,14 +101,14 @@ public class ContentParserServiceTest {
         when(repository.findByName("Nanite Repair Paste")).thenReturn(transList);
         final Map<Integer, Double> prices = new HashMap<>();
         prices.put(1, 1.2d);
-        when(priceService.getPrices(Arrays.asList(1))).thenReturn(prices);
+        when(priceService.getPrices(List.of(1))).thenReturn(prices);
 
         final String content = "Nanite Repair Paste\t174,00\tNanite Repair Paste\t\t\t1,74 m3";
         final List<LootBean> list = classToTest.parse(content);
 
         assertThat(list, notNullValue());
         assertThat(list.size(), equalTo(1));
-        final LootBean result = list.get(0);
+        final LootBean result = list.getFirst();
         assertThat(result.getCount(), equalTo(17400));
         assertThat(result.getValue(), equalTo(1.2d));
     }

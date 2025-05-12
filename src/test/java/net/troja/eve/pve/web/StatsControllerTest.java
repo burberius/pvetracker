@@ -12,6 +12,7 @@ import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
@@ -33,19 +34,14 @@ import net.troja.eve.pve.db.stats.MonthOverviewStatBean;
 
 @ExtendWith(MockitoExtension.class)
 public class StatsControllerTest {
-    private final StatsController classToTest = new StatsController();
-
     @Mock
     private Model model;
     @Mock
     private OAuth2AuthorizationCodeAuthenticationToken principal;
     @Mock
     private OutcomeRepository outcomeRepo;
-
-    @BeforeEach
-    public void setUp() {
-        classToTest.setOutcomeRepo(outcomeRepo);
-    }
+    @InjectMocks
+    private StatsController classToTest;
 
     @Test
     @Disabled
@@ -53,7 +49,7 @@ public class StatsControllerTest {
         final AccountBean account = new AccountBean();
         when(principal.getPrincipal()).thenReturn(account);
         final LocalDate now = LocalDate.now(PvEApplication.DEFAULT_ZONE);
-        final MonthOverviewStatBean statBean = new MonthOverviewStatBean(now, 123456789D);
+        final MonthOverviewStatBean statBean = new MonthOverviewStatBean(now, 123456789L);
         when(outcomeRepo.getMonthlyOverviewStats(eq(account), any(LocalDateTime.class))).thenReturn(List.of(statBean));
 
         final String stats = classToTest.getStats(model, principal);

@@ -39,6 +39,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.access.AccessDeniedException;
@@ -65,8 +66,6 @@ public class SitesControllerTest {
     private static final int REWARD = 4321;
     private static final String LOOT = "Loot";
 
-    private final SitesController classToTest = new SitesController();
-
     private final AccountBean account = new AccountBean();
 
     @Mock
@@ -83,15 +82,12 @@ public class SitesControllerTest {
     private ContentParserService contentParserService;
     @Mock
     private DiscordService discordService;
+    @InjectMocks
+    private SitesController classToTest;
 
     @BeforeEach
     public void setUp() {
         account.setCharacterId(CHARACTER_ID);
-        classToTest.setOutcomeRepo(outcomeRepo);
-        classToTest.setSiteRepo(siteRepo);
-        classToTest.setLocationService(locationService);
-        classToTest.setContentParserService(contentParserService);
-        classToTest.setDiscordService(discordService);
     }
 
     @Test
