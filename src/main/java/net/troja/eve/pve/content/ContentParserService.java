@@ -60,7 +60,7 @@ public class ContentParserService {
             try {
                 final String[] cols = line.split("\t");
                 if (cols.length < EXPECTED_COLUMN_COUNT) {
-                    LOGGER.warn("Wrong number of columns: " + line);
+                    LOGGER.warn("Wrong number of columns: {}", line);
                 }
                 String name = cols[0].trim();
                 if (name.endsWith("*")) {
@@ -75,11 +75,11 @@ public class ContentParserService {
                 if (!StringUtils.isBlank(count)) {
                     quantity = Integer.parseInt(count);
                 }
-                final int typeId = result.get(0).getTypeId();
+                final int typeId = result.getFirst().getTypeId();
                 lootList.add(new LootBean(typeId, name, quantity));
                 lootTypeIds.add(typeId);
             } catch (final NumberFormatException e) {
-                LOGGER.warn("Could not parse pasted content: " + e.getMessage() + " of line '" + line + "'");
+                LOGGER.warn("Could not parse pasted content: {} of line '{}'", e.getMessage(), line);
             }
         }
         addPrices(lootList, lootTypeIds);

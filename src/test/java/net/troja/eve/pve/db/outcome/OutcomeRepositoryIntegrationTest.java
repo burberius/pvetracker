@@ -22,11 +22,13 @@ package net.troja.eve.pve.db.outcome;
  * ====================================================
  */
 
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Optional;
-
 import net.troja.eve.pve.PvEApplication;
+import net.troja.eve.pve.db.account.AccountBean;
+import net.troja.eve.pve.db.account.AccountRepository;
+import net.troja.eve.pve.db.sites.SiteBean;
+import net.troja.eve.pve.db.sites.SiteRepository;
+import net.troja.eve.pve.db.solarsystem.SolarSystemBean;
+import net.troja.eve.pve.db.solarsystem.SolarSystemRepository;
 import net.troja.eve.pve.db.stats.MonthOverviewStatBean;
 import net.troja.eve.pve.db.stats.SiteCountStatBean;
 import org.junit.jupiter.api.BeforeEach;
@@ -37,12 +39,9 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import net.troja.eve.pve.db.account.AccountBean;
-import net.troja.eve.pve.db.account.AccountRepository;
-import net.troja.eve.pve.db.sites.SiteBean;
-import net.troja.eve.pve.db.sites.SiteRepository;
-import net.troja.eve.pve.db.solarsystem.SolarSystemBean;
-import net.troja.eve.pve.db.solarsystem.SolarSystemRepository;
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -75,7 +74,7 @@ class OutcomeRepositoryIntegrationTest {
     void saveAndFind() {
         final Optional<OutcomeBean> result = classToTest.findById(1L);
 
-        assertThat(result.isPresent()).isEqualTo(true);
+        assertThat(result).isPresent();
 
         final OutcomeBean out = result.get();
         assertThat(out.getLoot()).hasSize(1);
@@ -92,7 +91,6 @@ class OutcomeRepositoryIntegrationTest {
     @Test
     void getSiteCountStats() {
         final Optional<OutcomeBean> result = classToTest.findById(1L);
-        System.out.println(result.get());
 
         List<SiteCountStatBean> siteCountStats = classToTest.getSiteCountStats(accountBean, PageRequest.of(0, 16));
 

@@ -37,7 +37,6 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -60,7 +59,6 @@ public class ContentParserServiceIntegrationTest {
 
     private List<LootBean> reference;
     private Map<Integer, Double> prices;
-    private final List<Integer> typeIds = List.of(27401, 28363, 28366, 28364, 21815, 28668, 24533, 15466);
 
     @BeforeEach
     public void setUp() {
