@@ -1,8 +1,6 @@
 package net.troja.eve.pve.db.outcome;
 
 import jakarta.persistence.CascadeType;
-import jakarta.persistence.ColumnResult;
-import jakarta.persistence.ConstructorResult;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -10,39 +8,25 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.NamedNativeQuery;
 import jakarta.persistence.OneToMany;
-import jakarta.persistence.SqlResultSetMapping;
 import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 import net.troja.eve.pve.PvEApplication;
 import net.troja.eve.pve.db.account.AccountBean;
 import net.troja.eve.pve.db.sites.SiteBean;
 import net.troja.eve.pve.db.solarsystem.SolarSystemBean;
-import net.troja.eve.pve.db.stats.MonthOverviewStatBean;
 
 import java.time.Duration;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-@SqlResultSetMapping(
-    name = "MonthlyOverviewStatsMapping",
-    classes = {
-        @ConstructorResult(
-            targetClass = MonthOverviewStatBean.class,
-            columns = { @ColumnResult(name = "date", type = LocalDate.class), @ColumnResult(name = "value", type = Double.class) }) })
-
-@NamedNativeQuery(
-    name = "OutcomeBean.getMonthlyOverviewStats",
-    query = "select DATE(start) as date, sum(loot_value + bounty_value + reward_value) as value from outcome o where "
-            + "account_id = :account and start > :start group by DATE(start) order by DATE(start)",
-    resultSetMapping = "MonthlyOverviewStatsMapping")
 @Entity
 @Getter
 @Setter
+@ToString
 @Table(name = "outcome")
 public class OutcomeBean {
     private static final int SECONDS2MINUTES = 60;
@@ -78,7 +62,8 @@ public class OutcomeBean {
         super();
     }
 
-    public OutcomeBean(final AccountBean account, final SolarSystemBean system, final ShipBean ship, final String siteName, final SiteBean site) {
+    public OutcomeBean(final AccountBean account, final SolarSystemBean system, final ShipBean ship,
+                       final String siteName, final SiteBean site) {
         super();
         this.account = account;
         this.system = system;

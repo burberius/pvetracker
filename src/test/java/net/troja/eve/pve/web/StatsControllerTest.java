@@ -4,6 +4,7 @@ import java.security.Principal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Arrays;
+import java.util.List;
 
 import net.troja.eve.pve.PvEApplication;
 import org.junit.jupiter.api.BeforeEach;
@@ -53,7 +54,7 @@ public class StatsControllerTest {
         when(principal.getPrincipal()).thenReturn(account);
         final LocalDate now = LocalDate.now(PvEApplication.DEFAULT_ZONE);
         final MonthOverviewStatBean statBean = new MonthOverviewStatBean(now, 123456789D);
-        when(outcomeRepo.getMonthlyOverviewStats(eq(account), any(LocalDateTime.class))).thenReturn(Arrays.asList(statBean));
+        when(outcomeRepo.getMonthlyOverviewStats(eq(account), any(LocalDateTime.class))).thenReturn(List.of(statBean));
 
         final String stats = classToTest.getStats(model, principal);
 

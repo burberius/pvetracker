@@ -63,7 +63,6 @@ import java.util.stream.Collectors;
 @Controller
 @RequestMapping("/site")
 public class SitesController {
-    private static final Logger LOGGER = LogManager.getLogger(SitesController.class);
     private static final String MODEL_OUTCOME = "outcome";
 
     @Autowired
@@ -89,7 +88,7 @@ public class SitesController {
         final List<OutcomeBean> outcomes = outcomeRepo.findByAccountOrderByStartTimeDesc(account);
         model.addAttribute("outcomes", outcomes);
         final List<SiteCountStatBean> siteCountStats = outcomeRepo.getSiteCountStats(account, PageRequest.of(0, 16));
-        Collections.sort(siteCountStats, Comparator.comparing(SiteCountStatBean::getName));
+        siteCountStats.sort(Comparator.comparing(SiteCountStatBean::getName));
         model.addAttribute("stats", siteCountStats);
         return "sites";
     }
@@ -97,7 +96,7 @@ public class SitesController {
     @GetMapping("/search")
     public @ResponseBody List<String> search(@RequestParam("q") final String query) {
         List<String> result = new ArrayList<>();
-        final Optional<List<SiteBean>> searchResult = siteRepo.findByNameContaining(query);
+        final Optional<List<SiteBean>> searchResult = siteRepo.findByNameContainingIgnoreCase(query);
         if (searchResult.isPresent()) {
             result = searchResult.get().stream().map(SiteBean::getName).collect(Collectors.toList());
         }

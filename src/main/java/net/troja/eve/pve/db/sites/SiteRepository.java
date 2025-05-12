@@ -31,5 +31,5 @@ import org.springframework.data.repository.CrudRepository;
 public interface SiteRepository extends CrudRepository<SiteBean, Integer> {
     Optional<SiteBean> findByName(String name);
 
-    Optional<List<SiteBean>> findByNameContaining(String name);
+    Optional<List<SiteBean>> findByNameContainingIgnoreCase(String name);
 }

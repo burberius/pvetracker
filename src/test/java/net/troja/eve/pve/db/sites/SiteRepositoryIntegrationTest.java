@@ -22,6 +22,7 @@ package net.troja.eve.pve.db.sites;
  * ====================================================
  */
 
+import java.util.List;
 import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
@@ -30,8 +31,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @DataJpaTest
 @Transactional(propagation = Propagation.NOT_SUPPORTED)
@@ -43,6 +43,15 @@ public class SiteRepositoryIntegrationTest {
     public void saveAndFind() {
         final Optional<SiteBean> result = classToTest.findById(1);
 
-        assertThat(result.isPresent(), equalTo(true));
+        assertThat(result).isPresent();
+    }
+
+    @Test
+    public void searchCaseInsensitive() {
+        final Optional<List<SiteBean>> result = classToTest.findByNameContainingIgnoreCase("angel");
+
+        assertThat(result).isPresent();
+        assertThat(result.get()).hasSize(100);
+        result.get().forEach(site -> assertThat(site.getName()).contains("Angel"));
     }
 }

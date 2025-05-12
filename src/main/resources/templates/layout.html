@@ -22,7 +22,7 @@
 			<a th:href="@{/stats}" class="menu-entry">Statistics</a>
 		</span>
 		<span id="loginout">
-			<a th:href="@{/site/}" href="/site/" sec:authorize="!isAuthenticated()">
+			<a th:href="@{/site}" href="/site" sec:authorize="!isAuthenticated()">
 				<img th:src="@{/images/evessobutton.png}" src="/images/evessobutton.png" />
 			</a>
 			<span id="nameTag" sec:authorize="isAuthenticated()" sec:authentication="principal.account.characterName">Name</span>

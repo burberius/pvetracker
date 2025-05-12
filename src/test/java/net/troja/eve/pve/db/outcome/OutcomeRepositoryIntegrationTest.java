@@ -23,17 +23,19 @@ package net.troja.eve.pve.db.outcome;
  */
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 import net.troja.eve.pve.PvEApplication;
+import net.troja.eve.pve.db.stats.MonthOverviewStatBean;
+import net.troja.eve.pve.db.stats.SiteCountStatBean;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
 
 import net.troja.eve.pve.db.account.AccountBean;
 import net.troja.eve.pve.db.account.AccountRepository;
@@ -42,9 +44,11 @@ import net.troja.eve.pve.db.sites.SiteRepository;
 import net.troja.eve.pve.db.solarsystem.SolarSystemBean;
 import net.troja.eve.pve.db.solarsystem.SolarSystemRepository;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 @DataJpaTest
 @Transactional(propagation = Propagation.NOT_SUPPORTED)
-public class OutcomeRepositoryIntegrationTest {
+class OutcomeRepositoryIntegrationTest {
     @Autowired
     private OutcomeRepository classToTest;
 
@@ -57,14 +61,57 @@ public class OutcomeRepositoryIntegrationTest {
     @Autowired
     private SolarSystemRepository systemRepo;
 
+    private AccountBean accountBean;
+
+    @BeforeEach
+    void setUp() {
+        accountBean = accountRepo.findById(1).get();
+        if(classToTest.count() == 0) {
+            createOutcome();
+        }
+    }
+
     @Test
-    public void saveAndFind() {
+    void saveAndFind() {
+        final Optional<OutcomeBean> result = classToTest.findById(1L);
+
+        assertThat(result.isPresent()).isEqualTo(true);
+
+        final OutcomeBean out = result.get();
+        assertThat(out.getLoot()).hasSize(1);
+    }
+
+    @Test
+    void getMonthlyOverviewStats() {
+        List<MonthOverviewStatBean> monthlyOverviewStats =
+                classToTest.getMonthlyOverviewStats(accountBean, LocalDateTime.now().minusHours(10));
+
+        assertThat(monthlyOverviewStats).hasSize(1);
+    }
+
+    @Test
+    void getSiteCountStats() {
+        final Optional<OutcomeBean> result = classToTest.findById(1L);
+        System.out.println(result.get());
+
+        List<SiteCountStatBean> siteCountStats = classToTest.getSiteCountStats(accountBean, PageRequest.of(0, 16));
+
+        assertThat(siteCountStats).hasSize(1);
+    }
+
+    @Test
+    void findByAccountOrderByStartTimeDesc() {
+        final List<OutcomeBean> result = classToTest.findByAccountOrderByStartTimeDesc(accountBean);
+
+        assertThat(result).hasSize(1);
+    }
+
+    private void createOutcome() {
         final Optional<SiteBean> site = siteRepo.findById(1);
-        final Optional<AccountBean> account = accountRepo.findById(1);
         final Optional<SolarSystemBean> system = systemRepo.findById(30000142);
 
         final OutcomeBean outcome = new OutcomeBean();
-        outcome.setAccount(account.get());
+        outcome.setAccount(accountBean);
         final SiteBean siteEntry = site.get();
         outcome.setSite(siteEntry);
         outcome.setSiteName(siteEntry.getName());
@@ -84,12 +131,5 @@ public class OutcomeRepositoryIntegrationTest {
         outcome.addLoot(loot);
 
         classToTest.save(outcome);
-
-        final Optional<OutcomeBean> result = classToTest.findById(1L);
-
-        assertThat(result.isPresent(), equalTo(true));
-
-        final OutcomeBean out = result.get();
-        assertThat(out.getLoot().size(), equalTo(1));
     }
 }

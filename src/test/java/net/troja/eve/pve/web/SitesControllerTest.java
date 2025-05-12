@@ -98,7 +98,7 @@ public class SitesControllerTest {
     public void search() {
         final String query = "123";
         final SiteBean site = new SiteBean();
-        when(siteRepo.findByNameContaining(query)).thenReturn(Optional.of(Arrays.asList(site)));
+        when(siteRepo.findByNameContainingIgnoreCase(query)).thenReturn(Optional.of(Arrays.asList(site)));
 
         final List<String> result = classToTest.search(query);
 
@@ -108,7 +108,7 @@ public class SitesControllerTest {
     @Test
     public void searchNotFound() {
         final String query = "123";
-        when(siteRepo.findByNameContaining(query)).thenReturn(Optional.empty());
+        when(siteRepo.findByNameContainingIgnoreCase(query)).thenReturn(Optional.empty());
 
         final List<String> result = classToTest.search(query);
 

@@ -27,6 +27,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.NativeQuery;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
@@ -39,15 +40,16 @@ import net.troja.eve.pve.db.stats.ValuesStatBean;
 public interface OutcomeRepository extends CrudRepository<OutcomeBean, Long> {
     List<OutcomeBean> findByAccountOrderByStartTimeDesc(AccountBean account);
 
-    @Query(value = "select o from OutcomeBean o where (bountyValue + rewardValue + lootValue) > 0 and account = :account order by startTime desc")
+    @Query(value = "select o from OutcomeBean o where (o.bountyValue + o.rewardValue + o.lootValue) > 0 and o.account = :account order by o.startTime desc")
     List<OutcomeBean> findLastSiteEarnings(@Param(value = "account") AccountBean account, Pageable pageable);
 
     @Query(
-        value = "select new net.troja.eve.pve.db.stats.SiteCountStatBean(o.site.name, count(o)) from OutcomeBean o "
-                + "where site != null and account = :account group by site order by count(id) desc")
+        value = "select new net.troja.eve.pve.db.stats.SiteCountStatBean(o.siteName, count(o.id)) from OutcomeBean o "
+                + "where o.site.id > 0 and o.account = :account group by o.siteName")
     List<SiteCountStatBean> getSiteCountStats(@Param(value = "account") AccountBean account, Pageable pageable);
 
-    @Query(nativeQuery = true)
+    @Query(value = "select new net.troja.eve.pve.db.stats.MonthOverviewStatBean(cast(o.startTime as LocalDate), sum(o.lootValue), sum(o.bountyValue), sum(o.rewardValue)) from OutcomeBean o where "
+            + "o.account = :account and o.startTime > :start group by cast(o.startTime as LocalDate) order by cast(o.startTime as LocalDate)")
     List<MonthOverviewStatBean> getMonthlyOverviewStats(@Param(value = "account") AccountBean account, @Param(value = "start") LocalDateTime start);
 
     @Query(
