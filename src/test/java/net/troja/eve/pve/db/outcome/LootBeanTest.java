@@ -5,9 +5,9 @@ import org.junit.jupiter.api.Test;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 
-public class LootBeanTest {
+class LootBeanTest {
     @Test
-    public void getValueString() {
+    void getValueString() {
         final LootBean loot = new LootBean();
         loot.setValue(1234567);
 
@@ -15,7 +15,7 @@ public class LootBeanTest {
     }
 
     @Test
-    public void getValueStringMulti() {
+    void getValueStringMulti() {
         final LootBean loot = new LootBean();
         loot.setValue(1234);
         loot.setCount(10);

@@ -37,12 +37,12 @@ import static org.hamcrest.Matchers.equalTo;
 
 @DataJpaTest
 @Transactional(propagation = Propagation.NOT_SUPPORTED)
-public class PriceRepositoryIntegrationTest {
+class PriceRepositoryIntegrationTest {
     @Autowired
     private PriceRepository classToTest;
 
     @Test
-    public void deleteOld() {
+    void deleteOld() {
         classToTest.save(new PriceBean(34, 123.45, LocalDateTime.now(PvEApplication.DEFAULT_ZONE)));
         classToTest.save(new PriceBean(35, 55.66, LocalDateTime.now(PvEApplication.DEFAULT_ZONE)
                 .minusMinutes(20)));

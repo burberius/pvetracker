@@ -1,6 +1,7 @@
 package net.troja.eve.pve.discord;
 
 import jakarta.annotation.PostConstruct;
+import lombok.Setter;
 import lombok.extern.log4j.Log4j2;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
@@ -33,7 +34,9 @@ public class DiscordService implements EventListener {
     @Value("${discord.min-item-value}")
     private long minItemValue;
 
+    @Setter
     private JDA jda;
+    @Setter
     private TextChannel channel;
 
     @PostConstruct
@@ -59,14 +62,6 @@ public class DiscordService implements EventListener {
                 log.error("Could not get channel with id: {}", channelId);
             }
         }
-        /*if(event instanceof MessageReceivedEvent) {
-            MessageReceivedEvent messageEvent = (MessageReceivedEvent) event;
-            if(messageEvent.getAuthor().isBot()) {
-                return;
-            }
-            log.info("Channel: {}", messageEvent.getTextChannel());
-            sendMessage(messageEvent.getAuthor().getName() + " wrote " + messageEvent.getMessage().getContentDisplay());
-        }*/
     }
 
     public void postOutcome(OutcomeBean outcomeDb) {
@@ -93,9 +88,9 @@ public class DiscordService implements EventListener {
 
     private String getLootString(List<LootBean> loot) {
         StringBuilder result = new StringBuilder();
-        loot.stream()
+        loot
                 .forEach(l -> {
-                    if (result.length() > 0) {
+                    if (!result.isEmpty()) {
                         result.append("\n");
                     }
                     result.append(l.getCount()).append(" x *").append(l.getName())
@@ -104,7 +99,7 @@ public class DiscordService implements EventListener {
                         result.append(" **").append(ISK_FORMAT.format(Math.round(l.getValue()))).append("** ISK");
                     }
                 });
-        return result.length() == 0 ? null : result.toString();
+        return result.isEmpty() ? null : result.toString();
     }
 
     protected void setMinLootValue(long minLootValue) {
@@ -113,13 +108,5 @@ public class DiscordService implements EventListener {
 
     protected void setMinItemValue(long minItemValue) {
         this.minItemValue = minItemValue;
-    }
-
-    protected void setJda(JDA jda) {
-        this.jda = jda;
-    }
-
-    protected void setChannel(TextChannel channel) {
-        this.channel = channel;
     }
 }

@@ -40,7 +40,6 @@ import net.troja.eve.pve.esi.LocationService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.security.access.AccessDeniedException;
-import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -48,6 +47,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.security.Principal;
 import java.time.LocalDateTime;
@@ -57,7 +57,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-@Controller
+@RestController
 @RequiredArgsConstructor
 @RequestMapping("/site")
 public class SitesController {
@@ -82,7 +82,7 @@ public class SitesController {
     }
 
     @GetMapping("/search")
-    public @ResponseBody List<String> search(@RequestParam("q") final String query) {
+    public List<String> search(@RequestParam("q") final String query) {
         List<String> result = new ArrayList<>();
         final Optional<List<SiteBean>> searchResult = siteRepo.findByNameContainingIgnoreCase(query);
         if (searchResult.isPresent()) {
@@ -174,7 +174,7 @@ public class SitesController {
     }
 
     public static Comparator<LootBean> getLootComparator() {
-        return (final LootBean o1, final LootBean o2) -> Double.compare(o1.getValue(), o2.getValue());
+        return Comparator.comparingDouble(LootBean::getValue);
     }
 
     private static long getLootValue(final List<LootBean> loot) {

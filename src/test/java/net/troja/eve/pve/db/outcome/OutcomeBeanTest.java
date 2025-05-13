@@ -7,9 +7,9 @@ import org.junit.jupiter.api.Test;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 
-public class OutcomeBeanTest {
+class OutcomeBeanTest {
     @Test
-    public void getDuration1() {
+    void getDuration1() {
         final OutcomeBean outcome = new OutcomeBean();
         outcome.setStartTime(LocalDateTime.of(2017, 10, 10, 10, 10, 10));
         outcome.setEndTime(LocalDateTime.of(2017, 10, 10, 11, 11, 11));
@@ -18,7 +18,7 @@ public class OutcomeBeanTest {
     }
 
     @Test
-    public void getDuration2() {
+    void getDuration2() {
         final OutcomeBean outcome = new OutcomeBean();
         outcome.setStartTime(LocalDateTime.of(2017, 10, 10, 10, 10, 10));
         outcome.setEndTime(LocalDateTime.of(2017, 10, 10, 10, 23, 55));
@@ -27,7 +27,7 @@ public class OutcomeBeanTest {
     }
 
     @Test
-    public void getDurationNoEndYet() {
+    void getDurationNoEndYet() {
         final OutcomeBean outcome = new OutcomeBean();
         outcome.setStartTime(LocalDateTime.of(2017, 10, 10, 10, 10, 10));
 

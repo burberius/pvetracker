@@ -187,8 +187,9 @@ public class NamesUpdateService {
             updateApiVersion();
         } else if (count % 100 == 0) {
             long timeDiff = System.currentTimeMillis() - start;
+            String rest = calcRest(count, timeDiff);
             LOGGER.info("Finished entry {} rest: {} - {}/{}",
-                    count, calcRest(count, timeDiff), updateCount.get(), unchangedCount.get());
+                    count, rest, updateCount.get(), unchangedCount.get());
         }
     }
 

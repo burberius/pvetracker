@@ -35,19 +35,19 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @DataJpaTest
 @Transactional(propagation = Propagation.NOT_SUPPORTED)
-public class SiteRepositoryIntegrationTest {
+class SiteRepositoryIntegrationTest {
     @Autowired
     private SiteRepository classToTest;
 
     @Test
-    public void saveAndFind() {
+    void saveAndFind() {
         final Optional<SiteBean> result = classToTest.findById(1);
 
         assertThat(result).isPresent();
     }
 
     @Test
-    public void searchCaseInsensitive() {
+    void searchCaseInsensitive() {
         final Optional<List<SiteBean>> result = classToTest.findByNameContainingIgnoreCase("angel");
 
         assertThat(result).isPresent();

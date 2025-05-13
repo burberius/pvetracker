@@ -51,7 +51,7 @@ public class SolarSystemBean {
         } else if (sec <= SEC_LOW) {
             cssClass = "sec-low";
         } else {
-            cssClass = "sec-" + Double.toString(sec).replaceAll("\\.", "");
+            cssClass = "sec-" + Double.toString(sec).replace(".", "");
         }
         return cssClass.replace("10", "1");
     }

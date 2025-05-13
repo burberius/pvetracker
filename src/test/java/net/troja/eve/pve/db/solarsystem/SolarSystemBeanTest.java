@@ -27,23 +27,23 @@ import org.junit.jupiter.api.Test;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 
-public class SolarSystemBeanTest {
+class SolarSystemBeanTest {
     @Test
-    public void low() {
+    void low() {
         final SolarSystemBean solarSystemBean = new SolarSystemBean();
         solarSystemBean.setSecurity(0.3253d);
         assertThat(solarSystemBean.getSecClass(), equalTo("sec-low"));
     }
 
     @Test
-    public void sec07() {
+    void sec07() {
         final SolarSystemBean solarSystemBean = new SolarSystemBean();
         solarSystemBean.setSecurity(0.6573d);
         assertThat(solarSystemBean.getSecClass(), equalTo("sec-07"));
     }
 
     @Test
-    public void secHigh() {
+    void secHigh() {
         final SolarSystemBean solarSystemBean = new SolarSystemBean();
         solarSystemBean.setSecurity(0.973d);
         assertThat(solarSystemBean.getSecClass(), equalTo("sec-1"));

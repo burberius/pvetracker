@@ -28,6 +28,9 @@ import net.troja.eve.pve.db.type.TypeTranslationRepository;
 import net.troja.eve.pve.price.PriceService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.NullSource;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -44,7 +47,7 @@ import static org.hamcrest.Matchers.notNullValue;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class ContentParserServiceTest {
+class ContentParserServiceTest {
 
     @Mock
     private TypeTranslationRepository repository;
@@ -53,32 +56,18 @@ public class ContentParserServiceTest {
     @InjectMocks
     private ContentParserService classToTest;
 
-    @Test
-    public void parseNull() {
-        final List<LootBean> list = classToTest.parse(null);
+    @ParameterizedTest
+    @NullSource
+    @ValueSource(strings = { " ", "Nothing   in      here"})
+    void parseNull(String content) {
+        final List<LootBean> list = classToTest.parse(content);
 
         assertThat(list, notNullValue());
         assertThat(list.size(), equalTo(0));
     }
 
     @Test
-    public void parseEmpty() {
-        final List<LootBean> list = classToTest.parse(" ");
-
-        assertThat(list, notNullValue());
-        assertThat(list.size(), equalTo(0));
-    }
-
-    @Test
-    public void parseRubbish() {
-        final List<LootBean> list = classToTest.parse("Nothing   in      here");
-
-        assertThat(list, notNullValue());
-        assertThat(list.size(), equalTo(0));
-    }
-
-    @Test
-    public void parseNotNumberQuantity() {
+    void parseNotNumberQuantity() {
         final List<TypeTranslationBean> transList = new ArrayList<>();
         transList.add(new TypeTranslationBean());
         when(repository.findByName("Nanite Repair Paste")).thenReturn(transList);
@@ -91,7 +80,7 @@ public class ContentParserServiceTest {
     }
 
     @Test
-    public void parseDifferentNumberFormats() {
+    void parseDifferentNumberFormats() {
         final List<TypeTranslationBean> transList = new ArrayList<>();
         final TypeTranslationBean translationBean = new TypeTranslationBean();
         translationBean.setTypeId(1);
@@ -112,7 +101,7 @@ public class ContentParserServiceTest {
     }
 
     @Test
-    public void parseWithBlueprint() {
+    void parseWithBlueprint() {
         final String content = "Cynabal Blueprint\t\tCruiser Blueprint\t\t\t0,01 m3 \n"
                 + "Scourge Fury Heavy Missile\t864\tAdvanced Heavy Missile\t\t\t25,92 m3\t394.251,84 ISK" +
                 "Gistum B-Type Adaptive Invulnerability Shield Hardener\t1\tShield Hardener\tMedium\t5 m3\t340.247.434,12 ISK";

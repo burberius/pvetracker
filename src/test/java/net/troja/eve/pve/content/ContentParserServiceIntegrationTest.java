@@ -29,6 +29,8 @@ import org.assertj.core.util.Files;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,7 +51,7 @@ import static org.mockito.Mockito.when;
 
 @DataJpaTest
 @ExtendWith(MockitoExtension.class)
-public class ContentParserServiceIntegrationTest {
+class ContentParserServiceIntegrationTest {
     @Autowired
     private TypeTranslationRepository translationsRepository;
     @Mock
@@ -61,7 +63,7 @@ public class ContentParserServiceIntegrationTest {
     private Map<Integer, Double> prices;
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         classToTest = new ContentParserService(translationsRepository, priceService);
         if (reference == null) {
             generateReference();
@@ -72,46 +74,16 @@ public class ContentParserServiceIntegrationTest {
         when(priceService.getPrices(anyList())).thenReturn(prices);
     }
 
-    @Test
-    public void parseEn() {
-        final List<LootBean> list = parseLangFile("en");
+    @ParameterizedTest
+    @ValueSource(strings = { "en", "de", "fr", "ja", "ru" })
+    void parseLang(String lang) {
+        final List<LootBean> list = parseLangFile(lang);
 
         assertThat(list, notNullValue());
         assertThat(list.size(), equalTo(8));
-        assertThat(list.toString(), equalTo(reference.toString()));
-    }
-
-    @Test
-    public void parseDe() {
-        final List<LootBean> list = parseLangFile("de");
-
-        assertThat(list, notNullValue());
-        assertThat(list.size(), equalTo(8));
-        assertThat(list.toString(), equalTo(reference.toString()));
-    }
-
-    @Test
-    public void parseFr() {
-        final List<LootBean> list = parseLangFile("fr");
-
-        assertThat(list, notNullValue());
-        assertThat(list.size(), equalTo(8));
-    }
-
-    @Test
-    public void parseJa() {
-        final List<LootBean> list = parseLangFile("ja");
-
-        assertThat(list, notNullValue());
-        assertThat(list.size(), equalTo(8));
-    }
-
-    @Test
-    public void parseRu() {
-        final List<LootBean> list = parseLangFile("ru");
-
-        assertThat(list, notNullValue());
-        assertThat(list.size(), equalTo(8));
+        if(!lang.equals("fr") && !lang.equals("ja")) {
+            assertThat(list.toString(), equalTo(reference.toString()));
+        }
     }
 
     private List<LootBean> parseLangFile(final String lang) {

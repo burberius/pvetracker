@@ -1,14 +1,8 @@
 package net.troja.eve.pve.price;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.stream.Collectors;
-
+import net.troja.eve.pve.db.price.PriceBean;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -17,7 +11,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
-import net.troja.eve.pve.db.price.PriceBean;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public abstract class AbstractOnlinePriceService<T> {
     private static final Logger LOGGER = LogManager.getLogger(AbstractOnlinePriceService.class);
@@ -37,7 +34,7 @@ public abstract class AbstractOnlinePriceService<T> {
             final T result = response.getBody();
             return transform(result);
         } else {
-            LOGGER.warn("Could not get prices for {} - " + values, values);
+            LOGGER.warn("Could not get prices for {}", values);
             return new ArrayList<>();
         }
     }
@@ -54,7 +51,7 @@ public abstract class AbstractOnlinePriceService<T> {
     protected abstract List<PriceBean> transform(final T prices);
 
     protected String getTypeValuesString(final Collection<Integer> prices) {
-        return prices.stream().map((final Integer value) -> value.toString()).collect(Collectors.joining(","));
+        return prices.stream().map(Object::toString).collect(Collectors.joining(","));
     }
 
     protected void setRestTemplate(final RestTemplate restTemplate) {

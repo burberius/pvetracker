@@ -90,8 +90,6 @@ class OutcomeRepositoryIntegrationTest {
 
     @Test
     void getSiteCountStats() {
-        final Optional<OutcomeBean> result = classToTest.findById(1L);
-
         List<SiteCountStatBean> siteCountStats = classToTest.getSiteCountStats(accountBean, PageRequest.of(0, 16));
 
         assertThat(siteCountStats).hasSize(1);

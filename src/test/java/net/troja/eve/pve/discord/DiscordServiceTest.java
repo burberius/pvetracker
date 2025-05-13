@@ -31,7 +31,7 @@ class DiscordServiceTest {
     private DiscordService classToTest;
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         classToTest = new DiscordService();
         classToTest.setJda(jda);
         classToTest.setChannel(channel);
@@ -40,12 +40,13 @@ class DiscordServiceTest {
     }
 
     @Test
-    public void postOutcome() {
+    void postOutcome() {
         OutcomeBean outcome = createOutcome();
-        String expected = "**Marvin** just finished a *Angel Cartel's Red Light District (5/10)* in a *Gila* getting " +
-                "**12,345,678** ISK with the following loot:\n" +
-                "2 x *Gistum C-Type 50MN Microwarpdrive* **123,455,234** ISK\n" +
-                "1 x *Cynabal Blueprint* **111,111,111** ISK";
+        String expected = """
+                **Marvin** just finished a *Angel Cartel's Red Light District (5/10)* in a *Gila* getting \
+                **12,345,678** ISK with the following loot:
+                2 x *Gistum C-Type 50MN Microwarpdrive* **123,455,234** ISK
+                1 x *Cynabal Blueprint* **111,111,111** ISK""";
         when(channel.sendMessage(expected)).thenReturn(messageAction);
 
         classToTest.postOutcome(outcome);
@@ -54,7 +55,7 @@ class DiscordServiceTest {
     }
 
     @Test
-    public void postOutcomeDedNull() {
+    void postOutcomeDedNull() {
         OutcomeBean outcome = createOutcome();
         outcome.getSite().setDed(null);
         outcome.getSite().setName("Angel Den");
@@ -69,7 +70,7 @@ class DiscordServiceTest {
 
 
     @Test
-    public void postOutcomeDedZero() {
+    void postOutcomeDedZero() {
         OutcomeBean outcome = createOutcome();
         outcome.getSite().setDed(0);
         outcome.getSite().setName("Angel Den");
@@ -83,10 +84,10 @@ class DiscordServiceTest {
     }
 
     @Test
-    public void postOutcomeLowIsk() {
+    void postOutcomeLowIsk() {
         OutcomeBean outcome = createOutcome();
         outcome.setLootValue(123L);
-        outcome.setLoot(List.of(outcome.getLoot().get(0)));
+        outcome.setLoot(List.of(outcome.getLoot().getFirst()));
 
         classToTest.postOutcome(outcome);
 
@@ -94,7 +95,7 @@ class DiscordServiceTest {
     }
 
     @Test
-    public void postOutcomeNoValueLoot() {
+    void postOutcomeNoValueLoot() {
         OutcomeBean outcome = createOutcome();
         LootBean lootBean = new LootBean();
         lootBean.setValue(12345d);

@@ -30,18 +30,17 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @DataJpaTest
 @Transactional(propagation = Propagation.NOT_SUPPORTED)
-public class SolarSystemRepositoryIntegrationTest {
+class SolarSystemRepositoryIntegrationTest {
     @Autowired
     private SolarSystemRepository classToTest;
 
     @Test
-    public void findById() {
+    void findById() {
         final Optional<SolarSystemBean> system = classToTest.findById(30000142);
-        assertThat(system.get().getName(), equalTo("Jita"));
+        assertThat(system.get().getName()).isEqualTo("Jita");
     }
 }

@@ -7,13 +7,13 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DataJpaTest
-public class TypeTranslationRepositoryIntegrationTest {
+class TypeTranslationRepositoryIntegrationTest {
     private static final int TYPE_ID = 123;
     @Autowired
     public TypeTranslationRepository classToTest;
 
     @Test
-    public void integrity() {
+    void integrity() {
         assertThat(classToTest).isNotNull();
 
         classToTest.save(new TypeTranslationBean(TYPE_ID, "de", "Name DE", null));

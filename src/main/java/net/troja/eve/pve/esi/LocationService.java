@@ -101,7 +101,7 @@ public class LocationService extends GeneralEsiService {
         Matcher matcher = SHIPNAME_MATCHER.matcher(shipName);
         if(matcher.matches()) {
             String result = matcher.group(1);
-            result = result.replaceAll("\\\\x", "%");
+            result = result.replace("\\x", "%");
             return URLDecoder.decode(result, Charset.forName("ISO-8859-15"));
         }
         return shipName;
