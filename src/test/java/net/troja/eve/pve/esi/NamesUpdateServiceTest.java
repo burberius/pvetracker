@@ -17,7 +17,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @DataJpaTest
 @ExtendWith(MockitoExtension.class)
-public class NamesUpdateServiceTest {
+class NamesUpdateServiceTest {
 
     @Autowired
     private TypeTranslationRepository typeTranslationRepository;
@@ -29,19 +29,19 @@ public class NamesUpdateServiceTest {
     private NamesUpdateService classToTest;
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         classToTest = new NamesUpdateService(typeTranslationRepository, taskExecutor, discordService);
         classToTest.init();
     }
 
     @Test
-    public void injectedComponentsAreNotNull(){
+    void injectedComponentsAreNotNull(){
         assertNotNull(typeTranslationRepository);
     }
 
     @Test
-    @Disabled
-    public void update() throws InterruptedException {
+    @Disabled("Takes too long and the amount regularly changes")
+    void update() throws InterruptedException {
         classToTest.update();
         Thread.sleep(60000);
 

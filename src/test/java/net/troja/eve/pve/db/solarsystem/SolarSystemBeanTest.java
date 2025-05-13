@@ -22,30 +22,18 @@ package net.troja.eve.pve.db.solarsystem;
  * ====================================================
  */
 
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 
 class SolarSystemBeanTest {
-    @Test
-    void low() {
+    @ParameterizedTest
+    @CsvSource({"0.3253d, sec-low", "0.6573d, sec-07", "0.973d, sec-1"})
+    void check(double sec, String result) {
         final SolarSystemBean solarSystemBean = new SolarSystemBean();
-        solarSystemBean.setSecurity(0.3253d);
-        assertThat(solarSystemBean.getSecClass(), equalTo("sec-low"));
-    }
-
-    @Test
-    void sec07() {
-        final SolarSystemBean solarSystemBean = new SolarSystemBean();
-        solarSystemBean.setSecurity(0.6573d);
-        assertThat(solarSystemBean.getSecClass(), equalTo("sec-07"));
-    }
-
-    @Test
-    void secHigh() {
-        final SolarSystemBean solarSystemBean = new SolarSystemBean();
-        solarSystemBean.setSecurity(0.973d);
-        assertThat(solarSystemBean.getSecClass(), equalTo("sec-1"));
+        solarSystemBean.setSecurity(sec);
+        assertThat(solarSystemBean.getSecClass(), equalTo(result));
     }
 }

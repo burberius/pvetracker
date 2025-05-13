@@ -35,11 +35,11 @@ import static org.hamcrest.Matchers.greaterThan;
 import net.troja.eve.pve.db.price.PriceBean;
 import net.troja.eve.pve.price.fuzzwork.FuzzworkPriceService;
 
-public class FuzzworkPriceServiceTest {
+class FuzzworkPriceServiceTest {
     private final FuzzworkPriceService classToTest = new FuzzworkPriceService();
 
     @Test
-    public void getPrices() {
+    void getPrices() {
         classToTest.setRestTemplate(new RestTemplate());
 
         final List<PriceBean> prices = classToTest.getPrices(Arrays.asList(34, 35));

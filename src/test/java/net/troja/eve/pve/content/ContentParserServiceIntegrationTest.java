@@ -27,7 +27,6 @@ import net.troja.eve.pve.db.type.TypeTranslationRepository;
 import net.troja.eve.pve.price.PriceService;
 import org.assertj.core.util.Files;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;

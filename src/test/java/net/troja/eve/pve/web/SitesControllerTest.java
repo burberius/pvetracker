@@ -58,7 +58,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class SitesControllerTest {
+class SitesControllerTest {
     private static final String SITE_NAME = "Angel Vigil";
     private static final int CHARACTER_ID = 1234;
     private static final long OUTCOME_ID = 5;
@@ -86,15 +86,15 @@ public class SitesControllerTest {
     private SitesController classToTest;
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         account.setCharacterId(CHARACTER_ID);
     }
 
     @Test
-    public void search() {
+    void search() {
         final String query = "123";
         final SiteBean site = new SiteBean();
-        when(siteRepo.findByNameContainingIgnoreCase(query)).thenReturn(Optional.of(Arrays.asList(site)));
+        when(siteRepo.findByNameContainingIgnoreCase(query)).thenReturn(Optional.of(List.of(site)));
 
         final List<String> result = classToTest.search(query);
 
@@ -102,7 +102,7 @@ public class SitesControllerTest {
     }
 
     @Test
-    public void searchNotFound() {
+    void searchNotFound() {
         final String query = "123";
         when(siteRepo.findByNameContainingIgnoreCase(query)).thenReturn(Optional.empty());
 
@@ -112,7 +112,7 @@ public class SitesControllerTest {
     }
 
     @Test
-    public void sites() {
+    void sites() {
         final List<OutcomeBean> outcomes = new ArrayList<>();
 
         when(outcomeRepo.findByAccountOrderByStartTimeDesc(any())).thenReturn(outcomes);
@@ -126,7 +126,7 @@ public class SitesControllerTest {
     }
 
     @Test
-    public void startError() {
+    void startError() {
         final StartModelBean startModel = new StartModelBean();
         startModel.setName(" ");
         when(principal.getPrincipal()).thenReturn(getPricipal());
@@ -138,7 +138,7 @@ public class SitesControllerTest {
     }
 
     @Test
-    public void start() {
+    void start() {
         final StartModelBean startModel = new StartModelBean();
         startModel.setName(SITE_NAME);
 
@@ -163,7 +163,7 @@ public class SitesControllerTest {
     }
 
     @Test
-    public void startLocationError() {
+    void startLocationError() {
         final StartModelBean startModel = new StartModelBean();
         startModel.setName(SITE_NAME);
         final SiteBean site = new SiteBean();
@@ -180,7 +180,7 @@ public class SitesControllerTest {
     }
 
     @Test
-    public void startSiteNotFound() {
+    void startSiteNotFound() {
         final StartModelBean startModel = new StartModelBean();
         startModel.setName(SITE_NAME);
 
@@ -204,7 +204,7 @@ public class SitesControllerTest {
     }
 
     @Test
-    public void show() {
+    void show() {
         final long id = 5;
         final OutcomeBean outcome = new OutcomeBean();
         outcome.setAccount(account);
@@ -218,7 +218,7 @@ public class SitesControllerTest {
     }
 
     @Test
-    public void showNotAllowed() {
+    void showNotAllowed() {
         final long id = 5;
         final OutcomeBean outcome = new OutcomeBean();
         final AccountBean account1 = new AccountBean();
@@ -233,7 +233,7 @@ public class SitesControllerTest {
     }
 
     @Test
-    public void showNotFound() {
+    void showNotFound() {
         final long id = 5;
         when(outcomeRepo.findById(id)).thenReturn(Optional.empty());
 
@@ -241,7 +241,7 @@ public class SitesControllerTest {
     }
 
     @Test
-    public void save() {
+    void save() {
         final LocalDateTime now = LocalDateTime.now(PvEApplication.DEFAULT_ZONE).minusSeconds(1);
         final LootBean lootBean = new LootBean();
         lootBean.setValue(BOUNTY + REWARD);
@@ -256,7 +256,9 @@ public class SitesControllerTest {
         outcomeDb.setAccount(account);
         when(outcomeRepo.findById(OUTCOME_ID)).thenReturn(Optional.of(outcomeDb));
         when(principal.getPrincipal()).thenReturn(getPricipal());
-        when(contentParserService.parse(LOOT)).thenReturn(Arrays.asList(lootBean));
+        List<LootBean> loot = new ArrayList<>();
+        loot.add(lootBean);
+        when(contentParserService.parse(LOOT)).thenReturn(loot);
 
         final String result = classToTest.save(model, outcome, principal, OUTCOME_ID);
 
@@ -272,7 +274,7 @@ public class SitesControllerTest {
     }
 
     @Test
-    public void saveDateOverwrite() {
+    void saveDateOverwrite() {
         final LocalDateTime now = LocalDateTime.now(PvEApplication.DEFAULT_ZONE);
         final LocalDateTime old = now.minusHours(1);
         final LootBean lootBean = new LootBean();
@@ -290,7 +292,9 @@ public class SitesControllerTest {
         outcomeDb.setAccount(account);
         when(outcomeRepo.findById(OUTCOME_ID)).thenReturn(Optional.of(outcomeDb));
         when(principal.getPrincipal()).thenReturn(getPricipal());
-        when(contentParserService.parse(LOOT)).thenReturn(Arrays.asList(lootBean));
+        List<LootBean> loot = new ArrayList<>();
+        loot.add(lootBean);
+        when(contentParserService.parse(LOOT)).thenReturn(loot);
 
         classToTest.save(model, outcome, principal, OUTCOME_ID);
 
@@ -300,7 +304,7 @@ public class SitesControllerTest {
     }
 
     @Test
-    public void saveSetDate() {
+    void saveSetDate() {
         final LocalDateTime old = LocalDateTime.now(PvEApplication.DEFAULT_ZONE).minusHours(1);
         final LootBean lootBean = new LootBean();
         lootBean.setValue(BOUNTY + REWARD);
@@ -318,7 +322,9 @@ public class SitesControllerTest {
         outcomeDb.setAccount(account);
         when(outcomeRepo.findById(OUTCOME_ID)).thenReturn(Optional.of(outcomeDb));
         when(principal.getPrincipal()).thenReturn(getPricipal());
-        when(contentParserService.parse(LOOT)).thenReturn(Arrays.asList(lootBean));
+        List<LootBean> loot = new ArrayList<>();
+        loot.add(lootBean);
+        when(contentParserService.parse(LOOT)).thenReturn(loot);
 
         classToTest.save(model, outcome, principal, OUTCOME_ID);
 
@@ -327,23 +333,20 @@ public class SitesControllerTest {
         assertThat(ceptor.getValue().getEndTime(), equalTo(old));
     }
 
-    private EveOAuth2User getPricipal() {
-        return new EveOAuth2User(account);
-    }
-
     @Test
-    public void getLootComparator() {
+    void getLootComparator() {
         final List<LootBean> list = new ArrayList<>();
         list.add(new LootBean(1, null, 1, 3d));
         list.add(new LootBean(2, null, 1, 0d));
         list.add(new LootBean(3, null, 1, 1d));
 
-        Collections.sort(list, SitesController.getLootComparator());
+        list.sort(SitesController.getLootComparator());
 
         assertThat(list.get(0).getTypeId(), equalTo(2));
         assertThat(list.get(1).getTypeId(), equalTo(3));
     }
 
+    @Test
     public void delete() {
         final long id = 5;
         final OutcomeBean outcome = new OutcomeBean();
@@ -356,4 +359,7 @@ public class SitesControllerTest {
         verify(outcomeRepo).delete(outcome);
     }
 
+    private EveOAuth2User getPricipal() {
+        return new EveOAuth2User(account);
+    }
 }

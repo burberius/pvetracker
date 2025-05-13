@@ -13,7 +13,7 @@ class ContractPriceServiceTest {
     private final ContractPriceService classToTest = new ContractPriceService();
 
     @Test
-    public void getPrices() {
+    void getPrices() {
         classToTest.setRestTemplate(new RestTemplate());
 
         int typeId = 17716;

@@ -33,7 +33,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class GlobalErrorControllerTest {
+class GlobalErrorControllerTest {
     @Mock
     private HttpServletResponse response;
     @Mock
@@ -42,7 +42,7 @@ public class GlobalErrorControllerTest {
     private final GlobalErrorController classToTest = new GlobalErrorController();
 
     @Test
-    public void error() {
+    void error() {
         when(response.getStatus()).thenReturn(418);
 
         classToTest.error(response, model);

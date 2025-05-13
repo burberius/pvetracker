@@ -40,7 +40,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.AdditionalAnswers;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Optional;
@@ -53,7 +52,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class LocationServiceTest {
+class LocationServiceTest {
     private static final int CHARACTER_ID = 12345;
     private static final String CLIENT_ID = "The ID";
     private static final String REFRESH_TOKEN = "54321";
@@ -79,7 +78,7 @@ public class LocationServiceTest {
     private LocationService classToTest;
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         classToTest = new LocationService(solarSystemRepo, typeRepo, shipRepo, locationApi);
         classToTest.setClientId(CLIENT_ID);
         when(locationApi.getApiClient()).thenReturn(apiClient);
@@ -89,7 +88,7 @@ public class LocationServiceTest {
     }
 
     @Test
-    public void getLocation() throws ApiException {
+    void getLocation() throws ApiException {
         final CharacterLocationResponse fakeLocation = new CharacterLocationResponse();
         fakeLocation.setSolarSystemId(LOCATION_ID);
         when(locationApi.getCharactersCharacterIdLocation(CHARACTER_ID, GeneralEsiService.DATASOURCE, null, null)).thenReturn(fakeLocation);
@@ -104,7 +103,7 @@ public class LocationServiceTest {
     }
 
     @Test
-    public void getLocationNotFound() throws ApiException {
+    void getLocationNotFound() throws ApiException {
         final CharacterLocationResponse fakeLocation = new CharacterLocationResponse();
         fakeLocation.setSolarSystemId(LOCATION_ID);
         when(locationApi.getCharactersCharacterIdLocation(CHARACTER_ID, GeneralEsiService.DATASOURCE, null, null)).thenReturn(fakeLocation);
@@ -117,7 +116,7 @@ public class LocationServiceTest {
     }
 
     @Test
-    public void getLocationException() throws ApiException {
+    void getLocationException() throws ApiException {
         final CharacterLocationResponse fakeLocation = new CharacterLocationResponse();
         fakeLocation.setSolarSystemId(LOCATION_ID);
         when(locationApi.getCharactersCharacterIdLocation(CHARACTER_ID, GeneralEsiService.DATASOURCE, null, null))
@@ -130,7 +129,7 @@ public class LocationServiceTest {
     }
 
     @Test
-    public void getShip() throws ApiException {
+    void getShip() throws ApiException {
         final CharacterShipResponse shipResponse = new CharacterShipResponse();
         shipResponse.setShipName(SHIP_NAME);
         shipResponse.setShipTypeId(SHIP_TYPE_ID);
@@ -147,7 +146,7 @@ public class LocationServiceTest {
     }
 
     @Test
-    public void getShipNotFound() throws ApiException {
+    void getShipNotFound() throws ApiException {
         final CharacterShipResponse shipResponse = new CharacterShipResponse();
         shipResponse.setShipName(SHIP_NAME);
         shipResponse.setShipTypeId(SHIP_TYPE_ID);
@@ -167,7 +166,7 @@ public class LocationServiceTest {
     }
 
     @Test
-    public void getShipTypeNotFound() throws ApiException {
+    void getShipTypeNotFound() throws ApiException {
         final CharacterShipResponse shipResponse = new CharacterShipResponse();
         shipResponse.setShipName(SHIP_NAME);
         shipResponse.setShipTypeId(SHIP_TYPE_ID);
@@ -185,7 +184,7 @@ public class LocationServiceTest {
     }
 
     @Test
-    public void getShipException() throws ApiException {
+    void getShipException() throws ApiException {
         final CharacterShipResponse shipResponse = new CharacterShipResponse();
         shipResponse.setShipName(SHIP_NAME);
         shipResponse.setShipTypeId(SHIP_TYPE_ID);
@@ -199,7 +198,7 @@ public class LocationServiceTest {
     }
 
     @Test
-    public void cleanShipname() {
+    void cleanShipname() {
         String[] source = {"u\"Golden Gnu's Gila\"",
                 "u\"Golden Gnu's Worm\"",
                 "u'Girly 2'",

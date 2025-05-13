@@ -23,6 +23,7 @@ import org.springframework.stereotype.Service;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.TimeUnit;
@@ -44,12 +45,12 @@ public class NamesUpdateService {
     private boolean initialized = false;
     private long start;
     private String lastApiVersion;
-    private UniverseApi universeApi = new UniverseApi();
-    private StatusApi statusApi = new StatusApi();
-    private List<Integer> typeIds = new ArrayList<>();
-    private AtomicInteger counter = new AtomicInteger();
-    private AtomicInteger unchangedCount = new AtomicInteger();
-    private AtomicInteger updateCount = new AtomicInteger();
+    private final UniverseApi universeApi = new UniverseApi();
+    private final StatusApi statusApi = new StatusApi();
+    private final List<Integer> typeIds = new ArrayList<>();
+    private final AtomicInteger counter = new AtomicInteger();
+    private final AtomicInteger unchangedCount = new AtomicInteger();
+    private final AtomicInteger updateCount = new AtomicInteger();
     private BlockingQueue<Runnable> taskQueue;
 
     @PostConstruct
@@ -75,14 +76,14 @@ public class NamesUpdateService {
         if (!typeIds.isEmpty())
             return;
         LOGGER.info("Starting name update");
-        Boolean status;
+        Optional<Boolean> status;
         do {
             status = checkApiDifferentVersion();
-            if (status == Boolean.FALSE) {
+            if (status.isPresent() && !status.get()) {
                 LOGGER.info("Version didn't change");
                 discordService.sendMessage("API Version didn't change");
                 return;
-            } else if (status == null) {
+            } else if (status.isEmpty()) {
                 try {
                     TimeUnit.MINUTES.sleep(5);
                 } catch (InterruptedException e) {
@@ -90,14 +91,14 @@ public class NamesUpdateService {
                     Thread.currentThread().interrupt();
                 }
             }
-        } while (status == null);
+        } while (status.isEmpty());
 
         if(!namesUpdateActive) {
-            LOGGER.info("Names updated disabled!");
+            LOGGER.info("Names update disabled!");
             return;
         }
 
-        discordService.sendMessage("Starting name update");
+        discordService.sendMessage("Starting names update");
         reset();
         int typesPage = 1;
         int typesPagesMax = 0;
@@ -122,14 +123,14 @@ public class NamesUpdateService {
         start = System.currentTimeMillis();
     }
 
-    private Boolean checkApiDifferentVersion() {
+    private Optional<Boolean> checkApiDifferentVersion() {
         try {
             StatusResponse status = statusApi.getStatus(GeneralEsiService.DATASOURCE, null);
             LOGGER.info("Current Api Version: {}", status.getServerVersion());
-            return !status.getServerVersion().equals(lastApiVersion);
+            return Optional.of(!status.getServerVersion().equals(lastApiVersion));
         } catch (ApiException e) {
             LOGGER.error("Could not get API Status", e);
-            return null;
+            return Optional.empty();
         }
     }
 
@@ -150,7 +151,7 @@ public class NamesUpdateService {
     private void updateName(int typeId) {
         List<TypeTranslationBean> existing = typeTranslationRepository.findByTypeId(typeId);
         for (Language language : Language.values()) {
-            String lang = language.name();
+            String lang = language.name().toLowerCase(Locale.ROOT);
             Optional<TypeTranslationBean> entry = existing.stream().filter(x -> lang.equals(x.getLanguage())).findFirst();
             String etag = entry.map(TypeTranslationBean::getEtag).orElse(null);
             try {

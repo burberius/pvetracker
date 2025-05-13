@@ -42,7 +42,7 @@ import net.troja.eve.pve.price.fuzzwork.FuzzworkPriceService;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
-public class PriceServiceTest {
+class PriceServiceTest {
     private static final List<Integer> TYPE_IDS = Arrays.asList(34, 35, 17716);
 
     @Mock
@@ -55,12 +55,12 @@ public class PriceServiceTest {
     private PriceService classToTest;
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         classToTest = new PriceService(fuzzworkPriceService, contractPriceService, priceRepository);
     }
 
     @Test
-    public void getPrices() {
+    void getPrices() {
         final List<PriceBean> dbPrices = List.of(new PriceBean(34, 5.123));
         when(priceRepository.findAllById(TYPE_IDS)).thenReturn(dbPrices);
         final List<PriceBean> restPrices = List.of(new PriceBean(35, 6.2123));
@@ -76,7 +76,7 @@ public class PriceServiceTest {
     }
 
     @Test
-    public void getPricesNoDownload() {
+    void getPricesNoDownload() {
         final List<PriceBean> dbPrices = Arrays.asList(new PriceBean(34, 5.123),
                 new PriceBean(35, 6.2123), new PriceBean(17716, 150_000_00));
         when(priceRepository.findAllById(TYPE_IDS)).thenReturn(dbPrices);
