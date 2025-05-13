@@ -6,7 +6,6 @@ import net.troja.eve.pve.db.outcome.OutcomeRepository;
 import net.troja.eve.pve.db.stats.MonthOverviewStatBean;
 import net.troja.eve.pve.price.PriceService;
 import net.troja.eve.pve.sso.EveOAuth2User;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
@@ -14,7 +13,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
-import org.springframework.security.oauth2.client.authentication.OAuth2AuthorizationCodeAuthenticationToken;
 import org.springframework.ui.Model;
 
 import java.time.LocalDate;

@@ -28,18 +28,18 @@ import org.springframework.security.authentication.TestingAuthenticationToken;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 
-public class MainControllerTest {
+class MainControllerTest {
     private final MainController classToTest = new MainController();
 
     @Test
-    public void indexNormal() {
+    void indexNormal() {
         final String result = classToTest.index(null);
 
         assertThat(result, equalTo("index"));
     }
 
     @Test
-    public void indexAuthenticated() {
+    void indexAuthenticated() {
         final String result = classToTest.index(new TestingAuthenticationToken(null, null));
 
         assertThat(result, equalTo("redirect:/site"));

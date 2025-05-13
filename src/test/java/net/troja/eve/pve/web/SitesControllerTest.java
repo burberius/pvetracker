@@ -317,7 +317,6 @@ class SitesControllerTest {
         outcome.setEndTime(old);
         final OutcomeBean outcomeDb = new OutcomeBean();
         outcomeDb.setLoot(new ArrayList<>());
-        final AccountBean account = new AccountBean();
         account.setCharacterId(CHARACTER_ID);
         outcomeDb.setAccount(account);
         when(outcomeRepo.findById(OUTCOME_ID)).thenReturn(Optional.of(outcomeDb));
@@ -347,7 +346,7 @@ class SitesControllerTest {
     }
 
     @Test
-    public void delete() {
+    void delete() {
         final long id = 5;
         final OutcomeBean outcome = new OutcomeBean();
         outcome.setAccount(account);
