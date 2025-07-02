@@ -46,7 +46,7 @@ public class FuzzworkPriceService extends AbstractOnlinePriceService<Map<Integer
     @Override
     protected ResponseEntity<Map<Integer, FuzzworkPriceBean>> queryPrices(final String values) {
         final ParameterizedTypeReference<Map<Integer, FuzzworkPriceBean>> responseType = 
-                new ParameterizedTypeReference<Map<Integer, FuzzworkPriceBean>>() {
+                new ParameterizedTypeReference<>() {
         };
         return restTemplate.exchange(ADDRESS + values, HttpMethod.GET, getHttpEntity(), responseType);
     }

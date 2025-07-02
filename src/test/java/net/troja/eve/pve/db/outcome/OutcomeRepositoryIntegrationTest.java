@@ -43,6 +43,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
+import static java.time.ZoneOffset.UTC;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DataJpaTest
@@ -83,7 +84,7 @@ class OutcomeRepositoryIntegrationTest {
     @Test
     void getMonthlyOverviewStats() {
         List<MonthOverviewStatBean> monthlyOverviewStats =
-                classToTest.getMonthlyOverviewStats(accountBean, LocalDateTime.now().minusHours(10));
+                classToTest.getMonthlyOverviewStats(accountBean, LocalDateTime.now(UTC).minusHours(10));
 
         assertThat(monthlyOverviewStats).hasSize(1);
     }

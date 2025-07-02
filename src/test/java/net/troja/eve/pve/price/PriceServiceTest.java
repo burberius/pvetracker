@@ -26,7 +26,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
-import net.troja.eve.pve.price.contract.ContractPriceService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

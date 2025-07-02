@@ -26,7 +26,6 @@ import lombok.RequiredArgsConstructor;
 import net.troja.eve.pve.PvEApplication;
 import net.troja.eve.pve.db.price.PriceBean;
 import net.troja.eve.pve.db.price.PriceRepository;
-import net.troja.eve.pve.price.contract.ContractPriceService;
 import net.troja.eve.pve.price.fuzzwork.FuzzworkPriceService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

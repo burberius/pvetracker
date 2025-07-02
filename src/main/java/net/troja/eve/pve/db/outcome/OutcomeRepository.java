@@ -20,7 +20,7 @@ public interface OutcomeRepository extends CrudRepository<OutcomeBean, Long> {
 
     @Query(
         value = "select new net.troja.eve.pve.db.stats.SiteCountStatBean(o.siteName, count(o.id)) from OutcomeBean o "
-                + "where o.site.id > 0 and o.account = :account group by o.siteName")
+                + "where o.site.id > 0 and o.account = :account group by o.siteName order by count(o.id)")
     List<SiteCountStatBean> getSiteCountStats(@Param(value = "account") AccountBean account, Pageable pageable);
 
     @Query(value = "select new net.troja.eve.pve.db.stats.MonthOverviewStatBean(cast(o.startTime as LocalDate), sum(o.lootValue), sum(o.bountyValue), sum(o.rewardValue)) from OutcomeBean o where "

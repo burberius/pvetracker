@@ -1,26 +1,40 @@
 package net.troja.eve.pve.price;
 
-import net.troja.eve.pve.db.price.PriceBean;
-import net.troja.eve.pve.price.contract.ContractPriceService;
+import net.troja.eve.pve.discord.DiscordService;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
-import org.springframework.web.client.RestTemplate;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+
+import java.util.List;
+import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
-@Disabled("Needs a fix")
+@Disabled("Takes too long")
+@ExtendWith(MockitoExtension.class)
 class ContractPriceServiceTest {
-    private final ContractPriceService classToTest = new ContractPriceService();
+    @Mock
+    private DiscordService discordService;
+    @InjectMocks
+    private ContractPriceService classToTest;
 
     @Test
-    void getPrices() {
-        classToTest.setRestTemplate(new RestTemplate());
+    void updateContractPrice() {
+        classToTest.setTestRun(true);
+        classToTest.updateContracts();
+        verify(discordService, times(3)).sendMessage(anyString());
 
-        int typeId = 17716;
-        final PriceBean price = classToTest.getPrice(typeId);
+        Map<Integer, List<Double>> typePrices = classToTest.getTypePrices();
+        assertThat(typePrices).hasSizeGreaterThan(100);
 
-        assertThat(price).isNotNull();
-        assertThat(price.getTypeId()).isEqualTo(typeId);
-        assertThat(price.getValue()).isGreaterThan(50_000_000);
+        Map.Entry<Integer, List<Double>> entry = typePrices.entrySet().stream().findFirst().get();
+        assertThat(classToTest.getPrice(entry.getKey()).getValue())
+                .isEqualTo(entry.getValue().stream().min(Double::compareTo).get());
     }
 }

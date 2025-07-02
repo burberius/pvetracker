@@ -259,9 +259,9 @@
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
                 <version>${jacoco.version}</version>
-                <configuration>
+                <!-- <configuration>
                     <outputDirectory>${project.build.directory}/jacoco</outputDirectory>
-                </configuration>
+                </configuration> -->
                 <executions>
                     <execution>
                         <id>jacoco-initialize</id>
@@ -299,4 +299,31 @@
             </plugin>
         </plugins>
     </build>
+
+    <profiles>
+        <profile>
+            <id>sonar</id>
+            <properties>
+                <sonar.token>${env.SONAR_KEY}</sonar.token>
+                <sonar.host.url>${env.SONAR_URL}</sonar.host.url>
+            </properties>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.sonarsource.scanner.maven</groupId>
+                        <artifactId>sonar-maven-plugin</artifactId>
+                        <version>4.0.0.4121</version>
+                        <executions>
+                            <execution>
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>sonar</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 </project>
