@@ -44,7 +44,7 @@ public class ContractPriceService {
     private boolean isTestRun = false;
     private Set<Integer> allContractIds;
 
-    @Scheduled(initialDelay = 10000, cron = "0 0 */6 * * *")
+    @Scheduled(cron = "0 20 7,13,19,1 * * *")
     public void updateContracts() {
         contractRepository.deleteByDateExpiredBefore(OffsetDateTime.now(UTC));
         int numberOfContracts = 0;
