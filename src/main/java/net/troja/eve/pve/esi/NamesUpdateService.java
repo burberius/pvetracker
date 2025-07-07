@@ -29,6 +29,9 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import static net.troja.eve.pve.ApiUtils.getETag;
+import static net.troja.eve.pve.ApiUtils.getPagesMax;
+
 @Service
 @RequiredArgsConstructor
 public class NamesUpdateService {
@@ -221,13 +224,5 @@ public class NamesUpdateService {
         } catch (ApiException e) {
             LOGGER.error("Could not get API Status", e);
         }
-    }
-
-    private String getETag(ApiResponse<TypeResponse> resp) {
-        return resp.getHeaders().get("etag").getFirst();
-    }
-
-    private Integer getPagesMax(ApiResponse<?> resp) {
-        return Integer.valueOf(resp.getHeaders().get("X-Pages").getFirst());
     }
 }
