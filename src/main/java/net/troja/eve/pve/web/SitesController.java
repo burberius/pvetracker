@@ -47,6 +47,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.security.Principal;
 import java.time.LocalDateTime;
@@ -81,7 +82,7 @@ public class SitesController {
     }
 
     @GetMapping("/search")
-    public List<String> search(@RequestParam("q") final String query) {
+    public @ResponseBody List<String> search(@RequestParam("q") final String query) {
         List<String> result = new ArrayList<>();
         final Optional<List<SiteBean>> searchResult = siteRepo.findByNameContainingIgnoreCase(query);
         if (searchResult.isPresent()) {

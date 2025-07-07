@@ -44,7 +44,7 @@ public class ContractPriceService {
     private boolean isTestRun = false;
     private Set<Integer> allContractIds;
 
-    @Scheduled(cron = "0 20 7,13,19,1 * * *")
+    @Scheduled(cron = "0 20 5,11,17,23 * * ?")
     public void updateContracts() {
         contractRepository.deleteByDateExpiredBefore(OffsetDateTime.now(UTC));
         int numberOfContracts = 0;
@@ -94,10 +94,14 @@ public class ContractPriceService {
                 statsContractItemsCalls++;
                 if (items != null && items.size() == 1) {
                     PublicContractsItemsResponse item = items.getFirst();
-                    ContractBean contractBean = new ContractBean(contract.getContractId(), item.getTypeId(), price,
-                            contract.getDateExpired());
-                    contractRepository.save(contractBean);
-                    statsContractsProcessed++;
+                    if (item.getIsIncluded()) {
+                        ContractBean contractBean = new ContractBean(contract.getContractId(), item.getTypeId(), price,
+                                contract.getDateExpired());
+                        contractRepository.save(contractBean);
+                        statsContractsProcessed++;
+                    } else {
+                        contractRepository.deleteById(contract.getContractId());
+                    }
                 }
             } catch (ApiException e) {
                 log.info("Could not get contract content for ID {}", contract.getContractId());
