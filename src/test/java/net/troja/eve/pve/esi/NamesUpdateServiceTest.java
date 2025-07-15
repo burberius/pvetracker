@@ -1,12 +1,10 @@
 package net.troja.eve.pve.esi;
 
 import net.troja.eve.pve.db.type.TypeTranslationRepository;
-import net.troja.eve.pve.discord.DiscordService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -23,14 +21,12 @@ class NamesUpdateServiceTest {
     private TypeTranslationRepository typeTranslationRepository;
     @Autowired
     private ThreadPoolTaskExecutor taskExecutor;
-    @Mock
-    private DiscordService discordService;
 
     private NamesUpdateService classToTest;
 
     @BeforeEach
     void setUp() {
-        classToTest = new NamesUpdateService(typeTranslationRepository, taskExecutor, discordService);
+        classToTest = new NamesUpdateService(typeTranslationRepository, taskExecutor);
         classToTest.init();
     }
 

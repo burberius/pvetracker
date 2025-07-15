@@ -2,6 +2,7 @@ package net.troja.eve.pve.esi;
 
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import net.troja.eve.esi.ApiException;
 import net.troja.eve.esi.ApiResponse;
 import net.troja.eve.esi.api.StatusApi;
@@ -33,15 +34,14 @@ import static net.troja.eve.pve.ApiUtils.getETag;
 import static net.troja.eve.pve.ApiUtils.getPagesMax;
 
 @Service
+@Log4j2
 @RequiredArgsConstructor
 public class NamesUpdateService {
-    private static final Logger LOGGER = LogManager.getLogger(NamesUpdateService.class);
     private static final String STORAGE_LANGUAGE = "xx";
     private static final int STORAGE_ID = 0;
 
     private final TypeTranslationRepository typeTranslationRepository;
     private final ThreadPoolTaskExecutor taskExecutor;
-    private final DiscordService discordService;
     @Value("${namesupdate}")
     private boolean namesUpdateActive;
 
@@ -61,7 +61,7 @@ public class NamesUpdateService {
         Optional<TypeTranslationBean> storage =
                 typeTranslationRepository.findByTypeIdAndLanguage(STORAGE_ID, STORAGE_LANGUAGE);
         storage.ifPresent(typeTranslationBean -> lastApiVersion = typeTranslationBean.getName());
-        LOGGER.info("Last Api Version: {}", lastApiVersion);
+        log.info("Last Api Version: {}", lastApiVersion);
 
         taskQueue = taskExecutor.getThreadPoolExecutor().getQueue();
     }
@@ -78,30 +78,29 @@ public class NamesUpdateService {
     public void update() {
         if (!typeIds.isEmpty())
             return;
-        LOGGER.info("Starting name update");
+        log.info("Starting name update");
         Optional<Boolean> status;
         do {
             status = checkApiDifferentVersion();
             if (status.isPresent() && !status.get()) {
-                LOGGER.info("Version didn't change");
-                discordService.sendMessage("API Version didn't change");
+                log.info("API Version didn't change");
                 return;
             } else if (status.isEmpty()) {
                 try {
                     TimeUnit.MINUTES.sleep(5);
                 } catch (InterruptedException e) {
-                    LOGGER.error("Could not sleep");
+                    log.error("Could not sleep");
                     Thread.currentThread().interrupt();
                 }
             }
         } while (status.isEmpty());
 
         if(!namesUpdateActive) {
-            LOGGER.info("Names update disabled!");
+            log.info("Names update disabled!");
             return;
         }
 
-        discordService.sendMessage("Starting names update");
+        log.info("Starting names update");
         reset();
         int typesPage = 1;
         int typesPagesMax = 0;
@@ -112,7 +111,7 @@ public class NamesUpdateService {
                 typeIds.addAll(resp.getData());
                 typesPage++;
             } catch (ApiException e) {
-                LOGGER.error("Could not get page {} of typeIds", typesPage);
+                log.error("Could not get page {} of typeIds", typesPage);
             }
         }
         updateNames();
@@ -129,10 +128,10 @@ public class NamesUpdateService {
     private Optional<Boolean> checkApiDifferentVersion() {
         try {
             StatusResponse status = statusApi.getStatus(GeneralEsiService.DATASOURCE, null);
-            LOGGER.info("Current Api Version: {}", status.getServerVersion());
+            log.info("Current Api Version: {}", status.getServerVersion());
             return Optional.of(!status.getServerVersion().equals(lastApiVersion));
         } catch (ApiException e) {
-            LOGGER.error("Could not get API Status", e);
+            log.error("Could not get API Status", e);
             return Optional.empty();
         }
     }
@@ -143,7 +142,7 @@ public class NamesUpdateService {
                 try {
                     TimeUnit.SECONDS.sleep(2);
                 } catch (InterruptedException e) {
-                    LOGGER.error("Could not sleep");
+                    log.error("Could not sleep");
                     Thread.currentThread().interrupt();
                 }
             }
@@ -178,21 +177,20 @@ public class NamesUpdateService {
                     unchangedCount.incrementAndGet();
                     continue;
                 }
-                LOGGER.error("TypeId: {} Code: {}", typeId, e.getCode());
+                log.error("TypeId: {} Code: {}", typeId, e.getCode());
                 updateName(typeId);
             }
         }
         int count = counter.incrementAndGet();
         if (count == typeIds.size()) {
             String time = getDurationString(System.currentTimeMillis() - start);
-            LOGGER.info("Finished all {} entries after {} - {}/{}", count, time, updateCount.get(), unchangedCount.get());
-            discordService.sendMessage("Updated " + count + " entries after " + time + " (" + updateCount.get() + "/" + unchangedCount.get() + ")");
+            log.info("Finished all {} entries after {} - {}/{}", count, time, updateCount.get(), unchangedCount.get());
             typeIds.clear();
             updateApiVersion();
         } else if (count % 100 == 0) {
             long timeDiff = System.currentTimeMillis() - start;
             String rest = calcRest(count, timeDiff);
-            LOGGER.info("Finished entry {} rest: {} - {}/{}",
+            log.info("Finished entry {} rest: {} - {}/{}",
                     count, rest, updateCount.get(), unchangedCount.get());
         }
     }
@@ -220,9 +218,9 @@ public class NamesUpdateService {
                 storageBean.setName(lastApiVersion);
             }
             typeTranslationRepository.save(storageBean);
-            LOGGER.info("Saved new Api Version: {}", lastApiVersion);
+            log.info("Saved new Api Version: {}", lastApiVersion);
         } catch (ApiException e) {
-            LOGGER.error("Could not get API Status", e);
+            log.error("Could not get API Status", e);
         }
     }
 }

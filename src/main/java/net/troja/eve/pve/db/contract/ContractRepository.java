@@ -7,6 +7,7 @@ import org.springframework.data.repository.CrudRepository;
 
 import java.time.OffsetDateTime;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 public interface ContractRepository extends CrudRepository<ContractBean, Integer> {
@@ -21,4 +22,7 @@ public interface ContractRepository extends CrudRepository<ContractBean, Integer
 
     @Query(value = "select c.contractId from ContractBean c")
     List<Integer> getAllContractIds();
+
+    @Query(value = "select new net.troja.eve.pve.db.contract.ContractPrice(c.typeId, min(c.price)) from ContractBean c group by c.typeId")
+    List<ContractPrice> findLowestPriceByTypeIds();
 }

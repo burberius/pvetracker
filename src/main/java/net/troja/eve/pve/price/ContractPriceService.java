@@ -11,6 +11,7 @@ import net.troja.eve.esi.api.ContractsApi;
 import net.troja.eve.esi.model.PublicContractsItemsResponse;
 import net.troja.eve.esi.model.PublicContractsResponse;
 import net.troja.eve.pve.db.contract.ContractBean;
+import net.troja.eve.pve.db.contract.ContractPrice;
 import net.troja.eve.pve.db.contract.ContractRepository;
 import net.troja.eve.pve.db.price.PriceBean;
 import net.troja.eve.pve.discord.DiscordService;
@@ -20,8 +21,10 @@ import org.springframework.stereotype.Service;
 import java.time.OffsetDateTime;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import static java.time.ZoneOffset.UTC;
 import static net.troja.eve.pve.ApiUtils.getPagesMax;
@@ -33,8 +36,8 @@ import static net.troja.eve.pve.esi.GeneralEsiService.DATASOURCE;
 public class ContractPriceService {
     private static final int THE_FORGE = 10000002;
 
-    private final DiscordService discordService;
     private final ContractRepository contractRepository;
+    private final DiscordService discordService;
 
     private final ContractsApi contractsApi = new ContractsApi();
     @Getter(AccessLevel.PACKAGE)
@@ -43,6 +46,9 @@ public class ContractPriceService {
     @Setter(AccessLevel.PACKAGE)
     private boolean isTestRun = false;
     private Set<Integer> allContractIds;
+    @Getter
+    private long lastUpdate;
+    private int numPriceQueries;
 
     @Scheduled(cron = "0 20 5,11,17,23 * * ?")
     public void updateContracts() {
@@ -53,7 +59,7 @@ public class ContractPriceService {
         statsContractsProcessed = 0;
         statsContractItemsCalls = 0;
         allContractIds = new HashSet<>(contractRepository.getAllContractIds());
-        discordService.sendMessage("Starting public contract price update");
+        log.info("Starting public contract price update");
         try {
             ApiResponse<List<PublicContractsResponse>> firstRequest =
                     contractsApi.getContractsPublicRegionIdWithHttpInfo(THE_FORGE, DATASOURCE, null, page);
@@ -82,7 +88,16 @@ public class ContractPriceService {
                 "There are now prices for " + contractRepository.countTypeIds() + " types available from contracts\n" +
                 statsContractItemsCalls + " contract items calls needed, " + allContractIds.size() +
                 " old contracts removed";
-        discordService.sendMessage(result);
+        log.info(result);
+        lastUpdate = System.currentTimeMillis();
+        discordService.sendMessage(numPriceQueries + " contract price queries in the last 6 hours");
+        numPriceQueries = 0;
+    }
+
+    public Map<Integer, Long> getAllContractPrices() {
+        numPriceQueries++;
+        return contractRepository.findLowestPriceByTypeIds().stream()
+                .collect(Collectors.toMap(ContractPrice::getTypeId, ContractPrice::getPriceLong));
     }
 
     private void processContract(PublicContractsResponse contract) {
