@@ -1,6 +1,5 @@
 package net.troja.eve.pve.rest;
 
-import jakarta.ws.rs.Produces;
 import lombok.RequiredArgsConstructor;
 import net.troja.eve.pve.price.ContractPriceService;
 import org.springframework.web.bind.annotation.GetMapping;

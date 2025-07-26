@@ -90,7 +90,9 @@ public class ContractPriceService {
                 " old contracts removed";
         log.info(result);
         lastUpdate = System.currentTimeMillis();
-        discordService.sendMessage(numPriceQueries + " contract price queries in the last 6 hours");
+        if (numPriceQueries > 0) {
+            discordService.sendMessage(numPriceQueries + " contract price queries in the last 6 hours");
+        }
         numPriceQueries = 0;
     }
 
