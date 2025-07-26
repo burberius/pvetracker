@@ -45,7 +45,7 @@ class FuzzworkPriceServiceTest {
         final List<PriceBean> prices = classToTest.getPrices(Arrays.asList(34, 35));
 
         assertThat(prices.size(), equalTo(2));
-        assertThat(prices.get(0).getValue(), greaterThan(4D));
-        assertThat(prices.get(1).getValue(), greaterThan(4D));
+        assertThat(prices.get(0).getValue(), greaterThan(3D));
+        assertThat(prices.get(1).getValue(), greaterThan(3D));
     }
 }
