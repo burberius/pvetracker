@@ -21,7 +21,6 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.util.HashSet;
 import java.util.List;
@@ -65,12 +64,7 @@ public class ContractPriceService {
 
     @Scheduled(cron = "0 20 5,11,17,23 * * ?")
     public void updateContracts() {
-        if (LocalDate.now(UTC).isEqual(LocalDate.of(2025, 7, 28))) {
-            log.info("Delete all contract entries");
-            contractRepository.deleteAll();
-        } else {
-            contractRepository.deleteByDateExpiredBefore(OffsetDateTime.now(UTC));
-        }
+        contractRepository.deleteByDateExpiredBefore(OffsetDateTime.now(UTC));
         int numberOfContracts = 0;
         int page = 1;
         int pagesMax = 0;
