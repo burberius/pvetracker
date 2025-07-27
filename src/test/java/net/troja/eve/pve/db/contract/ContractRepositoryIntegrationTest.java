@@ -23,10 +23,13 @@ class ContractRepositoryIntegrationTest {
     void addAndGet() {
         ContractBean contractBean = new ContractBean(123, 456, PRICE, OffsetDateTime.now(UTC));
         classToTest.save(contractBean);
+        classToTest.save(new ContractBean(124, -456, 5D, OffsetDateTime.now(UTC)));
 
         Optional<ContractBean> entry = classToTest.findById(123);
         assertThat(entry).isPresent();
         assertThat(entry.get().getPrice()).isEqualTo(PRICE);
+        Optional<Double> price = classToTest.findLowestPriceByTypeId(-456);
+        assertThat(price).isPresent().hasValue(5D);
     }
 
     @Test

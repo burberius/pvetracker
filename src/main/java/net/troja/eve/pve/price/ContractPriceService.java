@@ -1,5 +1,6 @@
 package net.troja.eve.pve.price;
 
+import jakarta.annotation.PostConstruct;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -15,13 +16,12 @@ import net.troja.eve.pve.db.contract.ContractPrice;
 import net.troja.eve.pve.db.contract.ContractRepository;
 import net.troja.eve.pve.db.price.PriceBean;
 import net.troja.eve.pve.discord.DiscordService;
-import org.hibernate.annotations.Cache;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.util.HashSet;
 import java.util.List;
@@ -53,10 +53,19 @@ public class ContractPriceService {
     @Getter
     private long lastUpdate;
     private int numPriceQueries;
+    @Value("${forcecontractupdate}")
+    private boolean forceContractUpdate;
+
+    @PostConstruct
+    public void init() {
+        if (forceContractUpdate) {
+            updateContracts();
+        }
+    }
 
     @Scheduled(cron = "0 20 5,11,17,23 * * ?")
     public void updateContracts() {
-        if(LocalDate.now(UTC).isEqual(LocalDate.of(2025, 7, 27))) {
+        if (LocalDate.now(UTC).isEqual(LocalDate.of(2025, 7, 28))) {
             log.info("Delete all contract entries");
             contractRepository.deleteAll();
         } else {
@@ -83,7 +92,7 @@ public class ContractPriceService {
                         .forEach(this::processContract);
                 numberOfContracts += contracts.size();
                 page++;
-                if(isTestRun && page > 2) {
+                if (isTestRun && page > 2) {
                     break;
                 }
             }
@@ -117,14 +126,15 @@ public class ContractPriceService {
         allContractIds.remove(contract.getContractId());
         if (price != null && price > 0.0 && contractRepository.findById(contract.getContractId()).isEmpty()) {
             try {
-                List<PublicContractsItemsResponse>items = contractsApi.getContractsPublicItemsContractId(contract.getContractId(), DATASOURCE, null, 1);
+                List<PublicContractsItemsResponse> items =
+                        contractsApi.getContractsPublicItemsContractId(contract.getContractId(), DATASOURCE, null, 1);
                 statsContractItemsCalls++;
                 if (items != null && items.size() == 1) {
                     PublicContractsItemsResponse item = items.getFirst();
                     if (item.getIsIncluded()) {
                         int typeId = item.getTypeId();
                         Boolean isBlueprintCopy = item.getIsBlueprintCopy();
-                        if(isBlueprintCopy != null && isBlueprintCopy) {
+                        if (isBlueprintCopy != null && isBlueprintCopy) {
                             typeId = typeId * -1;
                         }
                         ContractBean contractBean = new ContractBean(contract.getContractId(), typeId, price,
