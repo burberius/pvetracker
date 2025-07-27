@@ -48,7 +48,7 @@ class ContractRepositoryIntegrationTest {
         classToTest.save(contractBean1);
         ContractBean contractBean2 = new ContractBean(1235, 456, 12_345, OffsetDateTime.now(UTC));
         classToTest.save(contractBean2);
-        ContractBean contractBean3 = new ContractBean(12353, 4567, 22_222, OffsetDateTime.now(UTC));
+        ContractBean contractBean3 = new ContractBean(12353, -4567, 22_222, OffsetDateTime.now(UTC));
         classToTest.save(contractBean3);
 
         Optional<Double> price = classToTest.findLowestPriceByTypeId(456);
@@ -56,7 +56,7 @@ class ContractRepositoryIntegrationTest {
 
         assertThat(classToTest.countTypeIds()).isEqualTo(2);
 
-        assertThat(classToTest.getAllContractIds()).containsExactly(1234, 1235, 12353);
+        assertThat(classToTest.getAllContractIds()).containsExactlyInAnyOrder(1234, 1235, 12353);
 
         assertThat(classToTest.findLowestPriceByTypeIds()).hasSize(2)
                 .contains(new ContractPrice(456, PRICE));

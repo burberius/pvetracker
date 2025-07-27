@@ -42,8 +42,31 @@ class ContractPriceServiceTest {
     }
 
     @Test
-    void getContractPriceFound() {
+    void getContractPriceBPC() {
         double value = 123.0;
+        when(contractRepository.findLowestPriceByTypeId(TYPE_ID * -1)).thenReturn(Optional.of(value));
+        when(contractRepository.findLowestPriceByTypeId(TYPE_ID)).thenReturn(Optional.empty());
+        PriceBean price = classToTest.getPrice(TYPE_ID);
+
+        assertThat(price).isNotNull();
+        assertThat(price.getValue()).isEqualTo(value);
+    }
+
+    @Test
+    void getContractPriceBPO() {
+        double value = 123.0;
+        when(contractRepository.findLowestPriceByTypeId(TYPE_ID * -1)).thenReturn(Optional.empty());
+        when(contractRepository.findLowestPriceByTypeId(TYPE_ID)).thenReturn(Optional.of(value));
+        PriceBean price = classToTest.getPrice(TYPE_ID);
+
+        assertThat(price).isNotNull();
+        assertThat(price.getValue()).isEqualTo(value);
+    }
+
+    @Test
+    void getContractPriceBoth() {
+        double value = 123.0;
+        when(contractRepository.findLowestPriceByTypeId(TYPE_ID * -1)).thenReturn(Optional.of(value + 1));
         when(contractRepository.findLowestPriceByTypeId(TYPE_ID)).thenReturn(Optional.of(value));
         PriceBean price = classToTest.getPrice(TYPE_ID);
 
@@ -53,6 +76,7 @@ class ContractPriceServiceTest {
 
     @Test
     void getContractPriceNotFound() {
+        when(contractRepository.findLowestPriceByTypeId(TYPE_ID * -1)).thenReturn(Optional.empty());
         when(contractRepository.findLowestPriceByTypeId(TYPE_ID)).thenReturn(Optional.empty());
         PriceBean price = classToTest.getPrice(TYPE_ID);
 

@@ -72,7 +72,7 @@ public class PriceService {
             }
         }
         if (!rest.isEmpty()) {
-            LOGGER.info("retrieve prices from conract prices: {}", rest);
+            LOGGER.info("retrieve prices from contract prices: {}", rest);
             for(int typeId : rest) {
                 PriceBean price = contractPriceService.getPrice(typeId);
                 if(price != null) {

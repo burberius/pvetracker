@@ -15,6 +15,8 @@ import net.troja.eve.pve.db.contract.ContractPrice;
 import net.troja.eve.pve.db.contract.ContractRepository;
 import net.troja.eve.pve.db.price.PriceBean;
 import net.troja.eve.pve.discord.DiscordService;
+import org.hibernate.annotations.Cache;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
@@ -96,6 +98,7 @@ public class ContractPriceService {
         numPriceQueries = 0;
     }
 
+    @Cacheable(value = "allContracts")
     public Map<Integer, Long> getAllContractPrices() {
         numPriceQueries++;
         return contractRepository.findLowestPriceByTypeIds().stream()
@@ -112,7 +115,12 @@ public class ContractPriceService {
                 if (items != null && items.size() == 1) {
                     PublicContractsItemsResponse item = items.getFirst();
                     if (item.getIsIncluded()) {
-                        ContractBean contractBean = new ContractBean(contract.getContractId(), item.getTypeId(), price,
+                        int typeId = item.getTypeId();
+                        Boolean isBlueprintCopy = item.getIsBlueprintCopy();
+                        if(isBlueprintCopy != null && isBlueprintCopy) {
+                            typeId = typeId * -1;
+                        }
+                        ContractBean contractBean = new ContractBean(contract.getContractId(), typeId, price,
                                 contract.getDateExpired());
                         contractRepository.save(contractBean);
                         statsContractsProcessed++;
@@ -127,7 +135,9 @@ public class ContractPriceService {
     }
 
     public PriceBean getPrice(int typeId) {
-        Optional<Double> lowestPriceByTypeId = contractRepository.findLowestPriceByTypeId(typeId);
-        return lowestPriceByTypeId.map(aDouble -> new PriceBean(typeId, aDouble)).orElse(null);
+        Optional<Double> lowestBPO = contractRepository.findLowestPriceByTypeId(typeId);
+        Optional<Double> lowestBPC = contractRepository.findLowestPriceByTypeId(typeId * -1);
+        double min = Math.min(lowestBPC.orElse(Double.MAX_VALUE), lowestBPO.orElse(Double.MAX_VALUE));
+        return min < Double.MAX_VALUE ? new PriceBean(typeId, min) : null;
     }
 }

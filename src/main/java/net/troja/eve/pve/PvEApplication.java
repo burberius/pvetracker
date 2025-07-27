@@ -26,6 +26,7 @@ import net.troja.eve.esi.api.LocationApi;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
 import org.springframework.format.Formatter;
 import org.springframework.scheduling.annotation.EnableAsync;
@@ -42,6 +43,7 @@ import java.util.TimeZone;
 @SpringBootApplication
 @EnableScheduling
 @EnableAsync
+@EnableCaching
 public class PvEApplication {
     public static final Locale DEFAULT_LOCALE = Locale.ENGLISH;
     public static final ZoneId DEFAULT_ZONE = ZoneId.of("UTC");

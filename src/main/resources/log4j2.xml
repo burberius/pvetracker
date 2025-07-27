@@ -6,6 +6,9 @@
         </Console>
     </Appenders>
     <Loggers>
+        <Logger name="org.springframework.security.web" level="info">
+            <AppenderRef ref="Console"/>
+        </Logger>
         <Root level="info" additivity="false">
             <appender-ref ref="Console"/>
         </Root>

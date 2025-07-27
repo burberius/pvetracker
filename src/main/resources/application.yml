@@ -17,6 +17,9 @@ spring:
     url: jdbc:postgresql://localhost:5432/pve?currentSchema=pve
     username: pve
     password: pve
+  cache:
+    caffeine:
+      spec: expireAfterAccess=600s
 server:
   session:
     timeout: 10800
